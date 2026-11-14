@@ -7,20 +7,29 @@ export type Theme = {
   text: string; // matn rangi
 };
 
-export type TitleScene = {
+// Har qanday sahnaga qo'shish mumkin: o'zbekcha ovoz (Azure, scripts/ovoz.mjs)
+export type Voice = {
+  ovoz?: string; // shu sahnada o'qiladigan matn (\n — qisqa pauza)
+  ovozchi?: 'madina' | 'sardor' | string; // standart: madina
+  ovozTezligi?: string; // masalan "-10%" (sekinroq) yoki "+10%"
+  ovozFayl?: string; // skript yozadi: yasalgan mp3
+  ovozKalit?: string; // skript yozadi: matn o'zgarganini bilish uchun
+};
+
+export type TitleScene = Voice & {
   type: 'title';
   text: string;
   subtitle?: string;
   duration: number;
 };
 
-export type TextScene = {
+export type TextScene = Voice & {
   type: 'text';
   text: string; // \n bilan qatorlarga bo'linadi
   duration: number;
 };
 
-export type ImageScene = {
+export type ImageScene = Voice & {
   type: 'image';
   src: string;
   caption?: string;
@@ -28,7 +37,7 @@ export type ImageScene = {
   zoom?: 'in' | 'out'; // sekin yaqinlashish yoki uzoqlashish (standart: in)
 };
 
-export type VideoScene = {
+export type VideoScene = Voice & {
   type: 'video';
   src?: string; // tayyor klip; bo'lmasa va prompt bo'lsa — fal.ai yasaydi (scripts/fal.mjs)
   prompt?: string; // AI klip uchun tavsif (ingliz tilida yaxshiroq)
@@ -46,6 +55,8 @@ export type VideoProps = {
   title: string;
   theme?: Partial<Theme>;
   voiceover?: string; // hikoya qiluvchi ovoz (mp3)
+  ovozchi?: 'madina' | 'sardor' | string; // barcha sahnalar ovozi (standart: madina)
+  ovozTezligi?: string; // barcha sahnalar uchun, masalan "-5%"
   music?: string; // fon musiqasi
   musicVolume?: number; // 0..1, standart 0.15
   transition?: number; // sahnalar orasidagi o'tish, sekund (standart 0.5; 0 — o'tishsiz)

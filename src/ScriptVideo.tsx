@@ -44,6 +44,7 @@ export const ScriptVideo: React.FC<VideoProps> = (props) => {
               ) : null}
               <TransitionSeries.Sequence durationInFrames={frames[i]} premountFor={fps}>
                 <SceneView scene={scene} theme={theme} />
+                {scene.ovozFayl ? <Audio src={resolveSrc(scene.ovozFayl)} /> : null}
               </TransitionSeries.Sequence>
             </React.Fragment>
           );

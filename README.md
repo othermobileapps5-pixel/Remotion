@@ -60,6 +60,20 @@ Video o'z-o'zidan yasalmaydi — faqat tugma bilan.
 - Boshqa Runway modeli: `"model": "runway/gen4.5"` va h.k.
 - fal.ai va Runway bitta videoda aralash ishlatilishi mumkin; kaliti yo'q xizmat sahnalari o'tkazib yuboriladi.
 
+## O'zbekcha ovoz (Azure)
+
+Har sahnaga `"ovoz": "o'qiladigan matn"` yozing — «Video yasash» ovozni avtomatik yasaydi va sahnani ovoz uzunligiga moslaydi.
+
+```json
+{ "ovozchi": "sardor", "scenes": [ { "type": "title", "text": "Salom", "ovoz": "Assalomu alaykum! Bugun sizga...", "duration": 3 } ] }
+```
+
+- Ovozlar: `madina` (ayol, standart) yoki `sardor` (erkak); sahnada yoki butun video uchun `"ovozchi"`.
+- Tezlik: `"ovozTezligi": "-10%"` (sekinroq) yoki `"+10%"`.
+- Matn o'zgarmasa, ovoz qayta yasalmaydi.
+- Sozlash: portal.azure.com → **Speech service** yarating → Keys and Endpoint'dan **KEY 1** va **Location/Region**.
+  Repo secretlari: `AZURE_TTS_KEY` va `AZURE_TTS_REGION` (masalan `eastus`).
+
 ## Kompyuterda (ixtiyoriy)
 
 ```bash
