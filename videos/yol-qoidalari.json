@@ -1,0 +1,14 @@
+{
+  "title": "Yo'lda xavfsiz haydash — 5 qoida",
+  "theme": { "bg": "#0F172A", "accent": "#F59E0B", "text": "#FFFFFF" },
+  "transition": 0.5,
+  "scenes": [
+    { "type": "title", "text": "Fura haydovchisi uchun", "subtitle": "5 ta oltin qoida", "duration": 3.5 },
+    { "type": "text", "text": "1. *Masofa* saqlang\nOldingi mashinadan\nkamida 7 sekund", "duration": 5 },
+    { "type": "text", "text": "2. *Charchoq* — eng katta xavf\nUyqu kelsa — to'xtang", "duration": 5 },
+    { "type": "text", "text": "3. Har safar *pre-trip*\nshinalar, tormoz, chiroqlar", "duration": 5 },
+    { "type": "text", "text": "4. Telefon — *qo'lda emas*\nfaqat hands-free", "duration": 5 },
+    { "type": "text", "text": "5. Ob-havoni *oldindan* tekshiring\nqor, shamol, tuman", "duration": 5 },
+    { "type": "title", "text": "Xavfsiz yo'l!", "subtitle": "Oilangiz sizni kutyapti", "duration": 3.5 }
+  ]
+}
