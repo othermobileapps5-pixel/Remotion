@@ -1,0 +1,89 @@
+{
+  "title": "Qahramonlar bilan tanishuv",
+  "theme": {
+    "bg": "#0B1026",
+    "accent": "#FBBF24",
+    "text": "#FFFFFF"
+  },
+  "transition": 0.4,
+  "scenes": [
+    {
+      "type": "title",
+      "text": "Qahramonlar bilan",
+      "subtitle": "tanishing!",
+      "duration": 2.5
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/00-hammasi.jpg",
+      "duration": 3.5,
+      "zoom": "in"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/01-ali.jpg",
+      "duration": 2.6,
+      "zoom": "in"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/02-zarina.jpg",
+      "duration": 2.6,
+      "zoom": "out"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/03-temur.jpg",
+      "duration": 2.6,
+      "zoom": "in"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/04-malika.jpg",
+      "duration": 2.6,
+      "zoom": "out"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/05-bekzod.jpg",
+      "duration": 2.6,
+      "zoom": "in"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/06-ustoz-ota.jpg",
+      "duration": 2.6,
+      "zoom": "out"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/07-oshpaz-lola.jpg",
+      "duration": 2.6,
+      "zoom": "in"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/08-usta-kamol.jpg",
+      "duration": 2.6,
+      "zoom": "out"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/09-robot-piko.jpg",
+      "duration": 2.6,
+      "zoom": "in"
+    },
+    {
+      "type": "image",
+      "src": "rasmlar/qahramonlar/10-bobi.jpg",
+      "duration": 2.6,
+      "zoom": "out"
+    },
+    {
+      "type": "title",
+      "text": "Sarguzasht boshlanadi!",
+      "subtitle": "Kuzatib boring",
+      "duration": 3
+    }
+  ]
+}
