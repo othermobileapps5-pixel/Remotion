@@ -15,7 +15,7 @@ on:
         options: [youtube, shorts, ikkalasi]
         default: youtube
       ai_kliplar:
-        description: "AI kliplarni fal.ai'da yasash (pullik! FAL_KEY secret kerak)"
+        description: "AI kliplarni yasash (pullik! FAL_KEY va/yoki RUNWAY_KEY secret kerak)"
         type: boolean
         default: false
       max_klip:
@@ -48,10 +48,11 @@ jobs:
       - name: Paketlar
         run: npm install --no-audit --no-fund
 
-      - name: AI kliplar (fal.ai)
+      - name: AI kliplar (fal.ai / Runway)
         if: ${{ github.event.inputs.ai_kliplar == 'true' }}
         env:
           FAL_KEY: ${{ secrets.FAL_KEY }}
+          RUNWAY_KEY: ${{ secrets.RUNWAY_KEY }}
         run: |
           ASPECT=16:9; [ "$FORMAT" = shorts ] && ASPECT=9:16
           node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"

@@ -33,7 +33,8 @@ export type VideoScene = {
   src?: string; // tayyor klip; bo'lmasa va prompt bo'lsa — fal.ai yasaydi (scripts/fal.mjs)
   prompt?: string; // AI klip uchun tavsif (ingliz tilida yaxshiroq)
   image?: string; // AI klip shu rasmdan boshlansin (rasmdan video — arzonroq va aniqroq)
-  model?: string; // fal.ai model ID (bo'lmasa standart Kling)
+  model?: string; // fal.ai model ID (bo'lmasa standart Kling) yoki "runway/gen4_turbo", "runway/gen4.5"
+  provider?: 'fal' | 'runway'; // qaysi xizmat (standart: fal)
   caption?: string;
   duration: number;
   muted?: boolean; // klip ovozini o'chirish (standart: o'chiq)
@@ -49,6 +50,7 @@ export type VideoProps = {
   musicVolume?: number; // 0..1, standart 0.15
   transition?: number; // sahnalar orasidagi o'tish, sekund (standart 0.5; 0 — o'tishsiz)
   falModel?: string; // barcha AI kliplar uchun model
+  provider?: 'fal' | 'runway'; // barcha AI kliplar uchun xizmat (standart: fal)
   scenes: Scene[];
 };
 

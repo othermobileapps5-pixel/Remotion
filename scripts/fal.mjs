@@ -1,5 +1,6 @@
-// fal.ai orqali AI video kliplar yasash.
-// Ishlatish: FAL_KEY=... node scripts/fal.mjs videos/<nom>.json [16:9|9:16] [maksimal_klip_soni]
+// AI video kliplar yasash: fal.ai (standart) yoki Runway.
+// Ishlatish: FAL_KEY=... RUNWAY_KEY=... node scripts/fal.mjs videos/<nom>.json [16:9|9:16] [maksimal_klip_soni]
+// Runway: sahnada "provider": "runway" yoki "model": "runway/gen4_turbo" (butun video uchun — "provider" / "falModel").
 // Ssenariydagi har bir { "type": "video", "prompt": "..." } sahnasi uchun (src hali bo'lmasa) klip yasaydi,
 // public/fal/ ga yuklab oladi va sahnaga "src" yozib qo'yadi — qayta render qilinganda qayta pul to'lanmaydi.
 import fs from 'node:fs';
@@ -7,11 +8,16 @@ import path from 'node:path';
 
 const [, , file, aspect = '16:9', maxArg = '10'] = process.argv;
 const KEY = process.env.FAL_KEY;
+const RUNWAY_KEY = process.env.RUNWAY_KEY;
 const MAX = Number(maxArg) || 10;
 
 // Standart modellar (narxi fal.ai sahifasida): matndan video va rasmdan video
 const TEXT_MODEL = 'fal-ai/kling-video/v2.5-turbo/pro/text-to-video';
 const IMAGE_MODEL = 'fal-ai/kling-video/v2.5-turbo/standard/image-to-video';
+// Runway standart modellari: rasmdan — gen4_turbo (5 kredit/sek), matndan — gen4.5 (12 kredit/sek)
+const RUNWAY_IMAGE_MODEL = 'gen4_turbo';
+const RUNWAY_TEXT_MODEL = 'gen4.5';
+const RUNWAY_API = 'https://api.dev.runwayml.com/v1';
 
 if (!file) {
   console.error('Foydalanish: node scripts/fal.mjs videos/<nom>.json [16:9|9:16] [maks]');
@@ -19,14 +25,18 @@ if (!file) {
 }
 const data = JSON.parse(fs.readFileSync(file, 'utf8'));
 const name = path.basename(file, '.json');
-const todo = data.scenes.map((s, i) => ({ s, i })).filter(({ s }) => s.type === 'video' && s.prompt && !s.src);
+const all = data.scenes.map((s, i) => ({ s, i })).filter(({ s }) => s.type === 'video' && s.prompt && !s.src);
+
+// Sahna qaysi xizmatda yasaladi
+const isRunway = (s) => (s.model || '').startsWith('runway/') || (!s.model && (s.provider || data.provider) === 'runway');
+const todo = all.filter(({ s, i }) => {
+  const ok = isRunway(s) ? RUNWAY_KEY : KEY;
+  if (!ok) console.log(`${i + 1}-sahna o'tkazib yuborildi: ${isRunway(s) ? 'RUNWAY_KEY' : 'FAL_KEY'} yo'q.`);
+  return ok;
+});
 
 if (!todo.length) {
-  console.log('AI klip kerak bo\'lgan sahna yo\'q.');
-  process.exit(0);
-}
-if (!KEY) {
-  console.log(`FAL_KEY yo'q — ${todo.length} ta AI klip o'tkazib yuborildi (videoda "AI klip hali yasalmagan" kadri chiqadi).`);
+  console.log(all.length ? 'Kalit yo\'q — AI kliplar o\'tkazib yuborildi (videoda "AI klip hali yasalmagan" kadri chiqadi).' : 'AI klip kerak bo\'lgan sahna yo\'q.');
   process.exit(0);
 }
 if (todo.length > MAX) {
@@ -46,7 +56,37 @@ function imageUrl(src) {
 }
 
 async function generate(scene) {
-  const model = scene.model || data.falModel || (scene.image ? IMAGE_MODEL : TEXT_MODEL);
+  return isRunway(scene) ? generateRunway(scene) : generateFal(scene);
+}
+
+// Runway: https://docs.dev.runwayml.com — vazifa yaratiladi, keyin /tasks/{id} kuzatiladi
+async function generateRunway(scene) {
+  const rw = { Authorization: `Bearer ${RUNWAY_KEY}`, 'X-Runway-Version': '2024-11-06', 'Content-Type': 'application/json' };
+  const model = (scene.model || '').replace(/^runway\//, '') || (scene.image ? RUNWAY_IMAGE_MODEL : RUNWAY_TEXT_MODEL);
+  const body = { model, promptText: scene.prompt, ratio: aspect === '9:16' ? '720:1280' : '1280:720', duration: scene.duration > 5 ? 10 : 5 };
+  if (scene.image) body.promptImage = imageUrl(scene.image);
+  const endpoint = scene.image ? 'image_to_video' : 'text_to_video';
+
+  const sub = await fetch(`${RUNWAY_API}/${endpoint}`, { method: 'POST', headers: rw, body: JSON.stringify(body) });
+  if (!sub.ok) throw new Error(`Runway so'rovni qabul qilmadi (${sub.status}): ${await sub.text()}`);
+  const { id } = await sub.json();
+
+  const started = Date.now();
+  for (;;) {
+    await sleep(5000);
+    const t = await (await fetch(`${RUNWAY_API}/tasks/${id}`, { headers: rw })).json();
+    if (t.status === 'SUCCEEDED') {
+      const url = Array.isArray(t.output) ? t.output[0] : null;
+      if (!url) throw new Error(`Runway javobida video yo'q: ${JSON.stringify(t).slice(0, 300)}`);
+      return { url, model: `runway/${model}` };
+    }
+    if (['FAILED', 'CANCELLED'].includes(t.status)) throw new Error(`Runway xatosi: ${JSON.stringify(t).slice(0, 300)}`);
+    if (Date.now() - started > 15 * 60 * 1000) throw new Error('15 daqiqada tayyor bo\'lmadi');
+  }
+}
+
+async function generateFal(scene) {
+  const model = scene.model || (data.falModel && !data.falModel.startsWith('runway/') ? data.falModel : null) || (scene.image ? IMAGE_MODEL : TEXT_MODEL);
   const input = { prompt: scene.prompt, duration: scene.duration > 5 ? '10' : '5' };
   if (scene.image) input.image_url = imageUrl(scene.image);
   else input.aspect_ratio = aspect;
