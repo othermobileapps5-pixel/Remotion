@@ -50,6 +50,16 @@ Video o'z-o'zidan yasalmaydi — faqat tugma bilan.
 - Yasalgan kliplar `public/fal/` ga saqlanadi va ssenariyga yoziladi — qayta render qilganda qayta pul to'lanmaydi.
 - Uzun YouTube video uchun AI'ni faqat muhim sahnalarga ishlating; qolgani rasm va matn — shunda arzon tushadi.
 
+## AI kliplar (Runway)
+
+1. dev.runwayml.com'da API kalit oling va kredit to'ldiring (kamida $10, 1 kredit = $0.01).
+2. Repo → **Settings → Secrets and variables → Actions → New secret**: nomi `RUNWAY_KEY`.
+3. Sahnada `"provider": "runway"` yozing (butun video uchun — ssenariy boshida `"provider": "runway"`).
+
+- Rasmdan video: `gen4_turbo` (5 kredit/sek, 5 sek ≈ $0.25); matndan video: `gen4.5` (12 kredit/sek).
+- Boshqa Runway modeli: `"model": "runway/gen4.5"` va h.k.
+- fal.ai va Runway bitta videoda aralash ishlatilishi mumkin; kaliti yo'q xizmat sahnalari o'tkazib yuboriladi.
+
 ## Kompyuterda (ixtiyoriy)
 
 ```bash
