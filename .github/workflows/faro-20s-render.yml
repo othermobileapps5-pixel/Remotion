@@ -1,0 +1,43 @@
+name: Faro 20s render
+
+on:
+  push:
+    paths:
+      - "videos/faro-20s.json"
+      - ".github/workflows/faro-20s-render.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Paketlar
+        run: npm install --no-audit --no-fund
+
+      - name: Render YouTube 20s
+        run: |
+          mkdir -p out
+          npx remotion render src/index.ts YouTube out/faro-20s-youtube.mp4 --props=videos/faro-20s.json
+          ls -lh out
+
+      - name: Relizga yuklash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view videolar >/dev/null 2>&1 || gh release create videolar --title "Videolar" --notes "Tayyor videolar (MP4)" --prerelease
+          gh release upload videolar out/*.mp4 --clobber
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: faro-20s-mp4
+          path: out/*.mp4
+          retention-days: 7
