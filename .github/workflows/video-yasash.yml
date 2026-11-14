@@ -1,0 +1,91 @@
+# Video yasash: faqat qo'lda — Actions → «Video yasash» → yashil «Run workflow».
+# Natija (MP4) «videolar» relizida va Actions artifact'ida.
+name: Video yasash
+
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: "Ssenariy nomi (videos/ papkasidagi fayl, .json siz)"
+        default: namuna
+        required: true
+      format:
+        description: "Format"
+        type: choice
+        options: [youtube, shorts, ikkalasi]
+        default: youtube
+      ai_kliplar:
+        description: "AI kliplarni fal.ai'da yasash (pullik! FAL_KEY secret kerak)"
+        type: boolean
+        default: false
+      max_klip:
+        description: "Eng ko'pi bilan nechta AI klip (xarajat chegarasi)"
+        default: "10"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: video-${{ github.event.inputs.video }}
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      VIDEO: ${{ github.event.inputs.video }}
+      FORMAT: ${{ github.event.inputs.format }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Ssenariy borligini tekshirish
+        run: test -f "videos/$VIDEO.json" || { echo "::error::videos/$VIDEO.json topilmadi"; exit 1; }
+
+      - name: Paketlar
+        run: npm install --no-audit --no-fund
+
+      - name: AI kliplar (fal.ai)
+        if: ${{ github.event.inputs.ai_kliplar == 'true' }}
+        env:
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+        run: |
+          ASPECT=16:9; [ "$FORMAT" = shorts ] && ASPECT=9:16
+          node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
+          # Yasalgan kliplarni repoga saqlaymiz — keyingi renderda qayta pul to'lanmaydi
+          if [ -n "$(git status --porcelain public/fal videos)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/fal "videos/$VIDEO.json"
+            git commit -m "AI kliplar: $VIDEO"
+            git push
+          fi
+
+      - name: Render
+        run: |
+          mkdir -p out
+          if [ "$FORMAT" = youtube ] || [ "$FORMAT" = ikkalasi ]; then
+            npx remotion render src/index.ts YouTube "out/$VIDEO-youtube.mp4" --props="videos/$VIDEO.json"
+          fi
+          if [ "$FORMAT" = shorts ] || [ "$FORMAT" = ikkalasi ]; then
+            npx remotion render src/index.ts Shorts "out/$VIDEO-shorts.mp4" --props="videos/$VIDEO.json"
+          fi
+          ls -lh out
+
+      - name: «videolar» relizga yuklash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view videolar >/dev/null 2>&1 || gh release create videolar --title "Videolar" --notes "Tayyor videolar (MP4)" --prerelease
+          gh release upload videolar out/*.mp4 --clobber
+          echo "### Tayyor" >> "$GITHUB_STEP_SUMMARY"
+          for f in out/*.mp4; do echo "- https://github.com/${{ github.repository }}/releases/download/videolar/$(basename "$f")" >> "$GITHUB_STEP_SUMMARY"; done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.inputs.video }}-mp4
+          path: out/*.mp4
+          retention-days: 7

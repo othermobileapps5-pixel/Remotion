@@ -1,0 +1,26 @@
+{
+  "name": "remotion-video",
+  "version": "0.1.0",
+  "private": true,
+  "description": "YouTube va Shorts videolarini ssenariy (JSON) bo'yicha yig'ish — Remotion",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render:youtube": "remotion render src/index.ts YouTube out/video-youtube.mp4 --props=videos/namuna.json",
+    "render:shorts": "remotion render src/index.ts Shorts out/video-shorts.mp4 --props=videos/namuna.json",
+    "fal": "node scripts/fal.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.529",
+    "@remotion/google-fonts": "4.0.529",
+    "@remotion/media": "4.0.529",
+    "@remotion/transitions": "4.0.529",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.529"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "typescript": "^5.8.3"
+  }
+}

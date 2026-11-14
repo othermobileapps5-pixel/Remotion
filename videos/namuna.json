@@ -1,0 +1,12 @@
+{
+  "title": "Namuna video",
+  "theme": { "bg": "#0B1220", "accent": "#22C55E", "text": "#FFFFFF" },
+  "transition": 0.5,
+  "scenes": [
+    { "type": "title", "text": "Video bir tugmada", "subtitle": "Remotion + AI kliplar", "duration": 4 },
+    { "type": "text", "text": "1. Ssenariyni *JSON* faylga yozasiz\n2. Rasmlar va ovozni qo'shasiz\n3. *Run workflow* tugmasini bosasiz", "duration": 7 },
+    { "type": "text", "text": "AI faqat *muhim sahnalarga*\nqolgani — rasm, yozuv va animatsiya", "duration": 6 },
+    { "type": "text", "text": "Natija: *arzon* va tez\nYouTube va Shorts uchun MP4", "duration": 6 },
+    { "type": "title", "text": "Tayyor!", "subtitle": "Keyingi video — sizning mavzuingiz", "duration": 4 }
+  ]
+}
