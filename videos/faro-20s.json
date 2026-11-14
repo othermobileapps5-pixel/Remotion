@@ -1,0 +1,12 @@
+{
+  "title": "Faro Taxi — 20s",
+  "theme": { "bg": "#0B1220", "accent": "#F5C518", "text": "#FFFFFF" },
+  "transition": 0.4,
+  "scenes": [
+    { "type": "title", "text": "FARO", "subtitle": "Tez · Xavfsiz · Arzon", "duration": 3 },
+    { "type": "text", "text": "Bir tegishda *taksi chaqiring*\nHaydovchi yo‘lda", "duration": 4 },
+    { "type": "text", "text": "GPS kuzatuv\n*Aniq narx* oldindan", "duration": 4 },
+    { "type": "text", "text": "O‘zbekiston bo‘ylab\n*24/7* xizmat", "duration": 4 },
+    { "type": "title", "text": "FARO", "subtitle": "Ilovani yuklab oling", "duration": 5 }
+  ]
+}
