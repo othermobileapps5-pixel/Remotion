@@ -13,6 +13,7 @@ const composition = await selectComposition({ serveUrl, id: comp, chromiumOption
 for (const f of frames.split(',').map(Number)) {
   const t0 = Date.now();
   const output = path.join(outDir, `${comp}-${String(f).padStart(4, '0')}.png`);
-  await renderStill({ serveUrl, composition, frame: f, output, scale: Number(scale), chromiumOptions, timeoutInMilliseconds: 240000 });
+  await renderStill({ serveUrl, composition, frame: f, output, scale: Number(scale), chromiumOptions, timeoutInMilliseconds: 240000,
+    onBrowserLog: (l) => { if (l.type !== 'debug' && l.type !== 'verbose') console.log(`  [${l.type}] ${l.text.slice(0, 300)}`); } });
   console.log(`✓ ${output} — ${((Date.now() - t0) / 1000).toFixed(1)} s`);
 }

@@ -32,13 +32,13 @@ jobs:
         run: |
           F="${{ github.event.inputs.kadrlar }}"
           [ -z "$F" ] && F="$(cat videos/hollywood/kadrlar.txt 2>/dev/null || echo 100)"
-          node scripts/kadrlar.mjs HollywoodShort "$F" 0.5 out/kadrlar
+          GL="$(cat videos/hollywood/gl.txt 2>/dev/null || echo angle)" node scripts/kadrlar.mjs HollywoodShort "$F" 0.5 out/kadrlar
       - name: Relizga yuklash
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p out/kadrlar; cp out-tsc.txt out/kadrlar/tsc.txt 2>/dev/null || true
+          mkdir -p out/kadrlar; [ -s out-tsc.txt ] && cp out-tsc.txt out/kadrlar/tsc.txt || true
           gh release view kadrlar-sinov >/dev/null 2>&1 || gh release create kadrlar-sinov --title "Sinov kadrlari" --notes "Multfilm sinov kadrlari (PNG)" --prerelease
           gh release upload kadrlar-sinov out/kadrlar/* --clobber
       - uses: actions/upload-artifact@v4
