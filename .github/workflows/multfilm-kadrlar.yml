@@ -5,7 +5,7 @@ name: Multfilm kadrlari
 on:
   push:
     branches: ["claude/**"]
-    paths: ["src/videos/**", "scripts/kadrlar.mjs", ".github/workflows/multfilm-kadrlar.yml"]
+    paths: ["src/videos/**", "videos/hollywood/**", "scripts/kadrlar.mjs", ".github/workflows/multfilm-kadrlar.yml"]
   workflow_dispatch:
     inputs:
       kadrlar:
