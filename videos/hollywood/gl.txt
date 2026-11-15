@@ -1,1 +1,1 @@
-swangle
+swangle,swiftshader,egl,vulkan
