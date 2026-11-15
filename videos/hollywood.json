@@ -1,0 +1,96 @@
+{
+  "title": "Hollywood — animatik (ovoz sinovi)",
+  "theme": {
+    "bg": "#1B1240",
+    "accent": "#FFB36B",
+    "text": "#FFFFFF"
+  },
+  "ovozchi": "sardor",
+  "transition": 0,
+  "scenes": [
+    {
+      "type": "text",
+      "text": "Dunyodagi eng mashhur yozuv — bor-yo'g'i bir yarim yilga qo'yilgan uy reklamasi edi.",
+      "duration": 2,
+      "ovoz": "Dunyodagi eng mashhur yozuv — bor-yo'g'i bir yarim yilga qo'yilgan uy reklamasi edi."
+    },
+    {
+      "type": "text",
+      "text": "1923-yil. Los-Anjeles tepasida yangi mahalla sotuvga chiqdi, nomi tog'ga yozib qo'yildi: Hollywoodland.",
+      "duration": 2,
+      "ovoz": "1923-yil. Los-Anjeles tepasida yangi mahalla sotuvga chiqdi, nomi tog'ga yozib qo'yildi: Hollywoodland."
+    },
+    {
+      "type": "text",
+      "text": "Kechasi to'rt ming lampochka navbat bilan yonardi: Holly… Wood… Land.",
+      "duration": 2,
+      "ovoz": "Kechasi to'rt ming lampochka navbat bilan yonardi: Holly… Wood… Land."
+    },
+    {
+      "type": "text",
+      "text": "Qorovul harf ortidagi kulbada yashardi va cho'ntagini lampochkaga to'ldirib, tepaga tirmashardi.",
+      "duration": 2,
+      "ovoz": "Qorovul harf ortidagi kulbada yashardi va cho'ntagini lampochkaga to'ldirib, tepaga tirmashardi."
+    },
+    {
+      "type": "text",
+      "text": "Keyin pul tugadi. Qorovulni ham bo'shatishdi.",
+      "duration": 2,
+      "ovoz": "Keyin pul tugadi. Qorovulni ham bo'shatishdi."
+    },
+    {
+      "type": "text",
+      "text": "1944-yil. Shamol kuchaydi… va \"H\" qulab tushdi.",
+      "duration": 2,
+      "ovoz": "1944-yil. Shamol kuchaydi… va \"H\" qulab tushdi."
+    },
+    {
+      "type": "text",
+      "text": "Yaxshiyamki, shahar yozuvni buzib tashlamadi.",
+      "duration": 2,
+      "ovoz": "Yaxshiyamki, shahar yozuvni buzib tashlamadi."
+    },
+    {
+      "type": "text",
+      "text": "Afsuski, faqat \"Land\" ni olib tashladi.",
+      "duration": 2,
+      "ovoz": "Afsuski, faqat \"Land\" ni olib tashladi."
+    },
+    {
+      "type": "text",
+      "text": "Gap shundaki, harflar telefon ustunlariga qoqilgan yupqa taxtalar edi.",
+      "duration": 2,
+      "ovoz": "Gap shundaki, harflar telefon ustunlariga qoqilgan yupqa taxtalar edi."
+    },
+    {
+      "type": "text",
+      "text": "Shamolda katta faner ko'tarib ko'rganmisiz? U yelkanga aylanib, sizni sudrab ketadi.",
+      "duration": 2,
+      "ovoz": "Shamolda katta faner ko'tarib ko'rganmisiz? U yelkanga aylanib, sizni sudrab ketadi."
+    },
+    {
+      "type": "text",
+      "text": "O'n besh metrlik har bir harf — tog' tepasidagi ulkan yelkan edi.",
+      "duration": 2,
+      "ovoz": "O'n besh metrlik har bir harf — tog' tepasidagi ulkan yelkan edi."
+    },
+    {
+      "type": "text",
+      "text": "1978-yilgi bo'rondan keyin harflarni yulduzlar bittadan sotib oldi — har biri yigirma yetti ming yetti yuz dollar.",
+      "duration": 2,
+      "ovoz": "1978-yilgi bo'rondan keyin harflarni yulduzlar bittadan sotib oldi — har biri yigirma yetti ming yetti yuz dollar."
+    },
+    {
+      "type": "text",
+      "text": "Yangi yozuv po'lat va betondan qurildi.",
+      "duration": 2,
+      "ovoz": "Yangi yozuv po'lat va betondan qurildi."
+    },
+    {
+      "type": "text",
+      "text": "Shunday qilib, bir yarim yillik reklama yuz yildan oshdi… va hali ham hech narsa sotmayapti.",
+      "duration": 2,
+      "ovoz": "Shunday qilib, bir yarim yillik reklama yuz yildan oshdi… va hali ham hech narsa sotmayapti."
+    }
+  ]
+}
