@@ -4,6 +4,7 @@ import { ScriptVideo } from './ScriptVideo';
 import { FPS, type VideoProps } from './types';
 import { totalFrames } from './util';
 import namuna from '../videos/namuna.json';
+import { HollywoodShort, HOLLYWOOD_FRAMES } from './videos/hollywood/Hollywood';
 
 // Uzunlik ssenariydan hisoblanadi: render paytida --props=videos/<nom>.json beriladi
 const calculateMetadata: CalculateMetadataFunction<VideoProps> = ({ props }) => ({
@@ -14,6 +15,7 @@ const calculateMetadata: CalculateMetadataFunction<VideoProps> = ({ props }) => 
 const defaults = namuna as VideoProps;
 
 export const Root: React.FC = () => (
+  <>
   <Folder name="Videolar">
     {/* YouTube — gorizontal 16:9 */}
     <Composition
@@ -38,4 +40,9 @@ export const Root: React.FC = () => (
       calculateMetadata={calculateMetadata}
     />
   </Folder>
+  {/* Multfilm: Hollywood yozuvi (three.js, vertikal) */}
+  <Folder name="Multfilm">
+    <Composition id="HollywoodShort" component={HollywoodShort} width={1080} height={1920} fps={30} durationInFrames={HOLLYWOOD_FRAMES} />
+  </Folder>
+  </>
 );

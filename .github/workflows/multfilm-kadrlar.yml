@@ -1,0 +1,49 @@
+# Multfilm sinov kadrlari (arzon, faqat PNG): claude/* branch'ida multfilm kodi o'zgarsa yoki qo'lda.
+# To'liq video yasalmaydi. Kadrlar «kadrlar-sinov» relizida (va artifact'da).
+name: Multfilm kadrlari
+
+on:
+  push:
+    branches: ["claude/**"]
+    paths: ["src/videos/**", "scripts/kadrlar.mjs", ".github/workflows/multfilm-kadrlar.yml"]
+  workflow_dispatch:
+    inputs:
+      kadrlar:
+        description: "Kadr raqamlari, vergul bilan"
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  stills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-audit --no-fund
+      - name: TypeScript
+        continue-on-error: true
+        run: npx tsc --noEmit 2>&1 | tee out-tsc.txt
+      - name: Kadrlar
+        run: |
+          F="${{ github.event.inputs.kadrlar }}"
+          [ -z "$F" ] && F="$(cat videos/hollywood/kadrlar.txt 2>/dev/null || echo 100)"
+          node scripts/kadrlar.mjs HollywoodShort "$F" 0.5 out/kadrlar
+      - name: Relizga yuklash
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p out/kadrlar; cp out-tsc.txt out/kadrlar/tsc.txt 2>/dev/null || true
+          gh release view kadrlar-sinov >/dev/null 2>&1 || gh release create kadrlar-sinov --title "Sinov kadrlari" --notes "Multfilm sinov kadrlari (PNG)" --prerelease
+          gh release upload kadrlar-sinov out/kadrlar/* --clobber
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kadrlar
+          path: out/kadrlar/*
+          retention-days: 3
