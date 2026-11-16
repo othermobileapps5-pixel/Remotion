@@ -49,6 +49,8 @@ def whoosh():
 
 def put(sig, frame, gain=1.0):
     i = int(frame / FPS * SR)
+    if i < 0:  # boshidan oldin boshlanadigan tovush: boshini kesamiz
+        sig, i = sig[-i:], 0
     j = min(N, i + len(sig))
     out[i:j] += sig[: j - i] * gain
 

@@ -7,15 +7,15 @@ import T from './timeline.json';
 // HomePilot — 60 s English Shorts (1080×1920), 2D glassmorphism, telefon ramkasisiz (ekranning o'zi). App screens redrawn from the app code
 // (Home-pilot/App.tsx, demo data and theme). Voice: videos/homepilot-reklama.json (scripts/ovoz.mjs).
 
-const C = {
+export const C = {
   bg: '#070E1C', elev: 'rgba(255,255,255,0.08)', card: 'rgba(255,255,255,0.07)', soft: 'rgba(255,255,255,0.10)', line: 'rgba(255,255,255,0.14)',
   text: '#FFFFFF', text2: '#E2E8F0', muted: '#A8B9CC', blue: '#3B82F6', bright: '#60A5FA', green: '#34D399', amber: '#FBBF24',
 };
-const S = T.scenes;
+export const S = T.scenes;
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 const ease = Easing.bezier(0.22, 1, 0.36, 1);
 // Glassmorphism (2D): shaffof karta, fon xiralashadi, yupqa yorug' chet, ichki yaltiroq
-const G: React.CSSProperties = {
+export const G: React.CSSProperties = {
   background: C.card,
   backdropFilter: 'blur(14px)',
   border: '1px solid rgba(255,255,255,0.14)',
@@ -55,7 +55,7 @@ const Cursor: React.FC<{ color?: string }> = ({ color = C.bright }) => {
 
 // --- simple line icons (SVG) ---
 type IconName = 'home' | 'snow' | 'water' | 'roof' | 'pipe' | 'check' | 'circle' | 'doc' | 'wallet' | 'spark' | 'receipt' | 'plus' | 'calendar' | 'building';
-const Icon: React.FC<{ name: IconName; size?: number; color?: string }> = ({ name, size = 20, color = C.blue }) => {
+export const Icon: React.FC<{ name: IconName; size?: number; color?: string }> = ({ name, size = 20, color = C.blue }) => {
   const p = { fill: 'none', stroke: color, strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
   const d: Record<IconName, React.ReactNode> = {
     home: <path {...p} d="M3 11 12 4l9 7v9h-6v-6H9v6H3z" />,
@@ -131,7 +131,7 @@ const Stats: React.FC<{ items: [string, string][]; at: number }> = ({ items, at 
 type Tab = 'Home' | 'My Home' | 'Maintenance' | 'Documents' | 'Budget' | 'Ask AI';
 const TABS: [Tab, IconName][] = [['Home', 'home'], ['My Home', 'building'], ['Maintenance', 'calendar'], ['Documents', 'doc'], ['Budget', 'wallet'], ['Ask AI', 'spark']];
 
-const TopBar: React.FC = () => (
+export const TopBar: React.FC = () => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px' }}>
     <Img src={staticFile('homepilot/logo.png')} style={{ width: 32, height: 32 }} />
     <div style={{ flex: 1, fontSize: 18, fontWeight: 800, color: C.text }}>
@@ -167,7 +167,7 @@ const Tap: React.FC<{ at: number; x: number; y: number }> = ({ at, x, y }) => {
 };
 
 // --- screens ---
-const HomeScreen: React.FC = () => {
+export const HomeScreen: React.FC = () => {
   const f = useCurrentFrame();
   const score = Math.round(interpolate(f, [S.dash + 40, S.dash + 120], [0, 80], { ...clamp, easing: ease }));
   return (
@@ -263,7 +263,7 @@ const TaskList: React.FC<{ at: number; limit?: number; checkable?: boolean }> = 
   );
 };
 
-const SystemsScreen: React.FC = () => (
+export const SystemsScreen: React.FC = () => (
   <>
     <Heading title="My Home" sub="Keep every home system and service detail together." />
     <Pop at={S.systems + 14}>
@@ -283,7 +283,7 @@ const SystemsScreen: React.FC = () => (
   </>
 );
 
-const TasksScreen: React.FC = () => {
+export const TasksScreen: React.FC = () => {
   const f = useCurrentFrame();
   const done = f >= CHECK_AT ? 1 : 0;
   return (
@@ -301,7 +301,7 @@ const EXPENSES = [
   { title: 'Kitchen faucet repair', amount: 240, cat: 'Repair', date: '2026-08-21' },
   { title: 'Water heater inspection', amount: 95, cat: 'Maintenance', date: '2026-06-02' },
 ];
-const MoneyScreen: React.FC = () => {
+export const MoneyScreen: React.FC = () => {
   const f = useCurrentFrame();
   const total = Math.round(interpolate(f, [S.money + 100, S.money + 170], [0, 520], { ...clamp, easing: ease }));
   return (
@@ -470,7 +470,7 @@ const Logo: React.FC<{ at: number; size: number }> = ({ at, size }) => {
     </div>
   );
 };
-const Wordmark: React.FC<{ size: number }> = ({ size }) => (
+export const Wordmark: React.FC<{ size: number }> = ({ size }) => (
   <div style={{ fontSize: size, fontWeight: 800, color: C.text, letterSpacing: 2 }}>
     HOME<span style={{ color: C.blue }}>PILOT</span>
   </div>

@@ -1,0 +1,9 @@
+{
+  "fps": 30,
+  "total": 450,
+  "scenes": { "s1": 0, "s2": 120, "s3": 210, "cta": 300 },
+  "typing": [{ "id": "head", "start": 26, "cps": 22, "text": "Your home, at a glance." }],
+  "pop": [14, 128, 140, 218, 230, 318],
+  "ding": [340, 392, 422],
+  "whoosh": [4, 108, 198, 288]
+}
