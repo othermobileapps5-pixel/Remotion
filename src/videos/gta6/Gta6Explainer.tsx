@@ -11,7 +11,7 @@ import T from './timeline.json';
 const S = T.scenes;
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 const ease = Easing.bezier(0.22, 1, 0.36, 1);
-const C = { text: '#FFF7F0', dim: '#D9C6E8', pink: '#FF4FA3', orange: '#FF9F45', cyan: '#3EE0FF', purple: '#7B3FE4', card: 'rgba(20,8,40,0.55)', edge: 'rgba(255,255,255,0.18)', ok: '#5BF0A0' };
+const C = { text: '#FFF7F0', dim: '#D9C6E8', pink: '#FF4FA3', orange: '#FF9F45', cyan: '#3EE0FF', purple: '#7B3FE4', card: 'rgba(16,6,34,0.86)', edge: 'rgba(255,255,255,0.18)', ok: '#5BF0A0' };
 const SCENE_IDS = Object.keys(S) as (keyof typeof S)[];
 const endOf = (id: keyof typeof S) => {
   const i = SCENE_IDS.indexOf(id);
@@ -104,6 +104,8 @@ const Background: React.FC = () => {
         })}
       </svg>
       <AbsoluteFill style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(5,0,15,0.65) 100%)' }} />
+      {/* hook va sarlavhadan keyin fon xiraroq: matn quyosh ustida ham o'qilsin */}
+      <AbsoluteFill style={{ background: 'rgba(8,0,20,1)', opacity: interpolate(f, [S.wait - 10, S.wait + 10, S.cta - 10, S.cta + 10], [0, 0.5, 0.5, 0.35], clamp) }} />
     </AbsoluteFill>
   );
 };
@@ -235,7 +237,7 @@ const Delays: React.FC = () => {
           const s = interpolate(f, [n.struck, n.struck + 12], [0, 100], clamp);
           const last = i === NODES.length - 1;
           return (
-            <div key={n.label} style={{ position: 'absolute', left: x - 180, top: 0, width: 360, textAlign: 'center' }}>
+            <div key={n.label} style={{ position: 'absolute', left: x - 230, top: 0, width: 460, textAlign: 'center', whiteSpace: 'nowrap' }}>
               <Pop at={n.at} from="zoom">
                 <div style={{ margin: '40px auto 0', width: 48, height: 48, borderRadius: 99, background: last ? C.pink : C.text, boxShadow: last ? `0 0 ${50 * finalGlow}px ${C.pink}` : 'none' }} />
                 <div style={{ position: 'relative', display: 'inline-block', marginTop: 34, fontSize: 60, fontWeight: 800, color: last ? C.pink : C.text, opacity: s > 0 ? 0.55 : 1 }}>
@@ -393,7 +395,7 @@ const Cta: React.FC = () => {
         <Pop at={4180}>
           <div style={{ fontSize: 44, color: C.dim, fontWeight: 700 }}>GTA 5 has sold around</div>
         </Pop>
-        <div style={{ fontSize: 200, fontWeight: 800, color: C.text, lineHeight: 1.05, fontVariantNumeric: 'tabular-nums' }}>
+        <div style={{ fontSize: 200, fontWeight: 800, color: C.text, lineHeight: 1.05, fontVariantNumeric: 'tabular-nums', textShadow: '0 8px 40px rgba(0,0,0,0.7)' }}>
           {Math.round(count(f, 4190, 4330, 235))}M
         </div>
         <Pop at={4330}>
