@@ -7,10 +7,10 @@
       "type": "text",
       "id": "hook",
       "text": "",
-      "duration": 5,
+      "duration": 5.5,
       "ovoz": "Furnace, roof, water heater. Who's keeping track?",
       "ovozFayl": "ovoz/homepilot-reklama-1.mp3",
-      "ovozKalit": "ac30239b9d",
+      "ovozKalit": "652fe3aee8",
       "ovozTezligi": "+12%"
     },
     {
@@ -20,7 +20,7 @@
       "duration": 6,
       "ovoz": "Lost receipts, expired warranties, forgotten service dates.",
       "ovozFayl": "ovoz/homepilot-reklama-2.mp3",
-      "ovozKalit": "5b01058fdf",
+      "ovozKalit": "5ba06bbc0c",
       "ovozTezligi": "+10%"
     },
     {
