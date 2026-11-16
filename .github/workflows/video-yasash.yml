@@ -84,17 +84,28 @@ jobs:
           pattern: kadrlar-*
           path: out/frames
           merge-multiple: true
+      - name: Sinov kadrlari (faqat *-sinov)
+        if: endsWith(github.event.inputs.video, '-sinov')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view kadrlar-sinov >/dev/null 2>&1 || gh release create kadrlar-sinov --title "Sinov kadrlari" --notes "Sinov kadrlari (PNG)" --prerelease
+          for f in out/frames/*.png; do cp "$f" "out/$VIDEO-$(basename $f)"; done
+          gh release upload kadrlar-sinov out/$VIDEO-*.png --clobber
       - name: MP4 (H.264, 30 fps)
+        if: ${{ !endsWith(github.event.inputs.video, '-sinov') }}
         run: |
           ls out/frames | wc -l
           ffmpeg -y -framerate 30 -i out/frames/f%04d.png -c:v libx264 -preset slow -crf 16 -pix_fmt yuv420p -movflags +faststart "out/$VIDEO.mp4"
       - name: Relizga yuklash
+        if: ${{ !endsWith(github.event.inputs.video, '-sinov') }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view videolar >/dev/null 2>&1 || gh release create videolar --title "Videolar" --notes "Yasalgan videolar"
           gh release upload videolar "out/$VIDEO.mp4" --clobber
       - uses: actions/upload-artifact@v4
+        if: ${{ !endsWith(github.event.inputs.video, '-sinov') }}
         with:
           name: video-${{ github.event.inputs.video }}
           path: out/*.mp4
