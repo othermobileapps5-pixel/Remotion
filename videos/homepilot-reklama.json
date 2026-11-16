@@ -7,64 +7,82 @@
       "type": "text",
       "id": "hook",
       "text": "",
-      "duration": 5.0,
-      "ovoz": "Furnace. Roof. Water heater. Who's keeping track?"
+      "duration": 7.9,
+      "ovoz": "Furnace. Roof. Water heater. Who's keeping track?",
+      "ovozFayl": "ovoz/homepilot-reklama-1.mp3",
+      "ovozKalit": "ac30239b9d"
     },
     {
       "type": "text",
       "id": "problem",
       "text": "",
-      "duration": 6.0,
-      "ovoz": "Receipts get lost. Warranties expire. Service dates get forgotten."
+      "duration": 8,
+      "ovoz": "Receipts get lost. Warranties expire. Service dates get forgotten.",
+      "ovozFayl": "ovoz/homepilot-reklama-2.mp3",
+      "ovozKalit": "5b01058fdf"
     },
     {
       "type": "text",
       "id": "reveal",
       "text": "",
-      "duration": 5.0,
-      "ovoz": "Meet HomePilot, your home maintenance companion."
+      "duration": 5,
+      "ovoz": "Meet HomePilot, your home maintenance companion.",
+      "ovozFayl": "ovoz/homepilot-reklama-3.mp3",
+      "ovozKalit": "efb6f62c99"
     },
     {
       "type": "text",
       "id": "dash",
       "text": "",
-      "duration": 9.0,
-      "ovoz": "See your whole home at a glance: your systems, your home health, and what's coming up next."
+      "duration": 9,
+      "ovoz": "See your whole home at a glance: your systems, your home health, and what's coming up next.",
+      "ovozFayl": "ovoz/homepilot-reklama-4.mp3",
+      "ovozKalit": "4fbccc15fb"
     },
     {
       "type": "text",
       "id": "systems",
       "text": "",
-      "duration": 7.0,
-      "ovoz": "Keep every system in one place. HVAC, roof, plumbing and more."
+      "duration": 7,
+      "ovoz": "Keep every system in one place. HVAC, roof, plumbing and more.",
+      "ovozFayl": "ovoz/homepilot-reklama-5.mp3",
+      "ovozKalit": "c7bf78e2a0"
     },
     {
       "type": "text",
       "id": "tasks",
       "text": "",
-      "duration": 8.0,
-      "ovoz": "Get a simple maintenance plan, and check off tasks as you go."
+      "duration": 8,
+      "ovoz": "Get a simple maintenance plan, and check off tasks as you go.",
+      "ovozFayl": "ovoz/homepilot-reklama-6.mp3",
+      "ovozKalit": "17ae1b376c"
     },
     {
       "type": "text",
       "id": "money",
       "text": "",
-      "duration": 8.0,
-      "ovoz": "Save receipts and warranties, and see what your home really costs."
+      "duration": 8,
+      "ovoz": "Save receipts and warranties, and see what your home really costs.",
+      "ovozFayl": "ovoz/homepilot-reklama-7.mp3",
+      "ovozKalit": "616ca15f0c"
     },
     {
       "type": "text",
       "id": "ask",
       "text": "",
-      "duration": 7.0,
-      "ovoz": "Ask the assistant what's due next. It answers from your own home records."
+      "duration": 7,
+      "ovoz": "Ask the assistant what's due next. It answers from your own home records.",
+      "ovozFayl": "ovoz/homepilot-reklama-8.mp3",
+      "ovozKalit": "61bd6cfad7"
     },
     {
       "type": "text",
       "id": "cta",
       "text": "",
-      "duration": 5.0,
-      "ovoz": "HomePilot. A little care goes a long way."
+      "duration": 5.2,
+      "ovoz": "HomePilot. A little care goes a long way.",
+      "ovozFayl": "ovoz/homepilot-reklama-9.mp3",
+      "ovozKalit": "d70a36ed68"
     }
   ]
 }
