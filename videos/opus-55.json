@@ -8,9 +8,10 @@
       "id": "hook",
       "text": "",
       "duration": 5.5,
-      "ovoz": "Anthropic yangi modelni chiqardi: Claude Opus 5.5.",
+      "ovoz": "Yangi model: Claude Opus 5.5.",
       "ovozFayl": "ovoz/opus-55-1.mp3",
-      "ovozKalit": "9c74a836de"
+      "ovozKalit": "9c74a836de",
+      "ovozTezligi": "+8%"
     },
     {
       "type": "text",
@@ -73,7 +74,8 @@
       "duration": 6,
       "ovoz": "Claude Opus 5.5. Sonnet va Haiku tez orada.",
       "ovozFayl": "ovoz/opus-55-8.mp3",
-      "ovozKalit": "cd8352fe7f"
+      "ovozKalit": "cd8352fe7f",
+      "ovozTezligi": "+8%"
     }
   ]
 }
