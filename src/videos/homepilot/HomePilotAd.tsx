@@ -16,7 +16,7 @@ const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 const ease = Easing.bezier(0.22, 1, 0.36, 1);
 // Glassmorphism (2D): shaffof karta, fon xiralashadi, yupqa yorug' chet, ichki yaltiroq
 const G: React.CSSProperties = {
-  ...G,
+  background: C.card,
   backdropFilter: 'blur(14px)',
   border: '1px solid rgba(255,255,255,0.14)',
   boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 24px rgba(0,0,0,0.25)',
