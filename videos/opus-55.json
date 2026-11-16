@@ -7,57 +7,73 @@
       "type": "text",
       "id": "hook",
       "text": "",
-      "duration": 4,
-      "ovoz": "Anthropic yangi modelni chiqardi: Claude Opus 5.5."
+      "duration": 5.5,
+      "ovoz": "Anthropic yangi modelni chiqardi: Claude Opus 5.5.",
+      "ovozFayl": "ovoz/opus-55-1.mp3",
+      "ovozKalit": "9c74a836de"
     },
     {
       "type": "text",
       "id": "chat",
       "text": "",
-      "duration": 6,
-      "ovoz": "Bir sinovchi u bilan olti yuz sakson ming qator kodni bir kundan kam vaqtda ko'chirdi."
+      "duration": 6.6,
+      "ovoz": "Bir sinovchi u bilan olti yuz sakson ming qator kodni bir kundan kam vaqtda ko'chirdi.",
+      "ovozFayl": "ovoz/opus-55-2.mp3",
+      "ovozKalit": "dfda08723e"
     },
     {
       "type": "text",
       "id": "chart",
       "text": "",
       "duration": 8,
-      "ovoz": "Terminal-Bench testida oltmish olti foiz. Bu Opus 5 va Fable 5.1 dan yuqori."
+      "ovoz": "Terminal-Bench testida oltmish olti foiz. Bu Opus 5 va Fable 5.1 dan yuqori.",
+      "ovozFayl": "ovoz/opus-55-3.mp3",
+      "ovozKalit": "0451bb1506"
     },
     {
       "type": "text",
       "id": "price",
       "text": "",
       "duration": 7,
-      "ovoz": "Narxi yigirma foiz past, odatiy ishda esa qariyb qirq foiz arzonroq."
+      "ovoz": "Narxi yigirma foiz past, odatiy ishda esa qariyb qirq foiz arzonroq.",
+      "ovozFayl": "ovoz/opus-55-4.mp3",
+      "ovozKalit": "88cb72e7a0"
     },
     {
       "type": "text",
       "id": "speed",
       "text": "",
       "duration": 5,
-      "ovoz": "Javobni o'ttiz foizdan ko'proq tez yozadi."
+      "ovoz": "Javobni o'ttiz foizdan ko'proq tez yozadi.",
+      "ovozFayl": "ovoz/opus-55-5.mp3",
+      "ovozKalit": "c19c75848c"
     },
     {
       "type": "text",
       "id": "safety",
       "text": "",
       "duration": 7,
-      "ovoz": "Chiqishdan oldin tashqi baholovchilar uni sinovdan o'tkazgan."
+      "ovoz": "Chiqishdan oldin tashqi baholovchilar uni sinovdan o'tkazgan.",
+      "ovozFayl": "ovoz/opus-55-6.mp3",
+      "ovozKalit": "dfa0f4e5b3"
     },
     {
       "type": "text",
       "id": "where",
       "text": "",
       "duration": 6,
-      "ovoz": "Claude, AWS, Google Cloud va Azure'da allaqachon bor."
+      "ovoz": "Claude, AWS, Google Cloud va Azure'da allaqachon bor.",
+      "ovozFayl": "ovoz/opus-55-7.mp3",
+      "ovozKalit": "b772386727"
     },
     {
       "type": "text",
       "id": "cta",
       "text": "",
-      "duration": 4,
-      "ovoz": "Claude Opus 5.5. Sonnet va Haiku tez orada."
+      "duration": 6,
+      "ovoz": "Claude Opus 5.5. Sonnet va Haiku tez orada.",
+      "ovozFayl": "ovoz/opus-55-8.mp3",
+      "ovozKalit": "cd8352fe7f"
     }
   ]
 }
