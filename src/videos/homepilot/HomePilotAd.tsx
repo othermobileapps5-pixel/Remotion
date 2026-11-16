@@ -4,16 +4,23 @@ import { Audio } from '@remotion/media';
 import { fontFamily } from '../../fonts';
 import T from './timeline.json';
 
-// HomePilot — 60 s English Shorts (1080×1920), 2D. App screens redrawn from the app code
+// HomePilot — 60 s English Shorts (1080×1920), 2D glassmorphism, telefon ramkasisiz (ekranning o'zi). App screens redrawn from the app code
 // (Home-pilot/App.tsx, demo data and theme). Voice: videos/homepilot-reklama.json (scripts/ovoz.mjs).
 
 const C = {
-  bg: '#0B1526', elev: '#12233A', card: '#162B45', soft: '#1A3352', line: '#2A4566',
+  bg: '#070E1C', elev: 'rgba(255,255,255,0.08)', card: 'rgba(255,255,255,0.07)', soft: 'rgba(255,255,255,0.10)', line: 'rgba(255,255,255,0.14)',
   text: '#FFFFFF', text2: '#E2E8F0', muted: '#A8B9CC', blue: '#3B82F6', bright: '#60A5FA', green: '#34D399', amber: '#FBBF24',
 };
 const S = T.scenes;
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 const ease = Easing.bezier(0.22, 1, 0.36, 1);
+// Glassmorphism (2D): shaffof karta, fon xiralashadi, yupqa yorug' chet, ichki yaltiroq
+const G: React.CSSProperties = {
+  ...G,
+  backdropFilter: 'blur(14px)',
+  border: '1px solid rgba(255,255,255,0.14)',
+  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 24px rgba(0,0,0,0.25)',
+};
 
 const typing = (id: string) => T.typing.find((t) => t.id === id)!;
 const typed = (id: string, f: number) => {
@@ -71,7 +78,7 @@ const Icon: React.FC<{ name: IconName; size?: number; color?: string }> = ({ nam
 
 // --- app pieces in app units (the phone scales them ×2) ---
 const Card: React.FC<{ style?: React.CSSProperties; children: React.ReactNode }> = ({ style, children }) => (
-  <div style={{ background: C.card, borderRadius: 18, padding: 16, marginBottom: 10, ...style }}>{children}</div>
+  <div style={{ ...G, borderRadius: 18, padding: 16, marginBottom: 10, ...style }}>{children}</div>
 );
 const Title: React.FC<{ children: React.ReactNode; done?: boolean }> = ({ children, done }) => (
   <div style={{ fontSize: 15, fontWeight: 700, color: done ? C.muted : C.text, textDecoration: done ? 'line-through' : 'none' }}>{children}</div>
@@ -112,7 +119,7 @@ const Stats: React.FC<{ items: [string, string][]; at: number }> = ({ items, at 
   <Pop at={at}>
     <div style={{ display: 'flex', gap: 8, margin: '12px 0' }}>
       {items.map(([l, v]) => (
-        <div key={l} style={{ flex: 1, background: C.card, borderRadius: 15, padding: 12 }}>
+        <div key={l} style={{ flex: 1, ...G, borderRadius: 15, padding: 12 }}>
           <div style={{ fontSize: 9, color: C.muted, fontWeight: 800, letterSpacing: 0.5 }}>{l}</div>
           <div style={{ fontSize: 15, color: C.text, fontWeight: 800, marginTop: 6 }}>{v}</div>
         </div>
@@ -173,7 +180,7 @@ const HomeScreen: React.FC = () => {
         </div>
       </div>
       <Pop at={S.dash + 12}>
-        <div style={{ background: C.card, borderRadius: 20, padding: 18, display: 'flex', marginBottom: 16 }}>
+        <div style={{ ...G, borderRadius: 20, padding: 18, display: 'flex', marginBottom: 16 }}>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: C.muted, letterSpacing: 1 }}>YOUR HOME</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: C.text, marginTop: 4 }}>Desert Haven</div>
@@ -208,7 +215,7 @@ const HomeScreen: React.FC = () => {
       <Pop at={S.dash + 80}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 8 }}>
           {([['plus', 'Add system'], ['doc', 'Add document'], ['wallet', 'Add expense'], ['calendar', 'Add task']] as [IconName, string][]).map(([ic, l]) => (
-            <div key={l} style={{ width: 'calc(50% - 5px)', background: C.card, borderRadius: 16, padding: 14, minHeight: 88, boxSizing: 'border-box' }}>
+            <div key={l} style={{ width: 'calc(50% - 5px)', ...G, borderRadius: 16, padding: 14, minHeight: 88, boxSizing: 'border-box' }}>
               <IconBox name={ic} />
               <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginTop: 8 }}>{l}</div>
             </div>
@@ -260,7 +267,7 @@ const SystemsScreen: React.FC = () => (
   <>
     <Heading title="My Home" sub="Keep every home system and service detail together." />
     <Pop at={S.systems + 14}>
-      <div style={{ margin: '12px 0', background: C.card, borderRadius: 18, padding: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ margin: '12px 0', ...G, borderRadius: 18, padding: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
         <Icon name="home" size={22} />
         <div style={{ flex: 1 }}>
           <Title>Desert Haven</Title>
@@ -304,7 +311,7 @@ const MoneyScreen: React.FC = () => {
       <Row at={S.money + 55} icon="doc" title="Water heater receipt.pdf" sub="Receipt · Jun 02, 2026" />
       <Row at={S.money + 70} icon="doc" title="Roof inspection report.pdf" sub="Inspection · Mar 18, 2026" />
       <Pop at={S.money + 140}>
-        <div style={{ background: C.card, borderRadius: 20, padding: 18, marginTop: 14 }}>
+        <div style={{ ...G, borderRadius: 20, padding: 18, marginTop: 14 }}>
           <div style={{ fontSize: 10, fontWeight: 800, color: C.muted, letterSpacing: 1 }}>RECORDED EXPENSES</div>
           <div style={{ fontSize: 36, fontWeight: 800, color: C.text, marginTop: 6 }}>${total.toLocaleString('en-US')}.00</div>
           <div style={{ fontSize: 13, color: C.muted, marginTop: 4 }}>3 records · Maintenance $280 · Repairs $240</div>
@@ -321,7 +328,7 @@ const AskScreen: React.FC = () => {
   const f = useCurrentFrame();
   const sent = f >= typedEnd('ask') + 6;
   const bubble = (me: boolean, children: React.ReactNode) => (
-    <div style={{ alignSelf: me ? 'flex-end' : 'flex-start', maxWidth: 290, background: me ? C.blue : C.card, color: C.text, borderRadius: 18, padding: '12px 14px', fontSize: 14, lineHeight: 1.45, marginBottom: 10 }}>{children}</div>
+    <div style={{ alignSelf: me ? 'flex-end' : 'flex-start', maxWidth: 290, ...(me ? {} : G), background: me ? C.blue : C.card, color: C.text, borderRadius: 18, padding: '12px 14px', fontSize: 14, lineHeight: 1.45, marginBottom: 10 }}>{children}</div>
   );
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 480 }}>
@@ -341,7 +348,7 @@ const AskScreen: React.FC = () => {
           </Pop>
         ) : null}
       </div>
-      <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '12px 14px', fontSize: 14, color: sent || f < typing('ask').start ? C.muted : C.text, display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ ...G, border: `1px solid ${C.line}`, borderRadius: 16, padding: '12px 14px', fontSize: 14, color: sent || f < typing('ask').start ? C.muted : C.text, display: 'flex', justifyContent: 'space-between' }}>
         <span>
           {sent || f < typing('ask').start ? 'Ask about your home…' : typed('ask', f)}
           {!sent && f >= typing('ask').start ? <Cursor /> : null}
@@ -361,32 +368,33 @@ const screenAt = (f: number): { tab: Tab; el: React.ReactNode; scroll: number } 
   return { tab: 'Ask AI', el: <AskScreen />, scroll: 0 };
 };
 
-const PHONE_W = 820;
-const K = 2; // app unit → video px
-const Phone: React.FC = () => {
+const K = 2.5; // app unit → video px (390 × 2.5 = 975: deyarli butun kenglik)
+const TOP = 64; // ilova kontenti boshlanishi (app units)
+const SCREEN_W = 390 * K;
+// Telefon ramkasi yo'q: ilova ekranining o'zi — katta shisha panel
+const Screen: React.FC = () => {
   const f = useCurrentFrame();
   if (f < S.dash - 10 || f >= S.cta + 10) return null;
-  const inP = interpolate(f, [S.dash - 10, S.dash + 14], [0, 1], { ...clamp, easing: ease });
+  const inP = interpolate(f, [S.dash - 10, S.dash + 16], [0, 1], { ...clamp, easing: ease });
   const outP = interpolate(f, [S.cta - 8, S.cta + 10], [0, 1], clamp);
   const { tab, el, scroll } = screenAt(f);
-  const zoom = 1 + 0.03 * Math.sin((f - S.dash) / 70);
-  // tab change: short cross-fade around each scene start
+  const zoom = 1 + 0.025 * Math.sin((f - S.dash) / 70);
   const starts = [S.systems, S.tasks, S.money, S.ask];
   const fade = Math.min(1, ...starts.map((s) => Math.min(1, Math.abs(f - s) / 6)));
+  const sweep = interpolate((f - S.dash) % 240, [0, 60], [-40, 140], clamp); // nur o'tishi
   return (
-    <div style={{ position: 'absolute', left: (1080 - PHONE_W) / 2, top: 360, width: PHONE_W, height: 1700, transform: `translateY(${(1 - inP) * 600 + outP * 700}px) scale(${zoom})`, opacity: inP * (1 - outP), transformOrigin: '50% 20%' }}>
-      <div style={{ position: 'absolute', inset: 0, borderRadius: 96, background: '#05090F', border: '3px solid #2A4566', boxShadow: '0 40px 120px rgba(59,130,246,0.25)' }} />
-      <div style={{ position: 'absolute', left: 20, top: 20, width: 390, height: 830, borderRadius: 38, overflow: 'hidden', background: C.bg, transform: `scale(${K})`, transformOrigin: '0 0' }}>
-        <div style={{ height: 30 }} />
+    <div style={{ position: 'absolute', left: (1080 - SCREEN_W) / 2, top: 360, width: SCREEN_W, height: 1700, transform: `translateY(${(1 - inP) * 400 + outP * 500}px) scale(${(0.94 + 0.06 * inP) * zoom})`, opacity: inP * (1 - outP), transformOrigin: '50% 20%' }}>
+      <div style={{ position: 'absolute', left: 0, top: 0, width: 390, height: 830, borderRadius: 28, overflow: 'hidden', transform: `scale(${K})`, transformOrigin: '0 0', background: 'rgba(255,255,255,0.045)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.16)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25), 0 30px 80px rgba(0,0,0,0.45)' }}>
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(115deg, transparent ${sweep}%, rgba(255,255,255,0.07) ${sweep + 6}%, transparent ${sweep + 12}%)`, pointerEvents: 'none' }} />
+        <div style={{ height: 8 }} />
         <TopBar />
-        <div style={{ position: 'absolute', top: 86, left: 0, right: 0, bottom: 68, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: TOP, left: 0, right: 0, bottom: 0, overflow: 'hidden' }}>
           <div style={{ padding: '0 16px', transform: `translateY(${-scroll}px)`, opacity: fade }}>{el}</div>
         </div>
         <NavBar tab={tab} />
-        {/* taps (app units, inside the screen) */}
-        <Tap at={S.systems + 150} x={330} y={86 + 197} />
-        <Tap at={CHECK_AT} x={44} y={86 + 221} />
-        <Tap at={typedEnd('ask') + 4} x={360} y={86 + 480 - 24} />
+        <Tap at={S.systems + 150} x={330} y={TOP + 197} />
+        <Tap at={CHECK_AT} x={44} y={TOP + 221} />
+        <Tap at={typedEnd('ask') + 4} x={360} y={TOP + 480 - 24} />
       </div>
     </div>
   );
@@ -447,7 +455,7 @@ const Problem: React.FC = () => {
         const p = spring({ frame: f - n.at, fps: 30, config: { damping: 12, stiffness: 150 } });
         const drift = Math.sin((f + i * 20) / 18) * 8;
         return (
-          <div key={n.t} style={{ position: 'absolute', left: n.x, top: n.y + drift, transform: `rotate(${n.r}deg) scale(${p})`, background: i % 2 ? '#FDE68A' : '#FEF3C7', color: '#3B2F0B', padding: '34px 38px', borderRadius: 14, fontSize: 46, fontWeight: 800, boxShadow: '0 20px 50px rgba(0,0,0,0.45)', width: 400 }}>{n.t}</div>
+          <div key={n.t} style={{ position: 'absolute', left: n.x, top: n.y + drift, transform: `rotate(${n.r}deg) scale(${p})`, background: 'rgba(255,255,255,0.09)', backdropFilter: 'blur(18px)', border: '1.5px solid rgba(251,191,36,0.55)', boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.2), 0 20px 50px rgba(0,0,0,0.45)', color: C.text, padding: '34px 38px', borderRadius: 36, fontSize: 46, fontWeight: 800, width: 400 }}>{n.t}</div>
         );
       })}
     </AbsoluteFill>
@@ -456,7 +464,11 @@ const Problem: React.FC = () => {
 
 const Logo: React.FC<{ at: number; size: number }> = ({ at, size }) => {
   const p = usePop(at, 12);
-  return <Img src={staticFile('homepilot/logo.png')} style={{ width: size, height: size, transform: `scale(${p})`, filter: 'drop-shadow(0 0 40px rgba(96,165,250,0.6))' }} />;
+  return (
+    <div style={{ width: size * 1.35, height: size * 1.35, borderRadius: size * 0.36, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: `scale(${p})`, background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', border: '1.5px solid rgba(255,255,255,0.22)', boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.3), 0 30px 80px rgba(59,130,246,0.35)' }}>
+      <Img src={staticFile('homepilot/logo.png')} style={{ width: size, height: size, filter: 'drop-shadow(0 0 30px rgba(96,165,250,0.6))' }} />
+    </div>
+  );
 };
 const Wordmark: React.FC<{ size: number }> = ({ size }) => (
   <div style={{ fontSize: size, fontWeight: 800, color: C.text, letterSpacing: 2 }}>
@@ -507,7 +519,13 @@ const Background: React.FC = () => {
   const f = useCurrentFrame();
   return (
     <AbsoluteFill style={{ backgroundColor: C.bg }}>
-      <AbsoluteFill style={{ background: `radial-gradient(circle at ${50 + Math.sin(f / 80) * 20}% ${30 + Math.cos(f / 110) * 10}%, rgba(59,130,246,0.28), transparent 60%)` }} />
+      {[
+        { c: 'rgba(59,130,246,0.55)', x: 20, y: 25, r: 520, sp: 90 },
+        { c: 'rgba(34,211,238,0.40)', x: 80, y: 55, r: 460, sp: 120 },
+        { c: 'rgba(139,92,246,0.42)', x: 35, y: 85, r: 500, sp: 105 },
+      ].map((b, i) => (
+        <div key={i} style={{ position: 'absolute', left: `${b.x + Math.sin(f / b.sp + i) * 8}%`, top: `${b.y + Math.cos(f / b.sp + i * 2) * 6}%`, width: b.r * 2, height: b.r * 2, marginLeft: -b.r, marginTop: -b.r, borderRadius: 9999, background: `radial-gradient(circle, ${b.c}, transparent 70%)`, filter: 'blur(40px)' }} />
+      ))}
       {Array.from({ length: 22 }).map((_, i) => {
         const x = (i * 433) % 1080;
         const y = (((i * 751) % 1920) - f * (0.5 + (i % 4) * 0.2) + 1920 * 4) % 1920;
@@ -534,7 +552,7 @@ export const HomePilotAd: React.FC<HomePilotProps> = ({ scenes = [] }) => {
       <Caption from={S.tasks + 4} to={S.money} text="Check off tasks as you go." hi="tasks" />
       <Caption from={S.money + 4} to={S.ask} text="Receipts, warranties, real costs." hi="costs." />
       <Caption from={S.ask + 4} to={S.cta} text="Ask what's due next." hi="next." />
-      <Phone />
+      <Screen />
       <Cta />
       <Sequence from={0}>
         <Audio src={staticFile('homepilot/sfx.mp3')} volume={voiced ? 0.4 : 1} />
