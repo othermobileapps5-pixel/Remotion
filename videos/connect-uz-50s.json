@@ -1,0 +1,74 @@
+{
+  "title": "Connect UZ — 50s",
+  "theme": {
+    "bg": "#12061F",
+    "accent": "#B57BFF",
+    "text": "#FFFFFF"
+  },
+  "transition": 0.4,
+  "scenes": [
+    {
+      "type": "title",
+      "text": "CONNECT UZ",
+      "subtitle": "Amerikadagi o'zbeklar uchun",
+      "duration": 4.5
+    },
+    {
+      "type": "text",
+      "text": "Amerikaga keldingiz.\n*Hammasi yangi.*",
+      "duration": 4.5
+    },
+    {
+      "type": "text",
+      "text": "Ish qayerda?\nUy qayerda?\n*Kimga ishonsa bo'ladi?*",
+      "duration": 5
+    },
+    {
+      "type": "title",
+      "text": "Connect UZ",
+      "subtitle": "Hammasi bitta ilovada",
+      "duration": 4
+    },
+    {
+      "type": "text",
+      "text": "*Trucking*\nDriver · Dispetcher\nKompaniya",
+      "duration": 4.7
+    },
+    {
+      "type": "text",
+      "text": "*Ish* va *uy ijarasi*\no'z shtatingizda",
+      "duration": 4.5
+    },
+    {
+      "type": "text",
+      "text": "*Oldi-sotdi*\nMashina · Elektronika\nKiyim",
+      "duration": 4.7
+    },
+    {
+      "type": "text",
+      "text": "*Advokat* va *mexanik*\no'z tilingizda",
+      "duration": 4.5
+    },
+    {
+      "type": "text",
+      "text": "*Shaharlararo safar*\nRestoranlar\nva boshqalar",
+      "duration": 4.5
+    },
+    {
+      "type": "text",
+      "text": "Shtatingizni tanlang —\n*eng yaqin e'lonlar*\nbirinchi chiqadi",
+      "duration": 5
+    },
+    {
+      "type": "text",
+      "text": "O'zbekcha · Ruscha\n*English*",
+      "duration": 3.5
+    },
+    {
+      "type": "title",
+      "text": "CONNECT UZ",
+      "subtitle": "Ilovani yuklab oling",
+      "duration": 5
+    }
+  ]
+}
