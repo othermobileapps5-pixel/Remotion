@@ -11,3 +11,4 @@ Egasi telefon orqali ishlaydi: javoblar **o'zbek tilida**, qisqa va aniq.
 - Video faqat qo'lda yasaladi: «Video yasash» workflow (`workflow_dispatch`). Avtomatik — faqat arzon «Tekshiruv» (tsc + 2 kadr).
 - Video so'ralganda: ssenariyni `videos/` ga yozing, PR oching, egasiga chatda yashil «Video yasash» tugmasini ko'rsating.
 - Tadqiqot (internetdan o'qish): «Tadqiqot» workflow (qo'lda) — Agent Reach v1.6.1; natija `tadqiqot` branch'ida `tadqiqot/<nom>.json`. Faqat o'qish, login kanallar yoqilmaydi.
+- Blender videolar: `blender/<nom>.py` bo'lsa, «Video yasash» (video=<nom>) Blender 4.2 bilan 4 bo'lakda render qiladi va MP4 ni «videolar» relizga qo'yadi (premium-glassmorphism-3d uslubi).

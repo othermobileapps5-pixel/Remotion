@@ -30,7 +30,96 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Qaysi yo'l: blender/<video>.py bo'lsa — Blender (3D shisha), aks holda — Remotion ssenariy
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      blender: ${{ steps.p.outputs.blender }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        env:
+          VIDEO: ${{ github.event.inputs.video }}
+        run: |
+          if [ -f "blender/${VIDEO%-sinov}.py" ]; then echo "blender=true" >> "$GITHUB_OUTPUT"; else echo "blender=false" >> "$GITHUB_OUTPUT"; fi
+
+  # Blender: 4 ta parallel bo'lak (har biri 150 kadr), keyin bitta MP4
+  blender:
+    needs: plan
+    if: needs.plan.outputs.blender == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      matrix:
+        part: [1, 2, 3, 4]
+    env:
+      VIDEO: ${{ github.event.inputs.video }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Blender 4.2 LTS
+        run: |
+          sudo snap install blender --classic --channel=4.2lts/stable
+          blender --version | head -1
+      - name: Kadrlar
+        run: |
+          # bo'lak: kompozitsiya uzunligi skriptda; har bo'lak 1/4 qism. "-sinov" — har bo'lakdan bitta kadr, kam namuna.
+          case "$VIDEO" in
+            *-sinov) blender -b -P "blender/${VIDEO%-sinov}.py" -- --part ${{ matrix.part }} --samples 12 --out out/frames 2>&1 | grep -E "✓|Error|error|Traceback" || true ;;
+            *) TOTAL=$(blender -b -P "blender/$VIDEO.py" -- --still -1 2>/dev/null | grep -o "KADRLAR=[0-9]*" | cut -d= -f2); TOTAL=${TOTAL:-600}
+               Q=$(( (TOTAL + 3) / 4 )); S=$(( (${{ matrix.part }} - 1) * Q + 1 )); E=$(( ${{ matrix.part }} * Q )); [ $E -gt $TOTAL ] && E=$TOTAL
+               blender -b -P "blender/$VIDEO.py" -- --start $S --end $E --out out/frames 2>&1 | grep -E "✓|Error|error|Traceback" || true ;;
+          esac
+          ls out/frames | wc -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kadrlar-${{ matrix.part }}
+          path: out/frames/*.png
+          if-no-files-found: error
+          retention-days: 1
+
+  blender-mp4:
+    needs: blender
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VIDEO: ${{ github.event.inputs.video }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: kadrlar-*
+          path: out/frames
+          merge-multiple: true
+      - name: Sinov kadrlari (faqat *-sinov)
+        if: endsWith(github.event.inputs.video, '-sinov')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view kadrlar-sinov >/dev/null 2>&1 || gh release create kadrlar-sinov --title "Sinov kadrlari" --notes "Sinov kadrlari (PNG)" --prerelease
+          for f in out/frames/*.png; do cp "$f" "out/$VIDEO-$(basename $f)"; done
+          gh release upload kadrlar-sinov out/$VIDEO-*.png --clobber
+      - name: MP4 (H.264, 30 fps)
+        if: ${{ !endsWith(github.event.inputs.video, '-sinov') }}
+        run: |
+          ls out/frames | wc -l
+          ffmpeg -y -framerate 30 -i out/frames/f%04d.png -c:v libx264 -preset slow -crf 16 -pix_fmt yuv420p -movflags +faststart "out/$VIDEO.mp4"
+      - name: Relizga yuklash
+        if: ${{ !endsWith(github.event.inputs.video, '-sinov') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view videolar >/dev/null 2>&1 || gh release create videolar --title "Videolar" --notes "Yasalgan videolar"
+          gh release upload videolar "out/$VIDEO.mp4" --clobber
+      - uses: actions/upload-artifact@v4
+        if: ${{ !endsWith(github.event.inputs.video, '-sinov') }}
+        with:
+          name: video-${{ github.event.inputs.video }}
+          path: out/*.mp4
+          retention-days: 7
+
   render:
+    needs: plan
+    if: needs.plan.outputs.blender != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
