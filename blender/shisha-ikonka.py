@@ -65,7 +65,7 @@ def bsdf_mat(name, color, rough, metallic=0.0, transmission=0.0, ior=1.5, coat=0
 
 glass, _ = bsdf_mat("Smoked Dark Glass", (0.07, 0.075, 0.09), 0.1, metallic=0.1, transmission=0.85, ior=1.48, coat=0.6)
 frame_m, _ = bsdf_mat("Dark Glass Rim", (0.12, 0.125, 0.14), 0.16, metallic=0.2, transmission=0.6, ior=1.5, coat=0.8)
-green, gb = bsdf_mat("Premium Neon Lime", (0.42, 0.78, 0.02), 0.12, metallic=0.05, transmission=0.45, ior=1.47, coat=1.0, emission=0.25)
+green, gb = bsdf_mat("Premium Neon Lime", (0.2, 0.62, 0.0), 0.12, metallic=0.05, transmission=0.35, ior=1.47, coat=1.0, emission=0.2)
 
 # ---------------- yumaloq burchakli shisha plitka ----------------
 def rounded_slab(name, w, h, t, r, mat, z):
@@ -164,7 +164,7 @@ def pose(f):
     u = (t - 1.8) / 2.0
     sweep.location = (-7 + 14 * max(0, min(1, u)), -2, 4)
     sweep_d.energy = 1800 * math.sin(math.pi * max(0, min(1, u)))
-    pulse = 0.25 + 1.4 * smooth((t - 16) / 1.0) * (0.6 + 0.4 * math.sin((t - 16) * 5))
+    pulse = 0.15 + 1.1 * smooth((t - 16) / 1.0) * (0.6 + 0.4 * math.sin((t - 16) * 5))
     gb.inputs["Emission Strength"].default_value = pulse * (0.3 + 0.7 * rev)
 
 for f in range(1, N + 1):
