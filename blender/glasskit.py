@@ -41,7 +41,10 @@ def scene_setup(fmt="shorts", fps=30, seconds=20, samples=20, look="AgX - Punchy
     sc.render.fps = fps
     sc.frame_start, sc.frame_end = 1, int(fps * seconds)
     sc.view_settings.view_transform = 'AgX'
-    sc.view_settings.look = look
+    try:
+        sc.view_settings.look = look
+    except TypeError:                    # boshqa Blender versiyasida nom farq qilsa
+        sc.view_settings.look = 'AgX - Medium High Contrast'
     sc.render.image_settings.file_format = 'PNG'
     sc.render.image_settings.color_mode = 'RGB'
     return sc
