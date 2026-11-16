@@ -205,6 +205,100 @@ def particles(n=60, area=(6, 10, 4), color=(0.3, 1.0, 0.1), strength=6.0, size=0
     return root, obs
 
 
+
+# ---------------- tayyor shakllar va "shishaga aylantirish" ----------------
+def _finish(ob, mat, bevel=0.0, subsurf=0):
+    if ob.type == 'MESH':
+        for p in ob.data.polygons: p.use_smooth = True
+    ob.data.materials.clear(); ob.data.materials.append(mat)
+    if bevel:
+        b = ob.modifiers.new("Soft Edge", 'BEVEL'); b.width = bevel; b.segments = 5
+        b.limit_method = 'ANGLE'; b.angle_limit = math.radians(35)
+    if subsurf: ob.modifiers.new("Smooth", 'SUBSURF').levels = subsurf
+    if ob.type == 'MESH': ob.modifiers.new("Weighted Normals", 'WEIGHTED_NORMAL')
+    return ob
+
+
+def _poly_prism(name, pts, depth):
+    """2D konturdan (XY nuqtalar) qalinligi depth bo'lgan prizma"""
+    me = bpy.data.meshes.new(name)
+    bm = bmesh.new()
+    vs = [bm.verts.new((x, y, -depth / 2)) for x, y in pts]
+    f = bm.faces.new(vs)
+    ext = bmesh.ops.extrude_face_region(bm, geom=[f])
+    bmesh.ops.translate(bm, vec=(0, 0, depth), verts=[v for v in ext["geom"] if isinstance(v, bmesh.types.BMVert)])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me); bm.free()
+    return bpy.data.objects.new(name, me)
+
+
+SHAPES = ("sphere", "cube", "torus", "cylinder", "capsule", "cone", "star", "heart", "pill", "diamond")
+
+
+def shape(kind, mat, size=1.0, loc=(0, 0, 0), parent=None, name=None):
+    """Tayyor shakl, o'lchami ~size (m): sphere | cube | torus | cylinder | capsule | cone | star | heart | pill | diamond"""
+    r = size / 2
+    nm = name or kind.capitalize()
+    if kind == "torus":
+        bpy.ops.mesh.primitive_torus_add(major_radius=r * 0.75, minor_radius=r * 0.25, major_segments=64, minor_segments=24)
+        ob = bpy.context.active_object; ob.name = nm
+        for c in ob.users_collection: c.objects.unlink(ob)
+        _link(ob, parent); ob.location = loc
+        return _finish(ob, mat)
+    if kind in ("star", "heart"):
+        if kind == "star":
+            pts = [((r if i % 2 == 0 else r * 0.45) * math.sin(i * math.pi / 5), (r if i % 2 == 0 else r * 0.45) * math.cos(i * math.pi / 5)) for i in range(10)]
+        else:
+            pts = []
+            for i in range(64):
+                a = i / 64 * math.tau
+                x = 16 * math.sin(a) ** 3
+                y = 13 * math.cos(a) - 5 * math.cos(2 * a) - 2 * math.cos(3 * a) - math.cos(4 * a)
+                pts.append((x / 17 * r, (y + 2) / 17 * r))
+        ob = _link(_poly_prism(nm, pts, size * 0.28), parent); ob.location = loc
+        return _finish(ob, mat, bevel=size * 0.06)
+    me = bpy.data.meshes.new(nm)
+    bm = bmesh.new()
+    if kind == "sphere":
+        bmesh.ops.create_uvsphere(bm, u_segments=64, v_segments=32, radius=r)
+    elif kind == "cube":
+        bmesh.ops.create_cube(bm, size=size)
+    elif kind in ("cylinder", "cone", "diamond"):
+        r2 = {"cylinder": r, "cone": 0.0, "diamond": r * 0.55}[kind]
+        segs = 8 if kind == "diamond" else 64
+        bmesh.ops.create_cone(bm, cap_ends=True, cap_tris=False, segments=segs, radius1=r, radius2=r2, depth=size)
+    elif kind in ("capsule", "pill"):
+        bmesh.ops.create_uvsphere(bm, u_segments=64, v_segments=32, radius=r * (0.5 if kind == "capsule" else 0.42))
+        for v in bm.verts:                                     # sharni cho'zib kapsula qilamiz
+            v.co.z += (r * 0.5) * (1 if v.co.z > 0 else -1) if kind == "capsule" else 0
+            if kind == "pill": v.co.x += (r * 0.55) * (1 if v.co.x > 0 else -1)
+    else:
+        raise ValueError(f"noma'lum shakl: {kind}; bor: {SHAPES}")
+    bm.to_mesh(me); bm.free()
+    ob = _link(bpy.data.objects.new(nm, me), parent); ob.location = loc
+    if kind == "cube": return _finish(ob, mat, bevel=size * 0.12)
+    if kind == "diamond": return _finish(ob, mat, bevel=size * 0.01)
+    return _finish(ob, mat, bevel=size * 0.03 if kind in ("cylinder", "cone") else 0)
+
+
+def glassify(root, mat, bevel=0.02, keep_materials=False):
+    """Istalgan obyekt/model/matn/logoni shishaga aylantiradi: material, silliq soya, yumaloq qirra.
+    root — bitta obyekt yoki ildiz (barcha bolalari bilan)."""
+    obs = [root] + list(root.children_recursive)
+    for o in obs:
+        if o.type not in ('MESH', 'CURVE', 'FONT'): continue
+        if o.type in ('CURVE', 'FONT'):
+            if not keep_materials: o.data.materials.clear(); o.data.materials.append(mat)
+            if o.data.bevel_depth == 0: o.data.bevel_depth = bevel * 0.5
+            continue
+        if not keep_materials: o.data.materials.clear(); o.data.materials.append(mat)
+        for p in o.data.polygons: p.use_smooth = True
+        if bevel and not any(m.type == 'BEVEL' for m in o.modifiers):
+            b = o.modifiers.new("Soft Edge", 'BEVEL'); b.width = bevel; b.segments = 3
+            b.limit_method = 'ANGLE'; b.angle_limit = math.radians(40)
+        if not any(m.type == 'WEIGHTED_NORMAL' for m in o.modifiers): o.modifiers.new("Weighted Normals", 'WEIGHTED_NORMAL')
+    return root
+
 # ---------------- yorug'lik va kamera ----------------
 LIGHT_PRESETS = {
     "neon_green": [("Top Softbox", (0, 3.5, 6), 900, (0.85, 1.0, 0.8), 4), ("Left Rim", (-5, 1, 3), 1100, (0.55, 0.8, 1.0), 3), ("Right Accent", (5, 1.5, 3), 1300, (0.5, 1.0, 0.25), 3)],
