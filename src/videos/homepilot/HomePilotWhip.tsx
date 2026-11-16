@@ -1,12 +1,12 @@
 import React from 'react';
-import { AbsoluteFill, Easing, Freeze, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame } from 'remotion';
+import { AbsoluteFill, Easing, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame } from 'remotion';
 import { Audio } from '@remotion/media';
 import { fontFamily } from '../../fonts';
 import { C, G, S as AD, TopBar, HomeScreen, TasksScreen, MoneyScreen, Wordmark } from './HomePilotAd';
 import T from './whip-timeline.json';
 
 // HomePilot — 15 s «Sirpanish → Zoom → Whip» (skill: reklama-sirpanish-zoom). 9:16, 2D, shisha uslub.
-// Ilova ekranlari HomePilotAd dagi bilan bir xil, <Freeze> bilan tayyor holatda.
+// Ilova ekranlari HomePilotAd dagi bilan bir xil, kadrni siljitib tayyor holatda ko'rsatiladi.
 
 const S = T.scenes;
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
@@ -31,7 +31,11 @@ const Panel: React.FC<{ from: number; to: number; freeze: number; scroll?: numbe
         <TopBar />
         <div style={{ position: 'absolute', top: 64, left: 0, right: 0, bottom: 0, overflow: 'hidden' }}>
           <div style={{ padding: '0 16px', transform: `translateY(${-scroll}px)` }}>
-            <Freeze frame={freeze}>{children}</Freeze>
+            {/* Freeze kompozitsiya uzunligidan (450) katta kadrni qisqartiradi, shuning uchun Sequence siljitish:
+                ichkarida useCurrentFrame() = freeze (ekran tayyor holatda) */}
+            <Sequence from={f - freeze} layout="none">
+              {children}
+            </Sequence>
           </div>
         </div>
       </div>
