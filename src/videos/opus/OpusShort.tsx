@@ -353,7 +353,14 @@ const Cta: React.FC = () => (
   </Scene>
 );
 
-export const OpusShort: React.FC = () => (
+// Ovoz: videos/opus-55.json dagi sahnalar (scripts/ovoz.mjs ovozFayl yozadi), sahna boshidan 8 kadr keyin
+type VoiceScene = { id?: string; ovozFayl?: string };
+export type OpusProps = { scenes?: VoiceScene[] };
+const SCENE_IDS = Object.keys(S) as (keyof typeof S)[];
+
+export const OpusShort: React.FC<OpusProps> = ({ scenes = [] }) => {
+  const voiced = scenes.some((v) => v.ovozFayl);
+  return (
   <AbsoluteFill style={{ fontFamily }}>
     <Background />
     <Hook />
@@ -365,7 +372,16 @@ export const OpusShort: React.FC = () => (
     <Where />
     <Cta />
     <Sequence from={0}>
-      <Audio src={staticFile('opus/sfx.mp3')} />
+      <Audio src={staticFile('opus/sfx.mp3')} volume={voiced ? 0.45 : 1} />
     </Sequence>
+    {scenes.map((v, i) => {
+      const id = (v.id ?? SCENE_IDS[i]) as keyof typeof S;
+      return v.ovozFayl && S[id] !== undefined ? (
+        <Sequence key={i} from={S[id] + 8}>
+          <Audio src={staticFile(v.ovozFayl)} />
+        </Sequence>
+      ) : null;
+    })}
   </AbsoluteFill>
-);
+  );
+};

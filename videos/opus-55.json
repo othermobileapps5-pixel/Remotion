@@ -1,5 +1,63 @@
 {
-  "title": "Claude Opus 5.5 — 47 s Shorts (kinetik matn, diagrammalar)",
+  "title": "Claude Opus 5.5 — 47 s Shorts (kinetik matn, diagrammalar, Sardor ovozi)",
   "komponent": "OpusShort",
-  "scenes": []
+  "ovozchi": "sardor",
+  "scenes": [
+    {
+      "type": "text",
+      "id": "hook",
+      "text": "",
+      "duration": 4,
+      "ovoz": "Anthropic yangi modelni chiqardi: Claude Opus 5.5."
+    },
+    {
+      "type": "text",
+      "id": "chat",
+      "text": "",
+      "duration": 6,
+      "ovoz": "Bir sinovchi u bilan olti yuz sakson ming qator kodni bir kundan kam vaqtda ko'chirdi."
+    },
+    {
+      "type": "text",
+      "id": "chart",
+      "text": "",
+      "duration": 8,
+      "ovoz": "Terminal-Bench testida oltmish olti foiz. Bu Opus 5 va Fable 5.1 dan yuqori."
+    },
+    {
+      "type": "text",
+      "id": "price",
+      "text": "",
+      "duration": 7,
+      "ovoz": "Narxi yigirma foiz past, odatiy ishda esa qariyb qirq foiz arzonroq."
+    },
+    {
+      "type": "text",
+      "id": "speed",
+      "text": "",
+      "duration": 5,
+      "ovoz": "Javobni o'ttiz foizdan ko'proq tez yozadi."
+    },
+    {
+      "type": "text",
+      "id": "safety",
+      "text": "",
+      "duration": 7,
+      "ovoz": "Chiqishdan oldin tashqi baholovchilar uni sinovdan o'tkazgan."
+    },
+    {
+      "type": "text",
+      "id": "where",
+      "text": "",
+      "duration": 6,
+      "ovoz": "Claude, AWS, Google Cloud va Azure'da allaqachon bor."
+    },
+    {
+      "type": "text",
+      "id": "cta",
+      "text": "",
+      "duration": 4,
+      "ovoz": "Claude Opus 5.5. Sonnet va Haiku tez orada."
+    }
+  ]
 }

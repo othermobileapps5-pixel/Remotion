@@ -40,6 +40,6 @@ export const Root: React.FC = () => (
       calculateMetadata={calculateMetadata}
     />
     {/* Maxsus animatsion videolar (ssenariyda "komponent") */}
-    <Composition id="OpusShort" component={OpusShort} width={1080} height={1920} fps={FPS} durationInFrames={opusTimeline.total} />
+    <Composition id="OpusShort" component={OpusShort} width={1080} height={1920} fps={FPS} durationInFrames={opusTimeline.total} defaultProps={{ scenes: [] }} />
   </Folder>
 );
