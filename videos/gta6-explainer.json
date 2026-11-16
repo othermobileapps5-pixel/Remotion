@@ -1,0 +1,77 @@
+{
+  "title": "GTA 6 — Everything confirmed (YouTube, ~2.5 min, English)",
+  "komponent": "Gta6Explainer",
+  "ovozchi": "en-US-GuyNeural",
+  "scenes": [
+    {
+      "type": "text",
+      "id": "hook",
+      "text": "",
+      "duration": 8.0,
+      "ovoz": "In just three days, one of the most anticipated games in history finally arrives."
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "text": "",
+      "duration": 8.0,
+      "ovoz": "Grand Theft Auto Six. Here is everything confirmed so far."
+    },
+    {
+      "type": "text",
+      "id": "wait",
+      "text": "",
+      "duration": 16.0,
+      "ovoz": "The last main game, GTA Five, came out in 2013. That is a gap of thirteen years, the longest in the series."
+    },
+    {
+      "type": "text",
+      "id": "trailer",
+      "text": "",
+      "duration": 18.0,
+      "ovoz": "When the first trailer dropped in December 2023, it pulled more than ninety million views in twenty-four hours. That is a Guinness World Record for a video game reveal."
+    },
+    {
+      "type": "text",
+      "id": "delays",
+      "text": "",
+      "duration": 22.0,
+      "ovoz": "It was first promised for 2025. In May 2025, Rockstar delayed it to May twenty-sixth, 2026. Then in November 2025, it slipped again, to November nineteenth, 2026."
+    },
+    {
+      "type": "text",
+      "id": "platforms",
+      "text": "",
+      "duration": 16.0,
+      "ovoz": "It launches on PlayStation 5 and Xbox Series X and S. A PC version has not been announced."
+    },
+    {
+      "type": "text",
+      "id": "price",
+      "text": "",
+      "duration": 18.0,
+      "ovoz": "The standard edition costs seventy-nine ninety-nine, and the Ultimate Edition ninety-nine ninety-nine. Boxed copies contain a download code, not a disc."
+    },
+    {
+      "type": "text",
+      "id": "setting",
+      "text": "",
+      "duration": 18.0,
+      "ovoz": "The story is set in Leonida, Rockstar's take on Florida, home to a modern Vice City. You play as Jason and Lucia, the first female lead in a main GTA game."
+    },
+    {
+      "type": "text",
+      "id": "preload",
+      "text": "",
+      "duration": 14.0,
+      "ovoz": "Digital preloads opened on November twelfth. At launch, it is single-player only. Online comes later."
+    },
+    {
+      "type": "text",
+      "id": "cta",
+      "text": "",
+      "duration": 14.0,
+      "ovoz": "GTA Five has sold around two hundred thirty-five million copies. Can Six beat it? Tell us in the comments, and subscribe for more."
+    }
+  ]
+}
