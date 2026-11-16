@@ -1,0 +1,72 @@
+# Tadqiqot (qo'lda): Agent Reach (github.com/Panniantong/Agent-Reach, MIT, v1.6.1) bilan internetdan o'qish —
+# YouTube qidiruv/subtitr, veb-sahifa, GitHub. Natija tadqiqot/<nom>.json bo'lib «tadqiqot» branch'iga yoziladi,
+# Claude uni o'qib, video mavzusi va ssenariy uchun ishlatadi. Faqat o'qish; login talab qiladigan kanallar yoqilmaydi.
+name: Tadqiqot
+
+on:
+  workflow_dispatch:
+    inputs:
+      buyruq:
+        description: "Nima qilinsin"
+        type: choice
+        options: [read, youtube-search, web-search, github-search, channels]
+        default: read
+      matn:
+        description: "Havola (read) yoki qidiruv so'zi"
+        required: false
+        default: ""
+      nom:
+        description: "Natija fayli nomi (lotin harf, raqam, tire)"
+        required: true
+        default: "natija"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tadqiqot
+  cancel-in-progress: false
+
+jobs:
+  reach:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+      - name: Agent Reach o'rnatish (v1.6.1, mahkamlangan)
+        run: |
+          uv tool install https://github.com/Panniantong/Agent-Reach/releases/download/v1.6.1/agent-reach.zip
+          agent-reach setup > /tmp/setup.json || true
+          agent-reach version
+      - name: So'rov
+        env:
+          BUYRUQ: ${{ inputs.buyruq }}
+          MATN: ${{ inputs.matn }}
+          NOM: ${{ inputs.nom }}
+        run: |
+          case "$NOM" in ""|*[!a-z0-9-]*) echo "nom faqat a-z, 0-9, tire"; exit 1;; esac
+          mkdir -p tadqiqot
+          OUT="tadqiqot/$NOM.json"
+          case "$BUYRUQ" in
+            read)           agent-reach read "$MATN" > "$OUT" ;;
+            youtube-search) agent-reach youtube search "$MATN" --limit 10 > "$OUT" ;;
+            web-search)     agent-reach web search "$MATN" --limit 10 > "$OUT" ;;
+            github-search)  agent-reach github search "$MATN" --limit 10 > "$OUT" ;;
+            channels)       agent-reach channels > "$OUT" ;;
+          esac || true
+          head -c 600 "$OUT"; echo
+      - name: «tadqiqot» branch'iga yozish
+        env:
+          NOM: ${{ inputs.nom }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898315+github-actions[bot]@users.noreply.github.com"
+          cp "tadqiqot/$NOM.json" /tmp/natija.json
+          if git ls-remote --exit-code --heads origin tadqiqot >/dev/null; then git checkout -B tadqiqot origin/tadqiqot; else git checkout --orphan tadqiqot && git rm -rfq . ; fi
+          mkdir -p tadqiqot && cp /tmp/natija.json "tadqiqot/$NOM.json"
+          git add "tadqiqot/$NOM.json"
+          git diff --cached --quiet || git commit -qm "Tadqiqot: $NOM"
+          git push -q origin tadqiqot
