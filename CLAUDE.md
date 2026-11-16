@@ -10,3 +10,4 @@ Egasi telefon orqali ishlaydi: javoblar **o'zbek tilida**, qisqa va aniq.
 - O'zbekcha ovoz: sahnada `"ovoz": "matn"` → `scripts/ovoz.mjs` (Azure: `AZURE_TTS_KEY`, `AZURE_TTS_REGION`; madina/sardor).
 - Video faqat qo'lda yasaladi: «Video yasash» workflow (`workflow_dispatch`). Avtomatik — faqat arzon «Tekshiruv» (tsc + 2 kadr).
 - Video so'ralganda: ssenariyni `videos/` ga yozing, PR oching, egasiga chatda yashil «Video yasash» tugmasini ko'rsating.
+- Tadqiqot (internetdan o'qish): «Tadqiqot» workflow (qo'lda) — Agent Reach v1.6.1; natija `tadqiqot` branch'ida `tadqiqot/<nom>.json`. Faqat o'qish, login kanallar yoqilmaydi.
