@@ -1,0 +1,70 @@
+{
+  "title": "HomePilot — 60 s English ad (app screens, voice)",
+  "komponent": "HomePilotAd",
+  "ovozchi": "en-US-GuyNeural",
+  "scenes": [
+    {
+      "type": "text",
+      "id": "hook",
+      "text": "",
+      "duration": 5.0,
+      "ovoz": "Furnace. Roof. Water heater. Who's keeping track?"
+    },
+    {
+      "type": "text",
+      "id": "problem",
+      "text": "",
+      "duration": 6.0,
+      "ovoz": "Receipts get lost. Warranties expire. Service dates get forgotten."
+    },
+    {
+      "type": "text",
+      "id": "reveal",
+      "text": "",
+      "duration": 5.0,
+      "ovoz": "Meet HomePilot, your home maintenance companion."
+    },
+    {
+      "type": "text",
+      "id": "dash",
+      "text": "",
+      "duration": 9.0,
+      "ovoz": "See your whole home at a glance: your systems, your home health, and what's coming up next."
+    },
+    {
+      "type": "text",
+      "id": "systems",
+      "text": "",
+      "duration": 7.0,
+      "ovoz": "Keep every system in one place. HVAC, roof, plumbing and more."
+    },
+    {
+      "type": "text",
+      "id": "tasks",
+      "text": "",
+      "duration": 8.0,
+      "ovoz": "Get a simple maintenance plan, and check off tasks as you go."
+    },
+    {
+      "type": "text",
+      "id": "money",
+      "text": "",
+      "duration": 8.0,
+      "ovoz": "Save receipts and warranties, and see what your home really costs."
+    },
+    {
+      "type": "text",
+      "id": "ask",
+      "text": "",
+      "duration": 7.0,
+      "ovoz": "Ask the assistant what's due next. It answers from your own home records."
+    },
+    {
+      "type": "text",
+      "id": "cta",
+      "text": "",
+      "duration": 5.0,
+      "ovoz": "HomePilot. A little care goes a long way."
+    }
+  ]
+}

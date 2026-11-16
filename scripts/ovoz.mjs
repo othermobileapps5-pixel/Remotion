@@ -38,10 +38,12 @@ if (!KEY) {
   process.exit(0);
 }
 
+// til ovoz nomidan: en-US-GuyNeural → en-US (inglizcha ovozlar ham ishlaydi)
+const langOf = (s) => (voiceOf(s).match(/^[a-z]{2,3}-[A-Z]{2}/) || ['uz-UZ'])[0];
 const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 // \n — qisqa pauza
 const ssml = (s) =>
-  `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="uz-UZ"><voice name="${voiceOf(s)}"><prosody rate="${rateOf(s)}">` +
+  `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${langOf(s)}"><voice name="${voiceOf(s)}"><prosody rate="${rateOf(s)}">` +
   esc(s.ovoz.trim()).replace(/\n+/g, '<break time="400ms"/>') +
   '</prosody></voice></speak>';
 
