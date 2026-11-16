@@ -1,0 +1,71 @@
+{
+  "fps": 30,
+  "total": 1410,
+  "scenes": {
+    "hook": 0,
+    "chat": 120,
+    "chart": 300,
+    "price": 540,
+    "speed": 750,
+    "safety": 900,
+    "where": 1110,
+    "cta": 1290
+  },
+  "typing": [
+    {
+      "id": "hook",
+      "start": 12,
+      "cps": 16,
+      "text": "Yangi model chiqdi..."
+    },
+    {
+      "id": "chat",
+      "start": 150,
+      "cps": 22,
+      "text": "680 000 qator kodni ko'chirish kerak"
+    },
+    {
+      "id": "code",
+      "start": 1185,
+      "cps": 18,
+      "text": "model: \"claude-opus-5-5\""
+    }
+  ],
+  "pop": [
+    62,
+    222,
+    236,
+    330,
+    350,
+    370,
+    580,
+    615,
+    785,
+    950,
+    975,
+    1000,
+    1140,
+    1152,
+    1164,
+    1176,
+    1320
+  ],
+  "ding": [
+    262,
+    470,
+    690,
+    870,
+    1060,
+    1241,
+    1360
+  ],
+  "whoosh": [
+    118,
+    298,
+    538,
+    748,
+    898,
+    1108,
+    1288
+  ]
+}
