@@ -30,7 +30,79 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Qaysi yo'l: blender/<video>.py bo'lsa — Blender (3D shisha), aks holda — Remotion ssenariy
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      blender: ${{ steps.p.outputs.blender }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        env:
+          VIDEO: ${{ github.event.inputs.video }}
+        run: |
+          if [ -f "blender/$VIDEO.py" ]; then echo "blender=true" >> "$GITHUB_OUTPUT"; else echo "blender=false" >> "$GITHUB_OUTPUT"; fi
+
+  # Blender: 4 ta parallel bo'lak (har biri 150 kadr), keyin bitta MP4
+  blender:
+    needs: plan
+    if: needs.plan.outputs.blender == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      matrix:
+        part: [1, 2, 3, 4]
+    env:
+      VIDEO: ${{ github.event.inputs.video }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Blender 4.2 LTS
+        run: |
+          sudo snap install blender --classic --channel=4.2lts/stable
+          blender --version | head -1
+      - name: Kadrlar
+        run: |
+          S=$(( (${{ matrix.part }} - 1) * 150 + 1 )); E=$(( ${{ matrix.part }} * 150 ))
+          blender -b -P "blender/$VIDEO.py" -- --start $S --end $E --out out/frames 2>&1 | grep -E "✓|Error|error" || true
+          ls out/frames | wc -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kadrlar-${{ matrix.part }}
+          path: out/frames/*.png
+          retention-days: 1
+
+  blender-mp4:
+    needs: blender
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VIDEO: ${{ github.event.inputs.video }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: kadrlar-*
+          path: out/frames
+          merge-multiple: true
+      - name: MP4 (H.264, 30 fps)
+        run: |
+          ls out/frames | wc -l
+          ffmpeg -y -framerate 30 -i out/frames/f%04d.png -c:v libx264 -preset slow -crf 16 -pix_fmt yuv420p -movflags +faststart "out/$VIDEO.mp4"
+      - name: Relizga yuklash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view videolar >/dev/null 2>&1 || gh release create videolar --title "Videolar" --notes "Yasalgan videolar"
+          gh release upload videolar "out/$VIDEO.mp4" --clobber
+      - uses: actions/upload-artifact@v4
+        with:
+          name: video-${{ github.event.inputs.video }}
+          path: out/*.mp4
+          retention-days: 7
+
   render:
+    needs: plan
+    if: needs.plan.outputs.blender != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
