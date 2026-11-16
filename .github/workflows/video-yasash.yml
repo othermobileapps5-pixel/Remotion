@@ -41,7 +41,7 @@ jobs:
         env:
           VIDEO: ${{ github.event.inputs.video }}
         run: |
-          if [ -f "blender/$VIDEO.py" ]; then echo "blender=true" >> "$GITHUB_OUTPUT"; else echo "blender=false" >> "$GITHUB_OUTPUT"; fi
+          if [ -f "blender/${VIDEO%-sinov}.py" ]; then echo "blender=true" >> "$GITHUB_OUTPUT"; else echo "blender=false" >> "$GITHUB_OUTPUT"; fi
 
   # Blender: 4 ta parallel bo'lak (har biri 150 kadr), keyin bitta MP4
   blender:
@@ -62,13 +62,19 @@ jobs:
           blender --version | head -1
       - name: Kadrlar
         run: |
-          S=$(( (${{ matrix.part }} - 1) * 150 + 1 )); E=$(( ${{ matrix.part }} * 150 ))
-          blender -b -P "blender/$VIDEO.py" -- --start $S --end $E --out out/frames 2>&1 | grep -E "✓|Error|error" || true
+          # bo'lak: kompozitsiya uzunligi skriptda; har bo'lak 1/4 qism. "-sinov" — har bo'lakdan bitta kadr, kam namuna.
+          case "$VIDEO" in
+            *-sinov) blender -b -P "blender/${VIDEO%-sinov}.py" -- --part ${{ matrix.part }} --samples 12 --out out/frames 2>&1 | grep -E "✓|Error|error|Traceback" || true ;;
+            *) TOTAL=$(blender -b -P "blender/$VIDEO.py" -- --still -1 2>/dev/null | grep -o "KADRLAR=[0-9]*" | cut -d= -f2); TOTAL=${TOTAL:-600}
+               Q=$(( (TOTAL + 3) / 4 )); S=$(( (${{ matrix.part }} - 1) * Q + 1 )); E=$(( ${{ matrix.part }} * Q )); [ $E -gt $TOTAL ] && E=$TOTAL
+               blender -b -P "blender/$VIDEO.py" -- --start $S --end $E --out out/frames 2>&1 | grep -E "✓|Error|error|Traceback" || true ;;
+          esac
           ls out/frames | wc -l
       - uses: actions/upload-artifact@v4
         with:
           name: kadrlar-${{ matrix.part }}
           path: out/frames/*.png
+          if-no-files-found: error
           retention-days: 1
 
   blender-mp4:
