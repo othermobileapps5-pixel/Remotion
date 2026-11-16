@@ -43,7 +43,7 @@ gk.rounded_slab("CTA Button", 3.0, 0.9, 0.22, 0.45, accent, 0.0, cta_rig)
 gk.glass_text(CTA, smoked, size=0.42, depth=0.05, bevel=0.01, loc=(0, 0, 0.16), parent=cta_rig, font_path=FONT)
 
 emis = nb.inputs["Emission Strength"]
-OFF = (0, 0, -40)
+OFF = (500, 0, 0)                    # kadrdan tashqarida (yashirish)
 
 def pose(f):
     t = (f - 1) / 30

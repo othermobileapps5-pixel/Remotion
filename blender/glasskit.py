@@ -22,7 +22,7 @@ def args():
     return ap.parse_args(argv)
 
 
-def scene_setup(fmt="shorts", fps=30, seconds=20, samples=20, look="AgX - Medium High Contrast"):
+def scene_setup(fmt="shorts", fps=30, seconds=20, samples=20, look="AgX - Punchy"):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     sc = bpy.context.scene
     sc.render.engine = 'CYCLES'
@@ -82,7 +82,7 @@ def material(kind="smoked", color=None, name=None):
         "rim": dict(color=c or (0.12, 0.125, 0.14), rough=0.16, metallic=0.2, transmission=0.6, ior=1.5, coat=0.8),
         "crystal": dict(color=c or (0.95, 0.97, 1.0), rough=0.05, transmission=1.0, ior=1.5, coat=0.3),
         "frosted": dict(color=c or (0.85, 0.88, 0.92), rough=0.22, transmission=0.95, ior=1.47, coat=0.2),
-        "colored": dict(color=c or (0.2, 0.62, 0.0), rough=0.12, metallic=0.05, transmission=0.35, ior=1.47, coat=1.0, emission=0.15),
+        "colored": dict(color=c or (0.2, 0.62, 0.0), rough=0.14, metallic=0.05, transmission=0.3, ior=1.47, coat=0.4, emission=0.12),
         "neon": dict(color=c or (0.2, 0.9, 0.05), rough=0.15, transmission=0.7, ior=1.45, coat=0.5, emission=2.5),
         "metal_glass": dict(color=c or (0.6, 0.62, 0.66), rough=0.08, metallic=0.7, transmission=0.4, ior=1.52, coat=1.0),
     }
