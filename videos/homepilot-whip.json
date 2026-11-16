@@ -1,0 +1,44 @@
+{
+  "title": "HomePilot — 15 s Slide-in → Zoom → Whip (English)",
+  "komponent": "HomePilotWhip",
+  "ovozchi": "en-US-GuyNeural",
+  "ovozTezligi": "+5%",
+  "scenes": [
+    {
+      "type": "text",
+      "id": "s1",
+      "text": "",
+      "duration": 4,
+      "ovoz": "Your whole home, at a glance.",
+      "ovozFayl": "ovoz/homepilot-whip-1.mp3",
+      "ovozKalit": "7f2ed5232f"
+    },
+    {
+      "type": "text",
+      "id": "s2",
+      "text": "",
+      "duration": 3.1,
+      "ovoz": "Never miss maintenance.",
+      "ovozFayl": "ovoz/homepilot-whip-2.mp3",
+      "ovozKalit": "60e8168cee"
+    },
+    {
+      "type": "text",
+      "id": "s3",
+      "text": "",
+      "duration": 3.3,
+      "ovoz": "Track every repair cost.",
+      "ovozFayl": "ovoz/homepilot-whip-3.mp3",
+      "ovozKalit": "a56b194f02"
+    },
+    {
+      "type": "text",
+      "id": "cta",
+      "text": "",
+      "duration": 5,
+      "ovoz": "HomePilot. A little care goes a long way.",
+      "ovozFayl": "ovoz/homepilot-whip-4.mp3",
+      "ovozKalit": "0447955e6d"
+    }
+  ]
+}

@@ -83,6 +83,12 @@ jobs:
       - name: Render
         run: |
           mkdir -p out
+          # Maxsus animatsiya: ssenariyda "komponent" bo'lsa, o'sha kompozitsiya (format o'zida belgilangan)
+          COMP=$(node -e "console.log(require('./videos/$VIDEO.json').komponent || '')")
+          if [ -n "$COMP" ]; then
+            npx remotion render src/index.ts "$COMP" "out/$VIDEO.mp4" --props="videos/$VIDEO.json"
+            ls -lh out; exit 0
+          fi
           if [ "$FORMAT" = youtube ] || [ "$FORMAT" = ikkalasi ]; then
             npx remotion render src/index.ts YouTube "out/$VIDEO-youtube.mp4" --props="videos/$VIDEO.json"
           fi
