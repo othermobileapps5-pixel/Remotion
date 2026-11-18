@@ -48,6 +48,12 @@ jobs:
       - name: Paketlar
         run: npm install --no-audit --no-fund
 
+      # ffmpeg: tayyor statik nusxa (bir necha soniya, keshlanadi) — PATH'da to'g'ridan-to'g'ri «ffmpeg» bo'ladi
+      - name: ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        id: ffmpeg
+        continue-on-error: true
+
       - name: O'zbekcha ovoz (Azure)
         env:
           AZURE_TTS_KEY: ${{ secrets.AZURE_TTS_KEY }}
@@ -70,7 +76,7 @@ jobs:
           RUNWAY_KEY: ${{ secrets.RUNWAY_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          # ffmpeg o'rnatilmaydi (apt ~20 daqiqa olardi): fal.mjs Remotion ichidagi ffmpeg'ni ishlatadi (npx remotion ffmpeg)
+          command -v ffmpeg && ffmpeg -version | head -1 || echo "ffmpeg yo'q — fal.mjs Remotion ichidagisini ishlatadi"
           ASPECT=16:9; [ "$FORMAT" = shorts ] && ASPECT=9:16
           node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
 
