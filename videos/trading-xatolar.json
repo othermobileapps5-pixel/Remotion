@@ -11,51 +11,69 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "ovoz": "Kunlik savdo qilganlarning to'qson yetti foizi pul yo'qotgan.",
-      "prompt": "Photorealistic cinematic vertical shot at night in a dim apartment room. A tired young man in a dark hoodie sits in front of three computer monitors that show falling red candlestick charts; the red glow lights his face. Slow camera push-in. He stares in disbelief, then slowly rubs his forehead with both hands. Shallow depth of field, moody teal and red lighting, film grain. No people talking, no speech, no voice-over. Sound: quiet room tone, soft computer fan hum, a low tense rumble. No text, no logos, no readable numbers or letters on screens."
+      "prompt": "Photorealistic cinematic vertical shot at night in a dim apartment room. A tired young man in a dark hoodie sits in front of three computer monitors that show falling red candlestick charts; the red glow lights his face. Slow camera push-in. He stares in disbelief, then slowly rubs his forehead with both hands. Shallow depth of field, moody teal and red lighting, film grain. No people talking, no speech, no voice-over. Sound: quiet room tone, soft computer fan hum, a low tense rumble. No text, no logos, no readable numbers or letters on screens.",
+      "ovozFayl": "ovoz/trading-xatolar-1.mp3",
+      "ovozKalit": "780213e980"
     },
     {
       "id": "grid",
       "duration": 5,
-      "ovoz": "Bu Braziliyada uch yuz kundan ko'p savdo qilganlar."
+      "ovoz": "Bu Braziliyada uch yuz kundan ko'p savdo qilganlar.",
+      "ovozFayl": "ovoz/trading-xatolar-2.mp3",
+      "ovozKalit": "dd96e0719b"
     },
     {
       "id": "esma",
-      "duration": 5.5,
-      "ovoz": "Yevropada CFD hisoblarining yetmish to'rtdan sakson to'qqiz foizgacha zararda."
+      "duration": 5.6,
+      "ovoz": "Yevropada CFD hisoblarining yetmish to'rtdan sakson to'qqiz foizgacha zararda.",
+      "ovozFayl": "ovoz/trading-xatolar-3.mp3",
+      "ovozKalit": "8b907f2624"
     },
     {
       "id": "why",
-      "duration": 2.4,
-      "ovoz": "Nega? Uchta xato."
+      "duration": 3.7,
+      "ovoz": "Nega? Uchta xato.",
+      "ovozFayl": "ovoz/trading-xatolar-4.mp3",
+      "ovozKalit": "cbbb6e7f15"
     },
     {
       "id": "leverage",
-      "duration": 5,
-      "ovoz": "Birinchi: katta leverage. Bir foiz tushish hisobni nolga tushiradi."
+      "duration": 6,
+      "ovoz": "Birinchi: katta leverage. Bir foiz tushish hisobni nolga tushiradi.",
+      "ovozFayl": "ovoz/trading-xatolar-5.mp3",
+      "ovozKalit": "28aa0c9898"
     },
     {
       "id": "stop",
-      "duration": 4,
-      "ovoz": "Ikkinchi: stop-loss yo'q. Zarar to'xtamay o'saveradi."
+      "duration": 5.2,
+      "ovoz": "Ikkinchi: stop-loss yo'q. Zarar to'xtamay o'saveradi.",
+      "ovozFayl": "ovoz/trading-xatolar-6.mp3",
+      "ovozKalit": "e3912c6521"
     },
     {
       "id": "emotion",
       "type": "video",
-      "duration": 5,
+      "duration": 5.7,
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "ovoz": "Uchinchi: hissiyot. Yo'qotganni qaytaraman deb, yana kirasiz.",
-      "prompt": "Photorealistic cinematic vertical close-up at night: the same kind of dim room lit by red monitor glow. A young man's hands frantically click a computer mouse and hit keys on a keyboard, then the camera tilts up to his tense face as he leans toward the screen, jaw clenched, breathing fast, and he slaps the desk once in frustration. Handheld camera feel, red and teal light, shallow depth of field. No speech, no voice, no dialogue. Sound: rapid mouse clicks, keyboard taps, one desk slap, tense low drone. No text, no logos, no readable numbers or letters anywhere."
+      "prompt": "Photorealistic cinematic vertical close-up at night: the same kind of dim room lit by red monitor glow. A young man's hands frantically click a computer mouse and hit keys on a keyboard, then the camera tilts up to his tense face as he leans toward the screen, jaw clenched, breathing fast, and he slaps the desk once in frustration. Handheld camera feel, red and teal light, shallow depth of field. No speech, no voice, no dialogue. Sound: rapid mouse clicks, keyboard taps, one desk slap, tense low drone. No text, no logos, no readable numbers or letters anywhere.",
+      "ovozFayl": "ovoz/trading-xatolar-7.mp3",
+      "ovozKalit": "42d131c3a3"
     },
     {
       "id": "rule",
-      "duration": 5,
-      "ovoz": "Qoida: bitta savdoda hisobning bir foizidan ko'pini xavfga qo'ymang."
+      "duration": 5.1,
+      "ovoz": "Qoida: bitta savdoda hisobning bir foizidan ko'pini xavfga qo'ymang.",
+      "ovozFayl": "ovoz/trading-xatolar-8.mp3",
+      "ovozKalit": "04f2fa98bf"
     },
     {
       "id": "cta",
-      "duration": 3.8,
-      "ovoz": "Avval omon qoling, keyin daromad. Saqlab qo'ying!"
+      "duration": 5.1,
+      "ovoz": "Avval omon qoling, keyin daromad. Saqlab qo'ying!",
+      "ovozFayl": "ovoz/trading-xatolar-9.mp3",
+      "ovozKalit": "410956ff7a"
     }
   ]
 }
