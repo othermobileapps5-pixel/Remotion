@@ -7,7 +7,8 @@
       "duration": 12,
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
-      "prompt": "Scene 1, no characters, no dialogue. Breathtaking view of deep outer space: a gigantic golden-orange planet Venus slowly appears and dominates the frame, its atmosphere glowing with mysterious golden clouds, small moons and distant stars around it. Slow majestic push-in toward the planet, then a smooth aerial descent through golden clouds revealing a magnificent futuristic royal city on the surface: enormous golden towers, floating structures, glowing energy bridges and flying vehicles. Sound: deep cinematic orchestral music, distant atmospheric rumbling, subtle futuristic energy hum. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Golden and violet color grading."
+      "prompt": "Scene 1, no characters, no dialogue. Breathtaking view of deep outer space: a gigantic golden-orange planet Venus slowly appears and dominates the frame, its atmosphere glowing with mysterious golden clouds, small moons and distant stars around it. Slow majestic push-in toward the planet, then a smooth aerial descent through golden clouds revealing a magnificent futuristic royal city on the surface: enormous golden towers, floating structures, glowing energy bridges and flying vehicles. Sound: deep cinematic orchestral music, distant atmospheric rumbling, subtle futuristic energy hum. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Golden and violet color grading.",
+      "src": "fal/venus-ep1-1.mp4"
     },
     {
       "type": "video",
@@ -24,7 +25,8 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "prompt": "The attached image is a CHARACTER REFERENCE ONLY (left: the Venusian prince, right: the Earth girl) - keep their faces, skin, hair and costumes exactly the same, but do NOT reproduce this exact shot or composition. The VENUSIAN PRINCE: handsome young alien man, blue-violet skin, glowing golden markings across his face, golden eyes, long silver-white hair, golden circlet, elegant black-and-gold futuristic royal armor. The KING, his father: an older, tall, dignified Venusian man, deep violet skin, silver hair and short silver beard, subtle golden facial markings, magnificent dark royal armor with gold details, serious commanding presence. Scene 3, same palace and costumes: the king walks slowly toward the enormous window, the city glowing with golden lights below. King, deep voice: \"Some forces exist beyond our understanding. Never trust what comes from the unknown.\" The prince looks outside, thoughtful and slightly troubled. A faint mysterious golden light briefly flashes in the distant sky; the prince notices it and asks: \"What was that?\" The king turns sharply toward the light and says quietly: \"Something that should never have awakened.\" Music becomes darker and more suspenseful. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Golden and violet color grading.",
-      "image": "venus/ref-couple.jpg"
+      "image": "venus/ref-couple.jpg",
+      "src": "fal/venus-ep1-3.mp4"
     },
     {
       "type": "video",
@@ -32,7 +34,8 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "prompt": "The attached image is a CHARACTER REFERENCE ONLY (left: the Venusian prince, right: the Earth girl) - keep their faces, skin, hair and costumes exactly the same, but do NOT reproduce this exact shot or composition. The EARTH GIRL: beautiful young woman with long dark-brown wavy hair partly braided, a small golden leaf hair ornament, light freckles, warm brown eyes, golden embroidered dress. Her OLDER SISTER: a young adult woman a few years older, long straight dark-brown hair, natural look, practical elegant clothes (beige jacket over a white top), protective and confident. Scene 4: hard cinematic transition to Earth seen from space, blue oceans, white clouds and sunlight; the camera descends through the atmosphere toward a modern peaceful city, then reveals a beautiful park at sunset with trees and a quiet walking path in warm sunlight. The Earth girl stands with her older sister, talking casually and smiling naturally. Sister, warm female voice: \"You have been dreaming again, haven't you?\" Girl, smiling softly, gentle young voice: \"Maybe. Sometimes I feel like something is waiting for me.\" The sister smiles gently: \"Then I hope it is something wonderful.\" Natural expressions and subtle gestures. Soft gentle music, birds, light breeze. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Natural warm colors.",
-      "image": "venus/ref-couple.jpg"
+      "image": "venus/ref-couple.jpg",
+      "src": "fal/venus-ep1-4.mp4"
     },
     {
       "type": "video",
@@ -40,7 +43,8 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "prompt": "The attached image is a CHARACTER REFERENCE ONLY (left: the Venusian prince, right: the Earth girl) - keep their faces, skin, hair and costumes exactly the same, but do NOT reproduce this exact shot or composition. The EARTH GIRL: beautiful young woman with long dark-brown wavy hair partly braided, a small golden leaf hair ornament, light freckles, warm brown eyes, golden embroidered dress. Her OLDER SISTER: a young adult woman a few years older, long straight dark-brown hair, natural look, practical elegant clothes (beige jacket over a white top), protective and confident. Scene 5, same park at sunset, same two women and outfits: the sunlight suddenly changes; a strange golden-white light appears high above the city. The sisters stop talking. The light grows brighter and races across the sky. The wind suddenly gets stronger, leaves and dust swirl around them. Wide shot of the glowing object in the sky, then close-ups of their faces. The girl looks up, confused: \"What's that?\" The sister grabs her arm, frightened: \"Come on! We need to get away!\" A deep vibrating sound grows louder. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Natural warm colors.",
-      "image": "venus/ref-couple.jpg"
+      "image": "venus/ref-couple.jpg",
+      "src": "fal/venus-ep1-5.mp4"
     },
     {
       "type": "video",
@@ -48,7 +52,8 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "prompt": "The attached image is a CHARACTER REFERENCE ONLY (left: the Venusian prince, right: the Earth girl) - keep their faces, skin, hair and costumes exactly the same, but do NOT reproduce this exact shot or composition. The EARTH GIRL: beautiful young woman with long dark-brown wavy hair partly braided, a small golden leaf hair ornament, light freckles, warm brown eyes, golden embroidered dress. Her OLDER SISTER: a young adult woman a few years older, long straight dark-brown hair, natural look, practical elegant clothes (beige jacket over a white top), protective and confident. Scene 6, same park and characters: a mysterious luminous object descends at tremendous speed - not an ordinary meteor, a smooth, almost artificial shape wrapped in golden energy. It strikes the ground in an open grassy area near the sisters. A huge white-golden flash fills the screen, a powerful shockwave spreads outward, dust, leaves and small objects fly through the air, the two sisters fall to the ground from the force (no injuries). For a moment all sound disappears, then a deep explosion echoes, low rumble and falling debris. No dialogue. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Natural warm colors.",
-      "image": "venus/ref-couple.jpg"
+      "image": "venus/ref-couple.jpg",
+      "src": "fal/venus-ep1-6.mp4"
     },
     {
       "type": "video",
@@ -56,7 +61,8 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "prompt": "The attached image is a CHARACTER REFERENCE ONLY (left: the Venusian prince, right: the Earth girl) - keep their faces, skin, hair and costumes exactly the same, but do NOT reproduce this exact shot or composition. The EARTH GIRL: beautiful young woman with long dark-brown wavy hair partly braided, a small golden leaf hair ornament, light freckles, warm brown eyes, golden embroidered dress. Her OLDER SISTER: a young adult woman a few years older, long straight dark-brown hair, natural look, practical elegant clothes (beige jacket over a white top), protective and confident. Scene 7, same location and characters, dusty air at sunset: the dust slowly clears, the sisters slowly get up, unhurt. A huge glowing crater is nearby; at its center lies a strange golden object surrounded by floating particles of light, pulsing like a living heartbeat. The girl slowly approaches it; her sister reaches out to stop her and says urgently: \"Don't touch it!\" The girl stares at the object, unable to look away; a golden reflection appears in her eyes. A low, distant, ancient, almost supernatural whisper seems to come from the object: \"At last...\" The girl freezes. Mysterious low music, heartbeat-like pulse. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Natural warm colors.",
-      "image": "venus/ref-couple.jpg"
+      "image": "venus/ref-couple.jpg",
+      "src": "fal/venus-ep1-7.mp4"
     },
     {
       "type": "video",
@@ -64,7 +70,8 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "prompt": "The attached image is a CHARACTER REFERENCE ONLY (left: the Venusian prince, right: the Earth girl) - keep their faces, skin, hair and costumes exactly the same, but do NOT reproduce this exact shot or composition. The VENUSIAN PRINCE: handsome young alien man, blue-violet skin, glowing golden markings across his face, golden eyes, long silver-white hair, golden circlet, elegant black-and-gold futuristic royal armor. The KING, his father: an older, tall, dignified Venusian man, deep violet skin, silver hair and short silver beard, subtle golden facial markings, magnificent dark royal armor with gold details, serious commanding presence. The EARTH GIRL: beautiful young woman with long dark-brown wavy hair partly braided, a small golden leaf hair ornament, light freckles, warm brown eyes, golden embroidered dress. Scene 8, cliffhanger: cut back to the royal palace on Venus - the prince suddenly turns toward the sky, his golden facial markings glow brighter; the king looks shocked and whispers: \"No... It has found her.\" Extreme close-up of the prince's golden eyes. Cut to the Earth girl standing before the glowing golden object in the crater at dusk, her eyes reflecting golden light. The prince's voice-over, deep and emotional: \"Who are you?\" Then a sudden cut to black with a powerful cinematic musical hit. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing.",
-      "image": "venus/ref-couple.jpg"
+      "image": "venus/ref-couple.jpg",
+      "src": "fal/venus-ep1-8.mp4"
     },
     {
       "type": "title",
