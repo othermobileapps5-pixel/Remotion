@@ -206,7 +206,9 @@ function prevFrame(i) {
   ffmpeg(['-v', 'error', '-y', '-sseof', '-0.15', '-i', path.join('public', prev.src), '-frames:v', '1', '-q:v', '2', path.join('public', out)]);
   return out;
 }
-for (const { s, i } of todo) {
+// Bir vaqtda bir nechta klip yasaladi (tezroq). "image": "prev" zanjiri bo'lsa — ketma-ket.
+const PARALLEL = todo.some(({ s }) => s.image === 'prev') ? 1 : Math.max(1, Number(process.env.KLIP_PARALLEL || 4));
+async function one({ s, i }) {
   if (s.image === 'prev') s.image = prevFrame(i);
   const out = `fal/${name}-${i + 1}.mp4`;
   console.log(`▶ ${i + 1}-sahna: "${s.prompt.slice(0, 60)}"…`);
@@ -220,4 +222,13 @@ for (const { s, i } of todo) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
   console.log(`  ✓ ${out} (${(buf.length / 1e6).toFixed(1)} MB)`);
 }
+const queue = [...todo];
+const errors = [];
+await Promise.all(Array.from({ length: Math.min(PARALLEL, queue.length) }, async () => {
+  while (queue.length) {
+    const job = queue.shift();
+    try { await one(job); } catch (e) { errors.push(`${job.i + 1}-sahna: ${e.message}`); console.log(`  ✗ ${job.i + 1}-sahna: ${e.message}`); }
+  }
+}));
+if (errors.length) { console.error(`Xato bo'lgan kliplar:\n${errors.join('\n')}`); process.exit(1); }
 console.log('Tayyor.');
