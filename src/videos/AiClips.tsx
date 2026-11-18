@@ -19,7 +19,7 @@ export const AiClips: React.FC<AiClipsProps> = ({ scenes = [] }) => {
   const f = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   let at = 0;
-  const fade = Math.max(interpolate(f, [0, 12], [1, 0], clamp), interpolate(f, [durationInFrames - 18, durationInFrames], [0, 1], clamp));
+  const fade = Math.max(interpolate(f, [0, 12], [1, 0], clamp), interpolate(f, [durationInFrames - 8, durationInFrames], [0, 1], clamp));
   return (
     <AbsoluteFill style={{ background: '#000' }}>
       {clipsOf(scenes).map((s, i) => {
@@ -46,13 +46,13 @@ export const AiClips: React.FC<AiClipsProps> = ({ scenes = [] }) => {
 // Final title card: black, title fades/zooms in (no AI — always crisp text)
 const TitleCard: React.FC<{ title: string; subtitle: string; len: number }> = ({ title, subtitle, len }) => {
   const f = useCurrentFrame();
-  const o = interpolate(f, [4, 16, len - 6, len], [0, 1, 1, 0], clamp);
+  const o = interpolate(f, [2, 10, len - 4, len], [0, 1, 1, 0.6], clamp);
   const z = interpolate(f, [0, len], [1.08, 1], clamp);
-  const o2 = interpolate(f, [14, 26], [0, 1], clamp);
+  const o2 = interpolate(f, [8, 18], [0, 1], clamp);
   return (
     <AbsoluteFill style={{ background: '#000', justifyContent: 'center', alignItems: 'center', fontFamily: 'Georgia, serif', textAlign: 'center' }}>
       <div style={{ opacity: o, transform: `scale(${z})`, color: '#F3D58A', fontSize: 150, letterSpacing: 24, fontWeight: 700, textShadow: '0 0 40px rgba(243,190,90,.55)' }}>{title}</div>
-      <div style={{ opacity: Math.min(o, o2), color: '#E9DDF7', fontSize: 52, letterSpacing: 10, marginTop: 30 }}>{subtitle}</div>
+      <div style={{ opacity: Math.min(o, o2), color: '#FFF4DA', fontSize: 62, fontWeight: 700, letterSpacing: 10, marginTop: 30, textShadow: '0 0 24px rgba(243,190,90,.45)' }}>{subtitle}</div>
     </AbsoluteFill>
   );
 };
