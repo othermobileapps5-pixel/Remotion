@@ -6,10 +6,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import https from 'node:https';
 
 const [, , file, aspect = '16:9', maxArg = '10'] = process.argv;
 const KEY = process.env.FAL_KEY;
 const RUNWAY_KEY = process.env.RUNWAY_KEY;
+const GEMINI_KEY = process.env.GEMINI_API_KEY; // Google: Gemini Omni Flash (video + ovoz), "model": "google/gemini-omni-1.2-flash"
 const MAX = Number(maxArg) || 10;
 
 // Standart modellar (narxi fal.ai sahifasida): matndan video va rasmdan video
@@ -29,10 +31,12 @@ const name = path.basename(file, '.json');
 const all = data.scenes.map((s, i) => ({ s, i })).filter(({ s }) => s.type === 'video' && s.prompt && !s.src);
 
 // Sahna qaysi xizmatda yasaladi
+const isGoogle = (s) => (s.model || '').startsWith('google/');
 const isRunway = (s) => (s.model || '').startsWith('runway/') || (!s.model && (s.provider || data.provider) === 'runway');
 const todo = all.filter(({ s, i }) => {
-  const ok = isRunway(s) ? RUNWAY_KEY : KEY;
-  if (!ok) console.log(`${i + 1}-sahna o'tkazib yuborildi: ${isRunway(s) ? 'RUNWAY_KEY' : 'FAL_KEY'} yo'q.`);
+  const need = isGoogle(s) ? 'GEMINI_API_KEY' : isRunway(s) ? 'RUNWAY_KEY' : 'FAL_KEY';
+  const ok = isGoogle(s) ? GEMINI_KEY : isRunway(s) ? RUNWAY_KEY : KEY;
+  if (!ok) console.log(`${i + 1}-sahna o'tkazib yuborildi: ${need} yo'q.`);
   return ok;
 });
 
@@ -57,7 +61,74 @@ function imageUrl(src) {
 }
 
 async function generate(scene) {
+  if (isGoogle(scene)) return generateGoogle(scene);
   return isRunway(scene) ? generateRunway(scene) : generateFal(scene);
+}
+
+// Google Gemini Omni Flash (Interactions API): bitta so'rovda 3–15 s video, ovoz va dialog bilan.
+// Hujjat: https://ai.google.dev/gemini-api/docs/omni — natija steps[] ichidagi "model_output" qadamida (data yoki uri).
+function httpsJson(url, body) {
+  // Uzoq kutish (bir necha daqiqa) uchun fetch o'rniga https — vaqt chegarasi yo'q
+  return new Promise((resolve, reject) => {
+    const u = new URL(url);
+    const req = https.request(
+      { hostname: u.hostname, path: u.pathname + u.search, method: body ? 'POST' : 'GET', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY } },
+      (res) => {
+        const chunks = [];
+        res.on('data', (c) => chunks.push(c));
+        res.on('end', () => {
+          const text = Buffer.concat(chunks).toString('utf8');
+          if (res.statusCode >= 400) return reject(new Error(`Google xatosi (${res.statusCode}): ${text.slice(0, 600)}`));
+          try { resolve(JSON.parse(text)); } catch { reject(new Error(`Google javobi JSON emas: ${text.slice(0, 300)}`)); }
+        });
+      },
+    );
+    req.on('error', reject);
+    req.setTimeout(0);
+    if (body) req.write(JSON.stringify(body));
+    req.end();
+  });
+}
+async function generateGoogle(scene) {
+  const model = scene.model.replace(/^google\//, '');
+  const input = [];
+  if (scene.image) {
+    const url = imageUrl(scene.image);
+    const [, mime, data] = url.match(/^data:([^;]+);base64,(.*)$/) || [];
+    if (!data) throw new Error('Google uchun rasm mahalliy fayl bo\'lishi kerak');
+    input.push({ type: 'image', data, mime_type: mime });
+  }
+  input.push({ type: 'text', text: scene.prompt });
+  const response_format = { type: 'video', aspect_ratio: aspect, resolution: scene.resolution || '720p', delivery: 'uri' };
+  if (scene.duration) response_format.duration = `${Math.max(3, Math.min(15, Math.round(scene.duration)))}s`;
+  const API = 'https://generativelanguage.googleapis.com/v1beta';
+  let res;
+  try {
+    res = await httpsJson(`${API}/interactions`, { model, input, response_format, store: false, stream: false, background: false });
+  } catch (e) {
+    // eski hujjatlarda "duration" yo'q — rad etilsa, usiz qayta urinamiz (pul faqat muvaffaqiyatli javob uchun olinadi)
+    if (!/duration/i.test(String(e.message))) throw e;
+    delete response_format.duration;
+    console.log('  duration qabul qilinmadi, usiz qayta so\'rayapman…');
+    res = await httpsJson(`${API}/interactions`, { model, input, response_format, store: false, stream: false, background: false });
+  }
+  const step = (res.steps || []).find((st) => st.type === 'model_output') || {};
+  const out = (step.content || []).find((c) => c.data || c.uri) || {};
+  if (out.data) return { buf: Buffer.from(out.data, 'base64'), model: `google/${model}` };
+  if (!out.uri) throw new Error(`Google javobida video yo'q: ${JSON.stringify(res).slice(0, 600)}`);
+  // URI: fayl tayyor (ACTIVE) bo'lguncha kutamiz, keyin yuklab olamiz
+  const fileName = (out.uri.match(/files\/[^/?:]+/) || [])[0];
+  if (fileName) {
+    for (let k = 0; k < 120; k++) {
+      const meta = await httpsJson(`${API}/${fileName}`);
+      if (meta.state === 'ACTIVE' || !meta.state) break;
+      if (meta.state === 'FAILED') throw new Error(`Google fayli xato: ${JSON.stringify(meta).slice(0, 300)}`);
+      await sleep(5000);
+    }
+  }
+  const dl = await fetch(fileName ? `${API}/${fileName}:download?alt=media` : out.uri, { headers: { 'x-goog-api-key': GEMINI_KEY } });
+  if (!dl.ok) throw new Error(`Google videosini yuklab bo'lmadi (${dl.status}): ${(await dl.text()).slice(0, 300)}`);
+  return { buf: Buffer.from(await dl.arrayBuffer()), model: `google/${model}` };
 }
 
 // Runway: https://docs.dev.runwayml.com — vazifa yaratiladi, keyin /tasks/{id} kuzatiladi
@@ -138,8 +209,9 @@ for (const { s, i } of todo) {
   if (s.image === 'prev') s.image = prevFrame(i);
   const out = `fal/${name}-${i + 1}.mp4`;
   console.log(`▶ ${i + 1}-sahna: "${s.prompt.slice(0, 60)}"…`);
-  const { url, model } = await generate(s);
-  const buf = Buffer.from(await (await fetch(url)).arrayBuffer());
+  const r = await generate(s);
+  const model = r.model;
+  const buf = r.buf || Buffer.from(await (await fetch(r.url)).arrayBuffer());
   fs.writeFileSync(path.join('public', out), buf);
   s.src = out;
   s.model = s.model || model;
