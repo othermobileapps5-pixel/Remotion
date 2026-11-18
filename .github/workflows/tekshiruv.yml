@@ -3,6 +3,16 @@
 name: Tekshiruv
 
 on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: "Ssenariy nomi (videos/<nom>.json) — maxsus komponent kadrlari uchun"
+        required: false
+        default: ''
+      kadrlar:
+        description: "Kadr raqamlari, vergul bilan"
+        required: false
+        default: '40,200,420,700,1000'
   pull_request:
   push:
     branches: [main]
@@ -29,6 +39,16 @@ jobs:
         run: |
           npx remotion still src/index.ts YouTube out/youtube.png --frame=60 --props=videos/namuna.json
           npx remotion still src/index.ts Shorts out/shorts.png --frame=200 --props=videos/namuna.json
+      - name: Maxsus komponent kadrlari (qo'lda ishga tushirilganda)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.video != '' }}
+        env:
+          VIDEO: ${{ github.event.inputs.video }}
+          KADRLAR: ${{ github.event.inputs.kadrlar }}
+        run: |
+          COMP=$(node -e "console.log(require('./videos/$VIDEO.json').komponent || 'Shorts')")
+          for k in ${KADRLAR//,/ }; do
+            npx remotion still src/index.ts "$COMP" "out/$VIDEO-$k.png" --frame=$k --props="videos/$VIDEO.json" --scale=0.5
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: kadrlar

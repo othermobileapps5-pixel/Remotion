@@ -1,0 +1,61 @@
+{
+  "title": "Nega treyderlarning ko'pi pul yo'qotadi? — 40 s Shorts (o'zbekcha, Sardor, Gemini Omni kliplar)",
+  "komponent": "TradingShort",
+  "ovozchi": "sardor",
+  "ovozTezligi": "+10%",
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "video",
+      "duration": 5,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "720p",
+      "ovoz": "Kunlik savdo qilganlarning to'qson yetti foizi pul yo'qotgan.",
+      "prompt": "Photorealistic cinematic vertical shot at night in a dim apartment room. A tired young man in a dark hoodie sits in front of three computer monitors that show falling red candlestick charts; the red glow lights his face. Slow camera push-in. He stares in disbelief, then slowly rubs his forehead with both hands. Shallow depth of field, moody teal and red lighting, film grain. No people talking, no speech, no voice-over. Sound: quiet room tone, soft computer fan hum, a low tense rumble. No text, no logos, no readable numbers or letters on screens."
+    },
+    {
+      "id": "grid",
+      "duration": 5,
+      "ovoz": "Bu Braziliyada uch yuz kundan ko'p savdo qilganlar."
+    },
+    {
+      "id": "esma",
+      "duration": 5.5,
+      "ovoz": "Yevropada CFD hisoblarining yetmish to'rtdan sakson to'qqiz foizgacha zararda."
+    },
+    {
+      "id": "why",
+      "duration": 2.4,
+      "ovoz": "Nega? Uchta xato."
+    },
+    {
+      "id": "leverage",
+      "duration": 5,
+      "ovoz": "Birinchi: katta leverage. Bir foiz tushish hisobni nolga tushiradi."
+    },
+    {
+      "id": "stop",
+      "duration": 4,
+      "ovoz": "Ikkinchi: stop-loss yo'q. Zarar to'xtamay o'saveradi."
+    },
+    {
+      "id": "emotion",
+      "type": "video",
+      "duration": 5,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "720p",
+      "ovoz": "Uchinchi: hissiyot. Yo'qotganni qaytaraman deb, yana kirasiz.",
+      "prompt": "Photorealistic cinematic vertical close-up at night: the same kind of dim room lit by red monitor glow. A young man's hands frantically click a computer mouse and hit keys on a keyboard, then the camera tilts up to his tense face as he leans toward the screen, jaw clenched, breathing fast, and he slaps the desk once in frustration. Handheld camera feel, red and teal light, shallow depth of field. No speech, no voice, no dialogue. Sound: rapid mouse clicks, keyboard taps, one desk slap, tense low drone. No text, no logos, no readable numbers or letters anywhere."
+    },
+    {
+      "id": "rule",
+      "duration": 5,
+      "ovoz": "Qoida: bitta savdoda hisobning bir foizidan ko'pini xavfga qo'ymang."
+    },
+    {
+      "id": "cta",
+      "duration": 3.8,
+      "ovoz": "Avval omon qoling, keyin daromad. Saqlab qo'ying!"
+    }
+  ]
+}
