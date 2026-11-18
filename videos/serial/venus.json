@@ -33,10 +33,24 @@
     "qiz+shahzoda": "shahzoda-qiz.jpg"
   },
   "joylar": {
-    "venera-shahri": { "rasm": "joy-venera-shahri.jpg", "tavsif": "the royal city on Venus: enormous golden towers, floating structures, glowing energy bridges, flying vehicles, golden-violet sky; golden and violet color grading" },
-    "saroy": { "rasm": "joy-saroy.jpg", "tavsif": "the vast royal palace on Venus: marble floor, golden columns, a huge arched panoramic window overlooking the glowing golden city; golden and violet color grading" },
-    "bog": { "rasm": "joy-bog.jpg", "tavsif": "a peaceful park on Earth at sunset: green trees, a quiet walking path, warm golden sunlight, a modern city in the distance; natural warm colors" },
-    "krater": { "rasm": "joy-krater.jpg", "tavsif": "the impact crater on Earth at dusk: dark scorched ground, thin smoke, a strange pulsing golden object with floating light particles in the center; natural warm colors" }
+    "venera-shahri": {
+      "rasm": "joy-venera-shahri.jpg",
+      "tavsif": "the royal city on Venus: enormous golden towers, floating structures, glowing energy bridges, flying vehicles, golden-violet sky; golden and violet color grading"
+    },
+    "saroy": {
+      "rasm": "joy-saroy.jpg",
+      "tavsif": "the vast royal palace on Venus: marble floor, golden columns, a huge arched panoramic window overlooking the glowing golden city; golden and violet color grading"
+    },
+    "bog": {
+      "rasm": "joy-bog.jpg",
+      "tavsif": "a peaceful park on Earth at sunset: green trees, a quiet walking path, warm golden sunlight, a modern city in the distance; natural warm colors"
+    },
+    "krater": {
+      "rasm": "joy-krater.jpg",
+      "tavsif": "the impact crater in the Earth city park: a large round crater about twenty meters wide torn into the green lawn, upturned soil and thin smoke, tall leafy trees and a modern city skyline around it, a smooth golden object glowing in the center; natural warm sunset colors"
+    }
   },
-  "epizodlar": ["venus-ep1"]
+  "epizodlar": [
+    "venus-ep1"
+  ]
 }
