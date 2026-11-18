@@ -25,7 +25,8 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "prompt": "The attached image is a CHARACTER REFERENCE from the previous scene: LEFT is the young Venusian PRINCE (no beard, smooth young face, silver-white hair, golden circlet, golden face markings); RIGHT is his FATHER, the old KING (clearly older, wrinkled face, full silver-white beard and mustache, silver hair, no circlet). Keep both exactly like this - the king must always have his beard and old face; never show two princes, never a second young man; exactly two people in the whole scene. Scene 3, same palace, same costumes, same window and golden city: the old bearded king walks slowly toward the enormous window, the city glowing with golden lights below. The king says in a deep old voice: \"Some forces exist beyond our understanding. Never trust what comes from the unknown.\" The young prince looks outside, thoughtful and slightly troubled. A faint mysterious golden light briefly flashes in the distant sky; the prince notices it and asks: \"What was that?\" The old bearded king turns sharply toward the light and says quietly: \"Something that should never have awakened.\" Music becomes darker and more suspenseful. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, full frame without black bars, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Golden and violet color grading.",
-      "image": "venus/ref-prince-king.jpg"
+      "image": "venus/ref-prince-king.jpg",
+      "src": "fal/venus-ep1-3.mp4"
     },
     {
       "type": "video",
