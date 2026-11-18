@@ -69,7 +69,7 @@ jobs:
           FAL_KEY: ${{ secrets.FAL_KEY }}
           RUNWAY_KEY: ${{ secrets.RUNWAY_KEY }}
         run: |
-          # "image": "prev" uchun ffmpeg kerak (oxirgi kadrni olish)
+          # ffmpeg: serverda bo'lmasa o'rnatamiz (zaxira — fal.mjs Remotion ichidagi ffmpeg'ni ham ishlata oladi)
           command -v ffmpeg >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
           ASPECT=16:9; [ "$FORMAT" = shorts ] && ASPECT=9:16
           node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"

@@ -111,12 +111,23 @@ async function generateFal(scene) {
 }
 
 fs.mkdirSync('public/fal', { recursive: true });
+// ffmpeg: tizimda bo'lsa o'shani, bo'lmasa Remotion ichidagi ffmpeg'ni ishlatamiz (npx remotion ffmpeg) —
+// shuning uchun hech qayerga alohida o'rnatish shart emas
+function ffmpeg(args) {
+  try {
+    execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' });
+    execFileSync('ffmpeg', args, { stdio: 'inherit' });
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
+    execFileSync('npx', ['remotion', 'ffmpeg', ...args], { stdio: 'inherit' });
+  }
+}
 // "image": "prev" — klip oldingi sahna klipining oxirgi kadridan boshlanadi (yuzlar va joy uzilmaydi)
 function prevFrame(i) {
   const prev = data.scenes.slice(0, i).reverse().find((x) => x.type === 'video' && x.src);
   if (!prev) throw new Error(`${i + 1}-sahna: "image": "prev", lekin oldingi klip yo'q`);
   const out = `fal/${name}-${i + 1}-start.jpg`;
-  execFileSync('ffmpeg', ['-v', 'error', '-y', '-sseof', '-0.15', '-i', path.join('public', prev.src), '-frames:v', '1', '-q:v', '2', path.join('public', out)]);
+  ffmpeg(['-v', 'error', '-y', '-sseof', '-0.15', '-i', path.join('public', prev.src), '-frames:v', '1', '-q:v', '2', path.join('public', out)]);
   return out;
 }
 for (const { s, i } of todo) {
