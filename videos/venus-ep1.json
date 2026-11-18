@@ -15,7 +15,8 @@
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
       "prompt": "The attached image is a CHARACTER REFERENCE ONLY (left: the Venusian prince, right: the Earth girl) - keep their faces, skin, hair and costumes exactly the same, but do NOT reproduce this exact shot or composition. The VENUSIAN PRINCE: handsome young alien man, blue-violet skin, glowing golden markings across his face, golden eyes, long silver-white hair, golden circlet, elegant black-and-gold futuristic royal armor. The KING, his father: an older, tall, dignified Venusian man, deep violet skin, silver hair and short silver beard, subtle golden facial markings, magnificent dark royal armor with gold details, serious commanding presence. Scene 2: inside a vast royal palace on Venus, the prince stands beside a huge panoramic window overlooking the glowing golden city, his father the king next to him. Both look toward the distant horizon, serious. Medium two-shot. The king turns to his son and says in a deep, mature, authoritative voice: \"Your destiny is greater than this kingdom, my son.\" Close-up of the prince, who looks at his father and answers in a calm, deep voice: \"I understand, Father. But is destiny something we choose... or something that chooses us?\" Close-up of the king, silent for a moment. Sound: subtle palace ambience, deep orchestral tension. Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing. Golden and violet color grading.",
-      "image": "venus/ref-couple.jpg"
+      "image": "venus/ref-couple.jpg",
+      "src": "fal/venus-ep1-sinov-1.mp4"
     },
     {
       "type": "video",
