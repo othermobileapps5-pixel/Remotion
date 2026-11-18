@@ -1,0 +1,42 @@
+{
+  "nom": "VENUS PRINCE",
+  "papka": "venus/serial",
+  "model": "google/gemini-omni-1.2-flash",
+  "sifat": "720p",
+  "sinov_sifat": "360p",
+  "uslub": "Photorealistic Hollywood-quality science-fiction film, 16:9 widescreen, full frame without black bars, cinematic lighting, realistic skin and fabric, natural acting, accurate lip sync, clear dialogue above soft cinematic orchestral music. No subtitles, no on-screen text, no watermarks, no extra characters, no face morphing, no costume changes.",
+  "qahramonlar": {
+    "shahzoda": {
+      "rasm": "shahzoda.jpg",
+      "tavsif": "the VENUSIAN PRINCE: handsome young alien man with NO beard, smooth young face, blue-violet skin, glowing golden markings across his face, golden eyes, long silver-white hair, thin golden circlet on the forehead, elegant black-and-gold futuristic royal armor",
+      "ovoz": "calm, deep, attractive young male voice"
+    },
+    "shoh": {
+      "rasm": "shoh.jpg",
+      "tavsif": "the KING, the prince's father: clearly OLD Venusian man with a wrinkled face, FULL silver-white beard and mustache, long silver hair, deep violet skin, subtle golden facial markings, NO circlet, magnificent dark royal armor with gold details",
+      "ovoz": "deep, authoritative, mature old male voice"
+    },
+    "qiz": {
+      "rasm": "qiz.jpg",
+      "tavsif": "the EARTH GIRL: beautiful young woman, long dark-brown wavy hair partly braided, a small golden leaf hair ornament, light freckles, warm brown eyes, golden embroidered dress",
+      "ovoz": "natural, gentle young female voice"
+    },
+    "opa": {
+      "rasm": "opa.jpg",
+      "tavsif": "her OLDER SISTER: young adult woman a few years older, long straight dark-brown hair, no hair ornament, beige jacket over a white top",
+      "ovoz": "mature, warm, protective female voice"
+    }
+  },
+  "juftlar": {
+    "shahzoda+shoh": "shahzoda-shoh.jpg",
+    "qiz+opa": "qiz-opa.jpg",
+    "qiz+shahzoda": "shahzoda-qiz.jpg"
+  },
+  "joylar": {
+    "venera-shahri": { "rasm": "joy-venera-shahri.jpg", "tavsif": "the royal city on Venus: enormous golden towers, floating structures, glowing energy bridges, flying vehicles, golden-violet sky; golden and violet color grading" },
+    "saroy": { "rasm": "joy-saroy.jpg", "tavsif": "the vast royal palace on Venus: marble floor, golden columns, a huge arched panoramic window overlooking the glowing golden city; golden and violet color grading" },
+    "bog": { "rasm": "joy-bog.jpg", "tavsif": "a peaceful park on Earth at sunset: green trees, a quiet walking path, warm golden sunlight, a modern city in the distance; natural warm colors" },
+    "krater": { "rasm": "joy-krater.jpg", "tavsif": "the impact crater on Earth at dusk: dark scorched ground, thin smoke, a strange pulsing golden object with floating light particles in the center; natural warm colors" }
+  },
+  "epizodlar": ["venus-ep1"]
+}

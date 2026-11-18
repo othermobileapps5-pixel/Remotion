@@ -4,7 +4,7 @@ import { AbsoluteFill, CalculateMetadataFunction, OffthreadVideo, Sequence, inte
 // Universal: AI clips (Runway / Google / fal) played back to back with their OWN sound (dialogue, music).
 // videos/<nom>.json → "komponent": "AiClips"; each video scene's "duration" (seconds) sets its length.
 
-type Scene = { type: string; src?: string; duration?: number; title?: string; subtitle?: string };
+type Scene = { type: string; src?: string; duration?: number; title?: string; subtitle?: string; boshi?: number };
 export type AiClipsProps = { scenes?: Scene[] };
 const FPS = 30;
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
@@ -31,7 +31,7 @@ export const AiClips: React.FC<AiClipsProps> = ({ scenes = [] }) => {
             {s.type === 'title' ? (
               <TitleCard title={s.title || ''} subtitle={s.subtitle || ''} len={len} />
             ) : s.src ? (
-              <OffthreadVideo src={staticFile(s.src)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <OffthreadVideo src={staticFile(s.src)} trimBefore={Math.round((s.boshi || 0) * FPS)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               <AbsoluteFill style={{ background: '#140a24', color: '#fff', justifyContent: 'center', alignItems: 'center', fontSize: 48, fontFamily: 'sans-serif' }}>AI clip not generated yet</AbsoluteFill>
             )}
