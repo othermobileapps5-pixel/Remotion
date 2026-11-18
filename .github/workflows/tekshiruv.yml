@@ -19,7 +19,7 @@ on:
     paths: ['src/**', 'videos/**', 'package.json', 'remotion.config.ts']
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   check:
@@ -42,6 +42,7 @@ jobs:
       - name: Maxsus komponent kadrlari (qo'lda ishga tushirilganda)
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.video != '' }}
         env:
+          GH_TOKEN: ${{ github.token }}
           VIDEO: ${{ github.event.inputs.video }}
           KADRLAR: ${{ github.event.inputs.kadrlar }}
         run: |
@@ -49,6 +50,10 @@ jobs:
           for k in ${KADRLAR//,/ }; do
             npx remotion still src/index.ts "$COMP" "out/$VIDEO-$k.png" --frame=$k --props="videos/$VIDEO.json" --scale=0.5
           done
+          # kadrlarni bitta varaqqa yig'ib, «kadrlar» relizga qo'yamiz (chatda ko'rish uchun)
+          npx remotion ffmpeg -y -pattern_type glob -i "out/$VIDEO-*.png" -filter_complex "tile=4x2" "out/$VIDEO-varaq.jpg" || true
+          gh release view kadrlar >/dev/null 2>&1 || gh release create kadrlar --title "Kadrlar" --notes "Tekshiruv kadrlari" --prerelease
+          gh release upload kadrlar out/$VIDEO-*.png out/$VIDEO-varaq.jpg --clobber
       - uses: actions/upload-artifact@v4
         with:
           name: kadrlar
