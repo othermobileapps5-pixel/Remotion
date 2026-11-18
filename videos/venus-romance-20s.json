@@ -1,0 +1,36 @@
+{
+  "title": "The First Encounter — Venusian Romance",
+  "provider": "runway",
+  "theme": {
+    "bg": "#090B18",
+    "accent": "#D9A84E",
+    "text": "#FFFFFF"
+  },
+  "transition": 0.35,
+  "scenes": [
+    {
+      "type": "video",
+      "duration": 5,
+      "image": "rasmlar/venus-couple.jpg",
+      "prompt": "Cinematic establishing shot of the same two characters from the reference image in a magnificent futuristic Venusian city at golden sunset. Glowing elegant towers, a few distant flying vehicles, enormous golden planet in the sky. The blue-violet skinned Venusian prince with long silver hair and black-and-gold armor stands beside the human woman with dark braided hair and an elegant gold embroidered dress. Gentle wind moves their hair and clothing. Slow smooth camera push-in, photorealistic Hollywood science-fiction romance, natural motion, preserve exact faces, outfits and proportions from reference. No cuts, no text, no subtitles, no logos."
+    },
+    {
+      "type": "video",
+      "duration": 5,
+      "image": "rasmlar/venus-couple.jpg",
+      "prompt": "Continue the same romantic scene and preserve both characters exactly as in the reference image. The human woman takes one gentle step closer to the Venusian prince. He slowly turns his head toward her and meets her eyes. His golden eyes and subtle golden facial markings glow softly. Her expression changes from curiosity to wonder. Medium close-up, delicate natural facial movement, subtle breeze, cinematic shallow depth of field, photorealistic. Keep faces stable and consistent. No morphing, no extra people, no text."
+    },
+    {
+      "type": "video",
+      "duration": 5,
+      "image": "rasmlar/venus-couple.jpg",
+      "prompt": "Intimate close-up of the same Venusian prince and human woman from the reference image, preserving their exact facial features, hair, skin, clothing and proportions. They gaze into each other's eyes. The prince slowly raises one hand toward her; she gently begins to raise hers. Tiny warm golden particles drift between them. Soft emotional expressions, realistic eyes and hands, elegant restrained movement, cinematic golden rim light, photorealistic science-fiction romance. No face changes, no distorted fingers, no cuts, no text."
+    },
+    {
+      "type": "video",
+      "duration": 5,
+      "image": "rasmlar/venus-couple.jpg",
+      "prompt": "The same two characters from the reference image gently touch hands. A subtle beautiful golden energy ripple glows outward around their hands, illuminating their faces. The camera makes a very slow smooth arc around them as they look into each other's eyes, ending on a dramatic intimate close-up. Preserve exact character identity, faces, hair, outfits and proportions. Photorealistic cinematic Hollywood sci-fi romance, graceful natural motion, tasteful magical visual effect. No morphing, no extra fingers, no sudden cuts, no subtitles, no text, no logos."
+    }
+  ]
+}
