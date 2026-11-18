@@ -11,8 +11,8 @@
       "resolution": "720p",
       "ovoz": "Kunlik savdo qilganlarning to'qson yetti foizi pul yo'qotgan.",
       "prompt": "Photorealistic cinematic vertical shot at night in a dim apartment room. A tired young man in a dark hoodie sits in front of three computer monitors that show falling red candlestick charts; the red glow lights his face. Slow camera push-in. He stares in disbelief, then slowly rubs his forehead with both hands. Shallow depth of field, moody teal and red lighting, film grain. No people talking, no speech, no voice-over. Sound: quiet room tone, soft computer fan hum, a low tense rumble. No text, no logos, no readable numbers or letters on screens.",
-      "ovozFayl": "ovoz/trading-xatolar-1.mp3",
-      "ovozKalit": "780213e980",
+      "ovozFayl": "ovoz/trading-xatolar-1.wav",
+      "ovozKalit": "136744dfc9",
       "src": "fal/trading-xatolar-1.mp4",
       "klip": 5
     },
@@ -20,36 +20,36 @@
       "id": "grid",
       "duration": 4.5,
       "ovoz": "Bu Braziliyada uch yuz kundan ko'p savdo qilganlar.",
-      "ovozFayl": "ovoz/trading-xatolar-2.mp3",
-      "ovozKalit": "dd96e0719b"
+      "ovozFayl": "ovoz/trading-xatolar-2.wav",
+      "ovozKalit": "2eafbd74d9"
     },
     {
       "id": "esma",
       "duration": 5.5,
       "ovoz": "Yevropada CFD hisoblarining yetmish to'rtdan sakson to'qqiz foizgacha zararda.",
-      "ovozFayl": "ovoz/trading-xatolar-3.mp3",
-      "ovozKalit": "8b907f2624"
+      "ovozFayl": "ovoz/trading-xatolar-3.wav",
+      "ovozKalit": "6a971ffc8f"
     },
     {
       "id": "why",
-      "duration": 2.4,
+      "duration": 2.6,
       "ovoz": "Nega? Uchta xato.",
-      "ovozFayl": "ovoz/trading-xatolar-4.mp3",
-      "ovozKalit": "cbbb6e7f15"
+      "ovozFayl": "ovoz/trading-xatolar-4.wav",
+      "ovozKalit": "4ceda31dea"
     },
     {
       "id": "leverage",
-      "duration": 5,
+      "duration": 5.1,
       "ovoz": "Birinchi: katta leverage. Bir foiz tushish hisobni nolga tushiradi.",
-      "ovozFayl": "ovoz/trading-xatolar-5.mp3",
-      "ovozKalit": "28aa0c9898"
+      "ovozFayl": "ovoz/trading-xatolar-5.wav",
+      "ovozKalit": "f9ec852b51"
     },
     {
       "id": "stop",
-      "duration": 4,
+      "duration": 4.3,
       "ovoz": "Ikkinchi: stop-loss yo'q. Zarar to'xtamay o'saveradi.",
-      "ovozFayl": "ovoz/trading-xatolar-6.mp3",
-      "ovozKalit": "e3912c6521"
+      "ovozFayl": "ovoz/trading-xatolar-6.wav",
+      "ovozKalit": "093df7cd6f"
     },
     {
       "id": "emotion",
@@ -59,24 +59,24 @@
       "resolution": "720p",
       "ovoz": "Uchinchi: hissiyot. Yo'qotganni qaytaraman deb, yana kirasiz.",
       "prompt": "Photorealistic cinematic vertical close-up at night: the same kind of dim room lit by red monitor glow. A young man's hands frantically click a computer mouse and hit keys on a keyboard, then the camera tilts up to his tense face as he leans toward the screen, jaw clenched, breathing fast, and he slaps the desk once in frustration. Handheld camera feel, red and teal light, shallow depth of field. No speech, no voice, no dialogue. Sound: rapid mouse clicks, keyboard taps, one desk slap, tense low drone. No text, no logos, no readable numbers or letters anywhere.",
-      "ovozFayl": "ovoz/trading-xatolar-7.mp3",
-      "ovozKalit": "42d131c3a3",
+      "ovozFayl": "ovoz/trading-xatolar-7.wav",
+      "ovozKalit": "085cc3898c",
       "src": "fal/trading-xatolar-7.mp4",
       "klip": 6
     },
     {
       "id": "rule",
-      "duration": 5,
+      "duration": 5.3,
       "ovoz": "Qoida: bitta savdoda hisobning bir foizidan ko'pini xavfga qo'ymang.",
-      "ovozFayl": "ovoz/trading-xatolar-8.mp3",
-      "ovozKalit": "04f2fa98bf"
+      "ovozFayl": "ovoz/trading-xatolar-8.wav",
+      "ovozKalit": "afe7079d10"
     },
     {
       "id": "cta",
-      "duration": 3.8,
+      "duration": 4.1,
       "ovoz": "Avval omon qoling, keyin daromad. Saqlab qo'ying!",
-      "ovozFayl": "ovoz/trading-xatolar-9.mp3",
-      "ovozKalit": "410956ff7a"
+      "ovozFayl": "ovoz/trading-xatolar-9.wav",
+      "ovozKalit": "27c9c91464"
     }
   ]
 }
