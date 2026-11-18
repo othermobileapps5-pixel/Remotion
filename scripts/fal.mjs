@@ -63,7 +63,9 @@ async function generate(scene) {
 async function generateRunway(scene) {
   const rw = { Authorization: `Bearer ${RUNWAY_KEY}`, 'X-Runway-Version': '2024-11-06', 'Content-Type': 'application/json' };
   const model = (scene.model || '').replace(/^runway\//, '') || (scene.image ? RUNWAY_IMAGE_MODEL : RUNWAY_TEXT_MODEL);
-  const body = { model, promptText: scene.prompt, ratio: aspect === '9:16' ? '720:1280' : '1280:720', duration: scene.duration > 5 ? 10 : 5 };
+  const body = { model, promptText: scene.prompt, ratio: aspect === '9:16' ? '720:1280' : '1280:720', duration: Math.min(15, Math.max(2, Math.round(scene.duration || 10))) };
+  // Kling 3.0 supports native generated audio; keep it enabled for dialogue/laughter scenes.
+  if (scene.audio === true || model.startsWith('kling3.0')) body.audio = true;
   if (scene.image) body.promptImage = imageUrl(scene.image);
   const endpoint = scene.image ? 'image_to_video' : 'text_to_video';
 
