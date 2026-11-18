@@ -66,6 +66,7 @@ async function generate(scene) {
 }
 
 // Google Gemini Omni Flash (Interactions API): bitta so'rovda 3–15 s video, ovoz va dialog bilan.
+// delivery: "uri" uchun store: true shart (aks holda 400 xato).
 // Hujjat: https://ai.google.dev/gemini-api/docs/omni — natija steps[] ichidagi "model_output" qadamida (data yoki uri).
 function httpsJson(url, body) {
   // Uzoq kutish (bir necha daqiqa) uchun fetch o'rniga https — vaqt chegarasi yo'q
@@ -104,13 +105,13 @@ async function generateGoogle(scene) {
   const API = 'https://generativelanguage.googleapis.com/v1beta';
   let res;
   try {
-    res = await httpsJson(`${API}/interactions`, { model, input, response_format, store: false, stream: false, background: false });
+    res = await httpsJson(`${API}/interactions`, { model, input, response_format, store: true, stream: false, background: false });
   } catch (e) {
     // eski hujjatlarda "duration" yo'q — rad etilsa, usiz qayta urinamiz (pul faqat muvaffaqiyatli javob uchun olinadi)
     if (!/duration/i.test(String(e.message))) throw e;
     delete response_format.duration;
     console.log('  duration qabul qilinmadi, usiz qayta so\'rayapman…');
-    res = await httpsJson(`${API}/interactions`, { model, input, response_format, store: false, stream: false, background: false });
+    res = await httpsJson(`${API}/interactions`, { model, input, response_format, store: true, stream: false, background: false });
   }
   const step = (res.steps || []).find((st) => st.type === 'model_output') || {};
   const out = (step.content || []).find((c) => c.data || c.uri) || {};
