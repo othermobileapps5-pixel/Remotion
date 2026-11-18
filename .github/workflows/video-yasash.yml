@@ -70,8 +70,7 @@ jobs:
           RUNWAY_KEY: ${{ secrets.RUNWAY_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          # ffmpeg: serverda bo'lmasa o'rnatamiz (zaxira — fal.mjs Remotion ichidagi ffmpeg'ni ham ishlata oladi)
-          command -v ffmpeg >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
+          # ffmpeg o'rnatilmaydi (apt ~20 daqiqa olardi): fal.mjs Remotion ichidagi ffmpeg'ni ishlatadi (npx remotion ffmpeg)
           ASPECT=16:9; [ "$FORMAT" = shorts ] && ASPECT=9:16
           node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
 
