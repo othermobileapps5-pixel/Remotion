@@ -5,13 +5,13 @@ import {
 import { Audio } from '@remotion/media';
 import { fontFamily } from '../../fonts';
 
-// «Nega treyderlarning ko'pi pul yo'qotadi?» — ~40 s Shorts (1080×1920), o'zbekcha, Sardor ovozi.
-// Kinetik matn + harakatli grafiklar + 2 ta Gemini Omni klip (hook va hissiyot sahnalari fonida).
+// «Nega treyderlarning ko'pi pul yo'qotadi?» — ~40 s Shorts (1080×1920), o'zbekcha.
+// Kinetik matn + harakatli grafiklar + 2 ta Gemini Omni klip; ovoz — Google Gemini TTS (hook va hissiyot sahnalari fonida).
 // Manbalar: Chague, De-Losso, Giovannetti, "Day Trading for a Living?" (SSRN 3423101) — 300+ kun savdo qilganlarning 97% zararda;
 // ESMA (2018) — chakana CFD hisoblarining 74–89% pul yo'qotadi. Leverage misoli — oddiy arifmetika (1:100 × −1% = −100%).
 // Sahna uzunliklari ssenariydan (ovoz.mjs ovozga qarab cho'zadi) — calculateMetadata yig'adi, ovoz ustma-ust tushmaydi.
 
-type Scene = { id: string; type?: string; duration?: number; ovoz?: string; ovozFayl?: string; src?: string };
+type Scene = { id: string; type?: string; duration?: number; ovoz?: string; ovozFayl?: string; src?: string; klip?: number };
 export type TradingProps = { scenes?: Scene[] };
 const FPS = 30;
 const C = { bg: '#070B10', panel: 'rgba(14,20,28,0.86)', edge: 'rgba(255,255,255,0.10)', text: '#F3F6FA', dim: '#8C98A8', red: '#FF3B4E', green: '#19D38A', amber: '#FFC24B' };
@@ -60,7 +60,7 @@ const Mark: React.FC<{ at: number; color?: string; children: React.ReactNode }> 
 };
 
 const Source: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div style={{ position: 'absolute', left: 80, right: 80, top: 1430, color: C.dim, fontSize: 28, fontWeight: 600, textAlign: 'center' }}>{children}</div>
+  <div style={{ position: 'absolute', left: 80, right: 80, top: 1455, color: C.dim, fontSize: 28, fontWeight: 600, textAlign: 'center' }}>{children}</div>
 );
 
 // faint moving candlestick chart behind everything
@@ -95,13 +95,13 @@ const Backdrop: React.FC = () => {
 };
 
 // AI clip as background (muted voice-wise; its own ambient kept low)
-const ClipBg: React.FC<{ src?: string; len: number }> = ({ src, len }) => {
+const ClipBg: React.FC<{ src?: string; len: number; klip?: number }> = ({ src, len, klip }) => {
   const f = useCurrentFrame();
   if (!src) return <Backdrop />;
   const z = interpolate(f, [0, len], [1.0, 1.08]);
   return (
     <AbsoluteFill>
-      <OffthreadVideo src={staticFile(src)} volume={0.25} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${z})` }} />
+      <OffthreadVideo src={staticFile(src)} volume={0.25} playbackRate={klip ? Math.min(1, (klip * FPS) / len) : 1} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${z})` }} />
       <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(5,8,12,.55) 0%, rgba(5,8,12,.15) 35%, rgba(5,8,12,.25) 60%, rgba(5,8,12,.85) 100%)' }} />
     </AbsoluteFill>
   );
@@ -125,7 +125,7 @@ const Subtitle: React.FC<{ text?: string; len: number }> = ({ text, len }) => {
   const spoken = Math.max(1, len - 24); // voice ends ~0.8 s before the scene does
   const n = interpolate(f, [4, spoken], [0, words.length], clamp);
   return (
-    <div style={{ position: 'absolute', left: 70, right: 70, top: 1300, textAlign: 'center', fontFamily, fontSize: 44, fontWeight: 800, lineHeight: 1.25 }}>
+    <div style={{ position: 'absolute', left: 70, right: 70, top: 1300, textAlign: 'center', fontFamily, fontSize: 40, fontWeight: 800, lineHeight: 1.25 }}>
       {words.map((w, i) => (
         <React.Fragment key={i}>
           <span style={{ color: i < n ? (i < n - 1 ? C.text : C.amber) : 'rgba(243,246,250,.28)', textShadow: '0 3px 12px rgba(0,0,0,.8)' }}>{w}</span>{' '}
@@ -144,7 +144,7 @@ const Hook: React.FC<{ s: Scene; len: number }> = ({ s, len }) => {
   const shake = f > 40 && f < 52 ? Math.sin(f * 3) * 10 : 0;
   return (
     <>
-      <ClipBg src={s.src} len={len} />
+      <ClipBg src={s.src} len={len} klip={s.klip} />
       <Center top={360}>
         <Pop from="zoom"><Label color={C.red}>KUNLIK SAVDO</Label></Pop>
         <div style={{ transform: `translateX(${shake}px)`, marginTop: 30 }}>
@@ -288,7 +288,7 @@ const Emotion: React.FC<{ s: Scene; len: number }> = ({ s, len }) => {
   const lot = [1, 2, 4][step];
   return (
     <>
-      <ClipBg src={s.src} len={len} />
+      <ClipBg src={s.src} len={len} klip={s.klip} />
       <Center top={380}>
         <Pop><Label color={C.red}>3 · HISSIYOT</Label></Pop>
         <Pop at={14} from="slam" style={{ marginTop: 50 }}><Big size={118}>«Qaytarib</Big></Pop>
