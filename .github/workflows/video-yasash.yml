@@ -78,6 +78,7 @@ jobs:
             node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
           fi
           # Yasalgan kliplarni repoga saqlaymiz — keyingi renderda qayta pul to'lanmaydi
+          mkdir -p public/fal public/gemini
           if [ -n "$(git status --porcelain public/fal public/gemini videos)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
