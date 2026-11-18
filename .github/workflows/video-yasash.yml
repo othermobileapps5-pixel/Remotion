@@ -69,9 +69,15 @@ jobs:
           FAL_KEY: ${{ secrets.FAL_KEY }}
           RUNWAY_KEY: ${{ secrets.RUNWAY_KEY }}
         run: |
+          # ffmpeg: serverda bo'lmasa o'rnatamiz (zaxira — fal.mjs Remotion ichidagi ffmpeg'ni ham ishlata oladi)
+          command -v ffmpeg >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
           ASPECT=16:9; [ "$FORMAT" = shorts ] && ASPECT=9:16
           node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
-          # Yasalgan kliplarni repoga saqlaymiz — keyingi renderda qayta pul to'lanmaydi
+
+      # Xato bo'lsa ham, yasalgan (pulli) kliplarni saqlaymiz — qayta pul to'lanmaydi
+      - name: AI kliplarni saqlash
+        if: ${{ always() && github.event.inputs.ai_kliplar == 'true' }}
+        run: |
           if [ -n "$(git status --porcelain public/fal videos)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -83,6 +89,12 @@ jobs:
       - name: Render
         run: |
           mkdir -p out
+          # Maxsus animatsiya: ssenariyda "komponent" bo'lsa, o'sha kompozitsiya (format o'zida belgilangan)
+          COMP=$(node -e "console.log(require('./videos/$VIDEO.json').komponent || '')")
+          if [ -n "$COMP" ]; then
+            npx remotion render src/index.ts "$COMP" "out/$VIDEO.mp4" --props="videos/$VIDEO.json"
+            ls -lh out; exit 0
+          fi
           if [ "$FORMAT" = youtube ] || [ "$FORMAT" = ikkalasi ]; then
             npx remotion render src/index.ts YouTube "out/$VIDEO-youtube.mp4" --props="videos/$VIDEO.json"
           fi
