@@ -317,7 +317,7 @@ const Rule: React.FC = () => {
           <svg width={560} height={560} style={{ transform: 'rotate(-90deg)' }}>
             <circle cx={280} cy={280} r={R} fill="none" stroke="#1E2A38" strokeWidth={70} />
             <circle cx={280} cy={280} r={R} fill="none" stroke="#2C6E55" strokeWidth={70} strokeDasharray={`${Cc * ring} ${Cc}`} />
-            <circle cx={280} cy={280} r={R} fill="none" stroke={C.amber} strokeWidth={84} strokeDasharray={`${Math.max(slice * Cc * 3, 0)} ${Cc}`} opacity={f > 40 ? 0.6 + glow * 0.4 : 0} />
+            <circle cx={280} cy={280} r={R} fill="none" stroke={C.amber} strokeWidth={84} strokeDasharray={`${slice > 0 ? Math.max(slice * Cc, 16) : 0} ${Cc}`} opacity={f > 40 ? 0.6 + glow * 0.4 : 0} />
           </svg>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ fontSize: 40, color: C.dim, fontWeight: 700 }}>Hisob</div>
