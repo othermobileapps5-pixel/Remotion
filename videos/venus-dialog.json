@@ -1,0 +1,25 @@
+{
+  "title": "Venus dialogue — 16 s, Veo 3.1 Fast via Runway (native audio + lip sync)",
+  "komponent": "VenusDialog",
+  "provider": "runway",
+  "scenes": [
+    {
+      "type": "video",
+      "duration": 8,
+      "provider": "runway",
+      "model": "runway/veo3.1_fast",
+      "audio": true,
+      "image": "venus/start.jpg",
+      "prompt": "Cinematic sci-fi romance, photorealistic. Same two characters as the image: the alien prince with blue-violet skin, glowing golden facial markings, golden eyes and long silver hair, and the young woman with dark braided hair and a golden dress, futuristic city at sunset behind them. Medium two-shot, slow gentle push-in. The prince looks directly at her, smiles warmly and says in a warm, gentle voice: \"I have crossed a thousand worlds... but I never expected to find you.\" She listens, her smile grows, she blinks and tilts her head, then says playfully: \"Are you always this mysterious?\" Natural blinking, subtle head movements, accurate lip sync, soft romantic ambient music, gentle wind. No subtitles, no text, no extra people."
+    },
+    {
+      "type": "video",
+      "duration": 8,
+      "provider": "runway",
+      "model": "runway/veo3.1_fast",
+      "audio": true,
+      "image": "prev",
+      "prompt": "Continue the same scene with the same two characters, same faces, hair and clothing, futuristic city at sunset. The prince laughs softly, then says with a gentle smile: \"Only when I meet someone special.\" Close-up on the woman: she laughs naturally and softly, looking into his eyes. The camera slowly moves to a two-shot of both faces, warm eye contact, golden particles in the air. Natural expressions, accurate lip sync, soft romantic ambient music. No subtitles, no text, no extra people."
+    }
+  ]
+}

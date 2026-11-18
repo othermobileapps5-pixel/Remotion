@@ -64,7 +64,11 @@ async function generate(scene) {
 async function generateRunway(scene) {
   const rw = { Authorization: `Bearer ${RUNWAY_KEY}`, 'X-Runway-Version': '2024-11-06', 'Content-Type': 'application/json' };
   const model = (scene.model || '').replace(/^runway\//, '') || (scene.image ? RUNWAY_IMAGE_MODEL : RUNWAY_TEXT_MODEL);
-  const body = { model, promptText: scene.prompt, ratio: aspect === '9:16' ? '720:1280' : '1280:720', duration: scene.duration > 5 ? 10 : 5 };
+  // Veo 3.1 (Runway orqali): 4/6/8 s, ovoz va dialog lab harakati bilan (audio: true — standart)
+  const isVeo = model.startsWith('veo');
+  const duration = isVeo ? [4, 6, 8].find((d) => d >= (scene.duration || 8)) || 8 : scene.duration > 5 ? 10 : 5;
+  const body = { model, promptText: scene.prompt, ratio: aspect === '9:16' ? '720:1280' : '1280:720', duration };
+  if (typeof scene.audio === 'boolean') body.audio = scene.audio;
   if (scene.image) body.promptImage = imageUrl(scene.image);
   const endpoint = scene.image ? 'image_to_video' : 'text_to_video';
 

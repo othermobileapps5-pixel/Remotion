@@ -6,6 +6,7 @@ import { totalFrames } from './util';
 import namuna from '../videos/namuna.json';
 import { HomePilotAd } from './videos/homepilot/HomePilotAd';
 import { VenusRomance } from './videos/venus/VenusRomance';
+import { VenusDialog, DIALOG_TOTAL } from './videos/venus/VenusDialog';
 import venusTimeline from './videos/venus/timeline.json';
 import homepilotTimeline from './videos/homepilot/timeline.json';
 import { HomePilotWhip } from './videos/homepilot/HomePilotWhip';
@@ -47,5 +48,6 @@ export const Root: React.FC = () => (
     <Composition id="HomePilotAd" component={HomePilotAd} width={1080} height={1920} fps={FPS} durationInFrames={homepilotTimeline.total} defaultProps={{ scenes: [] }} />
     <Composition id="HomePilotWhip" component={HomePilotWhip} width={1080} height={1920} fps={FPS} durationInFrames={whipTimeline.total} defaultProps={{ scenes: [] }} />
     <Composition id="VenusRomance" component={VenusRomance} width={1920} height={1080} fps={FPS} durationInFrames={venusTimeline.total} defaultProps={{ scenes: [] }} />
+    <Composition id="VenusDialog" component={VenusDialog} width={1920} height={1080} fps={FPS} durationInFrames={DIALOG_TOTAL} defaultProps={{ scenes: [] }} />
   </Folder>
 );
