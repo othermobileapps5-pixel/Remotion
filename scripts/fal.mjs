@@ -5,6 +5,7 @@
 // public/fal/ ga yuklab oladi va sahnaga "src" yozib qo'yadi — qayta render qilinganda qayta pul to'lanmaydi.
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const [, , file, aspect = '16:9', maxArg = '10'] = process.argv;
 const KEY = process.env.FAL_KEY;
@@ -110,7 +111,16 @@ async function generateFal(scene) {
 }
 
 fs.mkdirSync('public/fal', { recursive: true });
+// "image": "prev" — klip oldingi sahna klipining oxirgi kadridan boshlanadi (yuzlar va joy uzilmaydi)
+function prevFrame(i) {
+  const prev = data.scenes.slice(0, i).reverse().find((x) => x.type === 'video' && x.src);
+  if (!prev) throw new Error(`${i + 1}-sahna: "image": "prev", lekin oldingi klip yo'q`);
+  const out = `fal/${name}-${i + 1}-start.jpg`;
+  execFileSync('ffmpeg', ['-v', 'error', '-y', '-sseof', '-0.15', '-i', path.join('public', prev.src), '-frames:v', '1', '-q:v', '2', path.join('public', out)]);
+  return out;
+}
 for (const { s, i } of todo) {
+  if (s.image === 'prev') s.image = prevFrame(i);
   const out = `fal/${name}-${i + 1}.mp4`;
   console.log(`▶ ${i + 1}-sahna: "${s.prompt.slice(0, 60)}"…`);
   const { url, model } = await generate(s);

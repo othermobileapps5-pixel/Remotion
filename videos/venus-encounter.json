@@ -1,0 +1,50 @@
+{
+  "title": "The First Encounter — 20 s sci-fi romance (Runway Gen-4 Turbo)",
+  "komponent": "VenusRomance",
+  "provider": "runway",
+  "scenes": [
+    {
+      "type": "video",
+      "duration": 10,
+      "provider": "runway",
+      "model": "runway/gen4_turbo",
+      "image": "venus/start.jpg",
+      "prompt": "Slow cinematic dolly-in. The silver-haired prince with blue-violet skin turns his head toward the young woman and holds her gaze; his golden eyes and glowing golden facial markings softly brighten. Her dark braided hair and golden embroidered dress move gently in the evening breeze, she looks surprised but fascinated. Flying ships drift slowly across the sunset sky, glowing towers and a huge golden planet behind them. Tiny golden particles begin to float in the air. Photorealistic, warm volumetric sunset light, shallow depth of field, smooth natural motion, faces stay consistent, no cuts."
+    },
+    {
+      "type": "video",
+      "duration": 10,
+      "provider": "runway",
+      "model": "runway/gen4_turbo",
+      "image": "prev",
+      "prompt": "The prince slowly raises his hand and the woman gently reaches out; their fingertips touch and a soft wave of golden light ripples outward around them, golden particles swirl in the air. The camera smoothly orbits around the couple as they keep looking into each other's eyes, ending on a dramatic close-up of their faces. Photorealistic, cinematic sunset lighting, volumetric light, shallow depth of field, smooth motion, faces stay consistent, no cuts, no text."
+    },
+    {
+      "type": "text",
+      "id": "l1",
+      "text": "",
+      "duration": 4,
+      "ovozchi": "en-US-DavisNeural",
+      "ovozTezligi": "-8%",
+      "ovoz": "I have crossed a thousand worlds... but I never expected to find you."
+    },
+    {
+      "type": "text",
+      "id": "l2",
+      "text": "",
+      "duration": 2,
+      "ovozchi": "en-US-JennyNeural",
+      "ovozTezligi": "-10%",
+      "ovoz": "Who are you?"
+    },
+    {
+      "type": "text",
+      "id": "l3",
+      "text": "",
+      "duration": 3,
+      "ovozchi": "en-US-DavisNeural",
+      "ovozTezligi": "-8%",
+      "ovoz": "Someone who was destined to meet you."
+    }
+  ]
+}
