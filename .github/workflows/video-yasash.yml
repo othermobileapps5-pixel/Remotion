@@ -15,7 +15,7 @@ on:
         options: [youtube, shorts, ikkalasi]
         default: youtube
       ai_kliplar:
-        description: "AI kliplarni yasash (pullik! FAL_KEY va/yoki RUNWAY_KEY secret kerak)"
+        description: "AI kliplarni yasash (pullik! GEMINI_API_KEY yoki FAL_KEY/RUNWAY_KEY kerak)"
         type: boolean
         default: false
       max_klip:
@@ -63,23 +63,28 @@ jobs:
             git push
           fi
 
-      - name: AI kliplar (fal.ai / Runway)
+      - name: AI kliplar (Gemini / fal.ai / Runway)
         if: ${{ github.event.inputs.ai_kliplar == 'true' }}
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FAL_KEY: ${{ secrets.FAL_KEY }}
           RUNWAY_KEY: ${{ secrets.RUNWAY_KEY }}
         run: |
           ASPECT=16:9; [ "$FORMAT" = shorts ] && ASPECT=9:16
-          node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
+          PROVIDER=$(node -e "const d=require('./videos/'+process.env.VIDEO+'.json'); console.log(d.provider || 'fal')")
+          if [ "$PROVIDER" = "gemini" ]; then
+            node scripts/gemini-video.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
+          else
+            node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
+          fi
           # Yasalgan kliplarni repoga saqlaymiz — keyingi renderda qayta pul to'lanmaydi
-          if [ -n "$(git status --porcelain public/fal videos)" ]; then
+          if [ -n "$(git status --porcelain public/fal public/gemini videos)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add public/fal "videos/$VIDEO.json"
+            git add public/fal public/gemini "videos/$VIDEO.json"
             git commit -m "AI kliplar: $VIDEO"
             git push
           fi
-
       - name: Render
         run: |
           mkdir -p out
