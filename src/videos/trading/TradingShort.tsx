@@ -127,7 +127,9 @@ const Subtitle: React.FC<{ text?: string; len: number }> = ({ text, len }) => {
   return (
     <div style={{ position: 'absolute', left: 70, right: 70, top: 1300, textAlign: 'center', fontFamily, fontSize: 44, fontWeight: 800, lineHeight: 1.25 }}>
       {words.map((w, i) => (
-        <span key={i} style={{ color: i < n ? (i < n - 1 ? C.text : C.amber) : 'rgba(243,246,250,.28)', marginRight: 12, textShadow: '0 3px 12px rgba(0,0,0,.8)' }}>{w}</span>
+        <React.Fragment key={i}>
+          <span style={{ color: i < n ? (i < n - 1 ? C.text : C.amber) : 'rgba(243,246,250,.28)', textShadow: '0 3px 12px rgba(0,0,0,.8)' }}>{w}</span>{' '}
+        </React.Fragment>
       ))}
     </div>
   );
@@ -143,7 +145,7 @@ const Hook: React.FC<{ s: Scene; len: number }> = ({ s, len }) => {
   return (
     <>
       <ClipBg src={s.src} len={len} />
-      <Center top={250}>
+      <Center top={360}>
         <Pop from="zoom"><Label color={C.red}>KUNLIK SAVDO</Label></Pop>
         <div style={{ transform: `translateX(${shake}px)`, marginTop: 30 }}>
           <Big size={340} color={C.red}>{v}%</Big>
@@ -163,7 +165,7 @@ const Grid: React.FC = () => {
   return (
     <>
       <Backdrop />
-      <Center top={230}>
+      <Center top={300}>
         <Pop><Label>100 TREYDERDAN</Label></Pop>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 56px)', gap: 14, marginTop: 46 }}>
           {Array.from({ length: 100 }, (_, i) => {
@@ -191,7 +193,7 @@ const Esma: React.FC = () => {
   return (
     <>
       <Backdrop />
-      <Center top={300}>
+      <Center top={400}>
         <Pop><Label>YEVROPA · CFD HISOBLARI</Label></Pop>
         <div style={{ marginTop: 60, fontSize: 150, fontWeight: 800, color: C.red }}>{Math.round(a)}–{Math.round(Math.max(b, a))}%</div>
         <div style={{ fontSize: 60, fontWeight: 800, color: C.text, marginTop: 10 }}>zararda</div>
@@ -210,7 +212,7 @@ const Esma: React.FC = () => {
 const Why: React.FC = () => (
   <>
     <Backdrop />
-    <Center top={520}>
+    <Center top={560}>
       <Pop from="slam"><Big size={210} color={C.amber}>NEGA?</Big></Pop>
       <div style={{ display: 'flex', gap: 30, marginTop: 70 }}>
         {[1, 2, 3].map((k) => (
@@ -232,7 +234,7 @@ const Leverage: React.FC = () => {
   return (
     <>
       <Backdrop />
-      <Center top={230}>
+      <Center top={300}>
         <Pop><Label color={C.red}>1 · KATTA LEVERAGE</Label></Pop>
         <div style={{ display: 'flex', gap: 24, alignItems: 'center', marginTop: 60, fontSize: 64, fontWeight: 800 }}>
           <Pop at={10} from="left"><div style={{ padding: '24px 34px', borderRadius: 26, background: C.panel, border: `2px solid ${C.edge}` }}>$100</div></Pop>
@@ -261,7 +263,7 @@ const StopLoss: React.FC = () => {
   return (
     <>
       <Backdrop />
-      <Center top={230}>
+      <Center top={300}>
         <Pop><Label color={C.red}>2 · STOP-LOSS YO'Q</Label></Pop>
         <div style={{ position: 'relative', marginTop: 70 }}>
           <svg width={920} height={620}>
@@ -287,7 +289,7 @@ const Emotion: React.FC<{ s: Scene; len: number }> = ({ s, len }) => {
   return (
     <>
       <ClipBg src={s.src} len={len} />
-      <Center top={250}>
+      <Center top={380}>
         <Pop><Label color={C.red}>3 · HISSIYOT</Label></Pop>
         <Pop at={14} from="slam" style={{ marginTop: 50 }}><Big size={118}>«Qaytarib</Big></Pop>
         <Pop at={24} from="slam"><Big size={118}>olaman!»</Big></Pop>
@@ -309,7 +311,7 @@ const Rule: React.FC = () => {
   return (
     <>
       <Backdrop />
-      <Center top={220}>
+      <Center top={300}>
         <Pop><Label color={C.green}>QOIDA · 1%</Label></Pop>
         <div style={{ position: 'relative', width: 560, height: 560, marginTop: 50 }}>
           <svg width={560} height={560} style={{ transform: 'rotate(-90deg)' }}>
@@ -332,7 +334,7 @@ const Rule: React.FC = () => {
 const Cta: React.FC = () => (
   <>
     <Backdrop />
-    <Center top={460}>
+    <Center top={520}>
       <Pop from="slam"><Big size={120}>Avval</Big></Pop>
       <Pop at={8} from="slam"><Big size={120}><Mark at={14} color={C.green}>omon qoling</Mark></Big></Pop>
       <Pop at={30} style={{ marginTop: 20 }}><Big size={90} color={C.dim}>keyin daromad</Big></Pop>
