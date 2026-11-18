@@ -23,28 +23,34 @@
       "type": "text",
       "id": "l1",
       "text": "",
-      "duration": 4,
+      "duration": 5.7,
       "ovozchi": "en-US-DavisNeural",
       "ovozTezligi": "-8%",
-      "ovoz": "I have crossed a thousand worlds... but I never expected to find you."
+      "ovoz": "I have crossed a thousand worlds... but I never expected to find you.",
+      "ovozFayl": "ovoz/venus-encounter-3.mp3",
+      "ovozKalit": "dc1de1f485"
     },
     {
       "type": "text",
       "id": "l2",
       "text": "",
-      "duration": 2,
+      "duration": 2.8,
       "ovozchi": "en-US-JennyNeural",
       "ovozTezligi": "-10%",
-      "ovoz": "Who are you?"
+      "ovoz": "Who are you?",
+      "ovozFayl": "ovoz/venus-encounter-4.mp3",
+      "ovozKalit": "4dabb602cb"
     },
     {
       "type": "text",
       "id": "l3",
       "text": "",
-      "duration": 3,
+      "duration": 3.8,
       "ovozchi": "en-US-DavisNeural",
       "ovozTezligi": "-8%",
-      "ovoz": "Someone who was destined to meet you."
+      "ovoz": "Someone who was destined to meet you.",
+      "ovozFayl": "ovoz/venus-encounter-5.mp3",
+      "ovozKalit": "645d4c400f"
     }
   ]
 }
