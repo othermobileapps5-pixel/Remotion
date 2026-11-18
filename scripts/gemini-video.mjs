@@ -75,7 +75,7 @@ for (const { scene, index } of scenes) {
   fs.writeFileSync(path.join('public', relative), mp4);
   scene.src = relative;
   scene.model = model;
-  fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\\n');
+  fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
   console.log(`✓ public/${relative} — ${(mp4.length / 1e6).toFixed(2)} MB`);
 }
 console.log('Gemini video kliplar tayyor.');
