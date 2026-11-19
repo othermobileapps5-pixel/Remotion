@@ -17,7 +17,7 @@
     {
       "type": "video",
       "src": "fal/venus-ep1-sinov-1.mp4",
-      "boshi": 2.0,
+      "boshi": 2,
       "duration": 3.9
     },
     {
@@ -30,7 +30,7 @@
       "type": "video",
       "src": "fal/venus-ep1-3.mp4",
       "boshi": 8.6,
-      "duration": 3.0
+      "duration": 3
     },
     {
       "type": "title",
@@ -53,8 +53,8 @@
     {
       "type": "video",
       "src": "fal/venus-ep1-6.mp4",
-      "boshi": 3.0,
-      "duration": 5.0
+      "boshi": 3,
+      "duration": 5
     },
     {
       "type": "title",
@@ -78,7 +78,7 @@
       "type": "video",
       "src": "fal/venus-ep1-7.mp4",
       "boshi": 12.6,
-      "duration": 2.0
+      "duration": 2
     },
     {
       "type": "video",
@@ -90,11 +90,12 @@
       "type": "poster",
       "rasm": "venus/poster.jpg",
       "subtitle": "COMING SOON",
-      "duration": 6.0
+      "duration": 6
     }
   ],
   "musiqa": {
     "prompt": "Epic cinematic movie trailer score, about 50 seconds long. Instrumental only, no vocals, no lyrics. Sci-fi romance: two worlds, a forbidden love between a Venusian prince and an Earth girl, mood and colors like the attached poster (gold, violet, deep space).\n[0:00 - 0:07] Intro: vast ethereal space atmosphere, shimmering high strings, soft wordless-free synth pads, a distant deep boom.\n[0:07 - 0:17] Mystery: low pulsing strings and a slow heartbeat drum, a gentle haunting piano motif.\n[0:17 - 0:25] Rising tension: ostinato strings accelerate, taiko hits, brass swells.\n[0:25 - 0:33] Impact: massive braam hits, full percussion, a short silence then a huge hit.\n[0:33 - 0:44] Climax: full epic orchestra and choir-like synth (no words), the romantic main theme soaring with brass and strings.\n[0:44 - 0:50] Ending: one final powerful hit, then the piano motif alone, fading out softly.",
-    "rasm": "venus/poster.jpg"
+    "rasm": "venus/poster.jpg",
+    "fayl": "musiqa/venus-treyler.mp3"
   }
 }
