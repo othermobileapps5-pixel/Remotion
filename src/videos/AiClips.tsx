@@ -31,7 +31,7 @@ export const AiClips: React.FC<AiClipsProps> = ({ scenes = [] }) => {
             {s.type === 'title' ? (
               <TitleCard title={s.title || ''} subtitle={s.subtitle || ''} len={len} />
             ) : s.src ? (
-              <OffthreadVideo src={staticFile(s.src)} trimBefore={Math.round((s.boshi || 0) * FPS)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <OffthreadVideo src={staticFile(s.src)} trimBefore={Math.round((s.boshi || 0) * FPS)} volume={s.boshi !== undefined ? (fr: number) => interpolate(fr, [0, 4, len - 4, len], [0, 1, 1, 0], clamp) : 1} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               <AbsoluteFill style={{ background: '#140a24', color: '#fff', justifyContent: 'center', alignItems: 'center', fontSize: 48, fontFamily: 'sans-serif' }}>AI clip not generated yet</AbsoluteFill>
             )}

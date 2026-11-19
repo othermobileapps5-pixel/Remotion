@@ -1,0 +1,96 @@
+{
+  "title": "Venus Prince — treyler (50 s, Episode 1 kliplaridan)",
+  "komponent": "AiClips",
+  "scenes": [
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-1.mp4",
+      "boshi": 0,
+      "duration": 6.5
+    },
+    {
+      "type": "title",
+      "title": "TWO WORLDS",
+      "subtitle": "",
+      "duration": 1.6
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-sinov-1.mp4",
+      "boshi": 2.0,
+      "duration": 3.9
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-3.mp4",
+      "boshi": 0.4,
+      "duration": 2.8
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-3.mp4",
+      "boshi": 8.6,
+      "duration": 3.0
+    },
+    {
+      "type": "title",
+      "title": "ONE SECRET",
+      "subtitle": "",
+      "duration": 1.6
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-4.mp4",
+      "boshi": 6.5,
+      "duration": 3.6
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-5.mp4",
+      "boshi": 6.6,
+      "duration": 4.2
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-6.mp4",
+      "boshi": 3.0,
+      "duration": 5.0
+    },
+    {
+      "type": "title",
+      "title": "ONE DESTINY",
+      "subtitle": "",
+      "duration": 1.6
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-7.mp4",
+      "boshi": 6.8,
+      "duration": 2.4
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-8.mp4",
+      "boshi": 0.3,
+      "duration": 3.6
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-7.mp4",
+      "boshi": 12.6,
+      "duration": 2.0
+    },
+    {
+      "type": "video",
+      "src": "fal/venus-ep1-8.mp4",
+      "boshi": 4.3,
+      "duration": 2.6
+    },
+    {
+      "type": "title",
+      "title": "VENUS PRINCE",
+      "subtitle": "COMING SOON",
+      "duration": 5.6
+    }
+  ]
+}
