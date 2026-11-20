@@ -55,6 +55,12 @@ export type CustomScene = Voice & {
   type: 'custom';
   name: string; // masalan "apollo13/hook"
   duration: number;
+  // ixtiyoriy AI klip fon (Gemini / fal.ai yasaydi, scripts/gemini-video.mjs)
+  prompt?: string;
+  src?: string;
+  image?: string;
+  model?: string;
+  muted?: boolean;
 };
 
 export type Scene = TitleScene | TextScene | ImageScene | VideoScene | CustomScene;
@@ -75,7 +81,9 @@ export type VideoProps = {
   musicVolume?: number; // 0..1, standart 0.15
   transition?: number; // sahnalar orasidagi o'tish, sekund (standart 0.5; 0 — o'tishsiz)
   falModel?: string; // barcha AI kliplar uchun model
-  provider?: 'fal' | 'runway'; // barcha AI kliplar uchun xizmat (standart: fal)
+  provider?: 'fal' | 'runway' | 'gemini'; // barcha AI kliplar uchun xizmat (standart: fal)
+  geminiModel?: string;
+  resolution?: string;
   scenes: Scene[];
 };
 

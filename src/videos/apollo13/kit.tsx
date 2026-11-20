@@ -38,11 +38,11 @@ export const useScene = () => {
 export const lerp = (p: number, a: number, b: number) => a + (b - a) * p;
 
 // SFX: sahna ulushi bo'yicha aniq kadrda
-export const Sfx: React.FC<{ at: number; src: string; volume?: number }> = ({ at, src, volume = 0.5 }) => {
+export const Sfx: React.FC<{ at: number; src: string; volume?: number; dir?: string }> = ({ at, src, volume = 0.5, dir = 'apollo13' }) => {
   const { at: toFrame } = useScene();
   return (
     <Sequence from={toFrame(at)} layout="none">
-      <Audio src={staticFile(`audio/apollo13/${src}.wav`)} volume={volume} />
+      <Audio src={staticFile(`audio/${dir}/${src}.wav`)} volume={volume} />
     </Sequence>
   );
 };
@@ -116,7 +116,7 @@ export const Count: React.FC<{ to: number; from?: number; a: number; b: number; 
 };
 
 // So'zma-so'z chiqadigan sarlavha; *so'z* — ajratilgan (orqasida plashka o'sadi)
-export const Words: React.FC<{ text: string; at: number; step?: number; size: number; color?: string; hi?: string; weight?: number; align?: 'center' | 'left'; lineHeight?: number }> = ({
+export const Words: React.FC<{ text: string; at: number; step?: number; size: number; color?: string; hi?: string; weight?: number; align?: 'center' | 'left'; lineHeight?: number; font?: string; hiText?: string }> = ({
   text,
   at,
   step = 0.02,
@@ -126,11 +126,13 @@ export const Words: React.FC<{ text: string; at: number; step?: number; size: nu
   weight = 800,
   align = 'center',
   lineHeight = 1.15,
+  font = fontFamily,
+  hiText = C.bg,
 }) => {
   const { pop, prog } = useScene();
   const words = text.split(' ');
   return (
-    <div style={{ fontFamily, fontWeight: weight, fontSize: size, color, lineHeight, textAlign: align, display: 'flex', flexWrap: 'wrap', justifyContent: align === 'center' ? 'center' : 'flex-start', gap: `0 ${size * 0.28}px` }}>
+    <div style={{ fontFamily: font, fontWeight: weight, fontSize: size, color, lineHeight, textAlign: align, display: 'flex', flexWrap: 'wrap', justifyContent: align === 'center' ? 'center' : 'flex-start', gap: `0 ${size * 0.28}px` }}>
       {words.map((w, i) => {
         const marked = /^\*.*\*[.,!?:]?$/.test(w);
         const clean = w.replace(/\*/g, '');
@@ -141,7 +143,7 @@ export const Words: React.FC<{ text: string; at: number; step?: number; size: nu
             {marked ? (
               <span style={{ position: 'absolute', left: -size * 0.12, right: -size * 0.12, top: '12%', bottom: '8%', background: hi, borderRadius: size * 0.12, transform: `scaleX(${bar})`, transformOrigin: 'left' }} />
             ) : null}
-            <span style={{ position: 'relative', color: marked && bar > 0.5 ? C.bg : marked ? hi : color }}>{clean}</span>
+            <span style={{ position: 'relative', color: marked && bar > 0.5 ? hiText : marked ? hi : color }}>{clean}</span>
           </span>
         );
       })}

@@ -22,7 +22,7 @@ const SceneView: React.FC<{ scene: Scene; theme: Theme }> = ({ scene, theme }) =
       return <VideoSceneView scene={scene} theme={theme} />;
     case 'custom': {
       const Comp = CUSTOM_SCENES[scene.name];
-      return Comp ? <Comp theme={theme} /> : null;
+      return Comp ? <Comp theme={theme} scene={scene} /> : null;
     }
     default:
       return null;
