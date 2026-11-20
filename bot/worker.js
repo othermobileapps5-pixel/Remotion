@@ -16,6 +16,7 @@ const say = (env, chat, text, extra = {}) => TG(env, 'sendMessage', { chat_id: c
 const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
 // ---------- Gemini ----------
+let geminiBandGacha = 0; // Gemini band bo'lsa shu vaqtgacha to'g'ridan-to'g'ri Cloudflare
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Model band bo'lsa (503/429) qayta uriniladi, keyin zaxira modelga o'tiladi.
@@ -28,6 +29,7 @@ async function gemini(env, parts, { json = false, system = '' } = {}) {
     generationConfig: json ? { responseMimeType: 'application/json', temperature: 0.8 } : { temperature: 0.7 },
   });
   let last = 0;
+  if (Date.now() < geminiBandGacha && env.AI) return cfAI(env, parts, { json, system });
   for (const model of models) {
     for (let urinish = 0; urinish < (model === models[0] ? 2 : 1); urinish++) {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -49,6 +51,7 @@ async function gemini(env, parts, { json = false, system = '' } = {}) {
       break;
     }
   }
+  if (last === 503 || last === 429 || last >= 500) geminiBandGacha = Date.now() + 180000;
   // Zaxira: Cloudflare Workers AI
   if (env.AI) {
     try { return await cfAI(env, parts, { json, system }); } catch (e) { console.log('cfAI', e.message); }
@@ -62,7 +65,7 @@ const CF_MODELLAR = ['@cf/meta/llama-3.3-70b-instruct-fp8-fast', '@cf/google/gem
 async function cfAI(env, parts, { json, system }) {
   const audio = parts.find((p) => p.inline_data);
   if (audio) {
-    const r = await env.AI.run('@cf/openai/whisper-large-v3-turbo', { audio: audio.inline_data.data });
+    const r = await env.AI.run('@cf/openai/whisper-large-v3-turbo', { audio: audio.inline_data.data, language: 'uz' });
     if (!r?.text) throw new Error('whisper bo\'sh');
     return r.text;
   }
@@ -115,6 +118,8 @@ async function saveScript(env, name, data) {
     method: 'PUT',
     body: JSON.stringify({ message: `Bot: ${name} ssenariysi`, content, branch: env.GITHUB_BRANCH }),
   });
+  if (r.status === 403 || r.status === 404) throw new Error(`GitHub tokeniga ruxsat yetmayapti (${r.status}). BOT_GITHUB_TOKEN: Remotion repo tanlangan, Contents va Actions — Read and write bo'lsin.`);
+  if (r.status === 401) throw new Error("GitHub tokeni eskirgan yoki xato (401). Yangi BOT_GITHUB_TOKEN qo'ying.");
   if (!r.ok) throw new Error(`GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
 }
 async function loadScript(env, name) {
@@ -191,6 +196,7 @@ async function voiceToText(env, fileId) {
 
 async function onMessage(env, msg) {
   const chat = msg.chat.id;
+  TG(env, 'sendChatAction', { chat_id: chat, action: 'typing' }).catch(() => {});
   let text = msg.text || msg.caption || '';
   if (msg.voice || msg.audio) {
     text = (await voiceToText(env, (msg.voice || msg.audio).file_id)).trim();
