@@ -26,7 +26,9 @@
       "ovoz": "Four thousand years ago, on the banks of the Euphrates, there was a city so famous that its name still echoes today. Babylon. A city of kings, of wonders, and of legends that still divide historians.",
       "prompt": "Epic aerial drone shot at golden sunrise over the ancient Mesopotamian city of Babylon on the Euphrates river: massive mud-brick walls, a huge stepped ziggurat in the center, palm groves, boats on the river, morning mist. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
       "ovozFayl": "ovoz/bobil-1.wav",
-      "ovozKalit": "ad781ac8c3"
+      "ovozKalit": "ad781ac8c3",
+      "src": "gemini/bobil-1.mp4",
+      "model": "gemini-omni-1.2-flash"
     },
     {
       "type": "custom",
@@ -75,7 +77,9 @@
       "ovoz": "He built the Ishtar Gate: a wall of shining blue glazed bricks, decorated with dragons and bulls, opening onto a grand Processional Way.",
       "prompt": "Slow dolly forward toward the ancient Ishtar Gate of Babylon: towering walls of deep cobalt-blue glazed bricks with golden reliefs of dragons and bulls, a wide processional way lined with blue walls and golden lion reliefs, warm late-afternoon sunlight, a few robed figures walking in the distance. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
       "ovozFayl": "ovoz/bobil-7.wav",
-      "ovozKalit": "8bda5f4edb"
+      "ovozKalit": "8bda5f4edb",
+      "src": "gemini/bobil-7.mp4",
+      "model": "gemini-omni-1.2-flash"
     },
     {
       "type": "custom",
@@ -92,7 +96,9 @@
       "ovoz": "At the heart of the city rose Etemenanki, a giant stepped temple tower. Its name meant the temple of the foundation of heaven and earth, and many believe it inspired the story of the Tower of Babel.",
       "prompt": "Low-angle slow crane shot rising up a colossal stepped ziggurat temple tower in ancient Babylon at dusk, monumental staircases, torches flickering on each terrace, tiny crowds of robed people at its base, dramatic orange and purple sky. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
       "ovozFayl": "ovoz/bobil-9.wav",
-      "ovozKalit": "cf1b0f826e"
+      "ovozKalit": "cf1b0f826e",
+      "src": "gemini/bobil-9.mp4",
+      "model": "gemini-omni-1.2-flash"
     },
     {
       "type": "custom",
@@ -101,7 +107,9 @@
       "ovoz": "And then, the Hanging Gardens, one of the Seven Wonders of the Ancient World. But here is the mystery: archaeologists have never found clear proof that they existed in Babylon. Some historians even think they stood in a different city: Nineveh.",
       "prompt": "Slow sweeping shot of the legendary Hanging Gardens of Babylon: lush green terraces stacked like a mountain of stone, cascading waterfalls, palm trees and flowering vines spilling over the edges, soft golden haze, dreamlike and mysterious atmosphere. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
       "ovozFayl": "ovoz/bobil-10.wav",
-      "ovozKalit": "3f18de6cd0"
+      "ovozKalit": "3f18de6cd0",
+      "src": "gemini/bobil-10.mp4",
+      "model": "gemini-omni-1.2-flash"
     },
     {
       "type": "custom",
@@ -118,7 +126,9 @@
       "ovoz": "In 539 BC, the Persian king Cyrus the Great captured Babylon. The great city became part of a new empire. Ancient records say the city fell almost without a fight.",
       "prompt": "Wide cinematic shot at dawn of a vast ancient Persian army with banners and chariots advancing across the desert plain toward the towering walls of Babylon, dust clouds, dramatic backlight, epic scale. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
       "ovozFayl": "ovoz/bobil-12.wav",
-      "ovozKalit": "2a7741fb01"
+      "ovozKalit": "2a7741fb01",
+      "src": "gemini/bobil-12.mp4",
+      "model": "gemini-omni-1.2-flash"
     },
     {
       "type": "custom",
