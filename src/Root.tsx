@@ -12,6 +12,8 @@ import venusTimeline from './videos/venus/timeline.json';
 import homepilotTimeline from './videos/homepilot/timeline.json';
 import { HomePilotWhip } from './videos/homepilot/HomePilotWhip';
 import whipTimeline from './videos/homepilot/whip-timeline.json';
+import { TradingShort, tradingMetadata } from './videos/trading/TradingShort';
+import tradingScript from '../videos/trading-xatolar.json';
 
 // Uzunlik ssenariydan hisoblanadi: render paytida --props=videos/<nom>.json beriladi
 const calculateMetadata: CalculateMetadataFunction<VideoProps> = ({ props }) => ({
@@ -51,5 +53,6 @@ export const Root: React.FC = () => (
     <Composition id="VenusRomance" component={VenusRomance} width={1920} height={1080} fps={FPS} durationInFrames={venusTimeline.total} defaultProps={{ scenes: [] }} />
     <Composition id="VenusDialog" component={VenusDialog} width={1920} height={1080} fps={FPS} durationInFrames={DIALOG_TOTAL} defaultProps={{ scenes: [] }} />
     <Composition id="AiClips" component={AiClips} width={1920} height={1080} fps={FPS} durationInFrames={240} defaultProps={{ scenes: [] }} calculateMetadata={aiClipsMetadata} />
+    <Composition id="TradingShort" component={TradingShort} width={1080} height={1920} fps={FPS} durationInFrames={1200} defaultProps={{ scenes: tradingScript.scenes }} calculateMetadata={tradingMetadata} />
   </Folder>
 );
