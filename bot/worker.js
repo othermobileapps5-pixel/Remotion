@@ -29,9 +29,11 @@ async function gemini(env, parts, { json = false, system = '' } = {}) {
     generationConfig: json ? { responseMimeType: 'application/json', temperature: 0.8 } : { temperature: 0.7 },
   });
   let last = 0;
-  if (Date.now() < geminiBandGacha && env.AI) return cfAI(env, parts, { json, system });
+  const ovoz = parts.some((p) => p.inline_data);
+  // matn uchun: Gemini band bo'lsa darrov zaxira; ovoz uchun har doim Gemini'ga urinamiz (o'zbekchani yaxshi tushunadi)
+  if (!ovoz && Date.now() < geminiBandGacha && env.AI) return cfAI(env, parts, { json, system });
   for (const model of models) {
-    for (let urinish = 0; urinish < (model === models[0] ? 2 : 1); urinish++) {
+    for (let urinish = 0; urinish < (model === models[0] ? (ovoz ? 3 : 2) : (ovoz ? 2 : 1)); urinish++) {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
         method: 'POST',
         headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'Content-Type': 'application/json' },
@@ -47,11 +49,11 @@ async function gemini(env, parts, { json = false, system = '' } = {}) {
       if (res.status === 402) throw new Error("Gemini hisobida pul tugagan (402). AI Studio → Billing'da to'ldiring yoki BOT_GEMINI_KEY ga bepul kalit qo'ying.");
       if (res.status === 400 || res.status === 403) throw new Error(`Gemini kaliti ishlamadi (${res.status}). Kalitni tekshiring.`);
       if (res.status === 404) break; // bu model yo'q — keyingisi
-      if (res.status === 503 || res.status === 429 || res.status >= 500) { if (urinish === 0 && model === models[0]) await sleep(1200); continue; }
+      if (res.status === 503 || res.status === 429 || res.status >= 500) { if (ovoz) await sleep(1500 * (urinish + 1)); else if (urinish === 0 && model === models[0]) await sleep(1200); continue; }
       break;
     }
   }
-  if (last === 503 || last === 429 || last >= 500) geminiBandGacha = Date.now() + 180000;
+  if (!ovoz && (last === 503 || last === 429 || last >= 500)) geminiBandGacha = Date.now() + 180000;
   // Zaxira: Cloudflare Workers AI
   if (env.AI) {
     try { return await cfAI(env, parts, { json, system }); } catch (e) { console.log('cfAI', e.message); }
@@ -67,7 +69,7 @@ async function cfAI(env, parts, { json, system }) {
   if (audio) {
     const r = await env.AI.run('@cf/openai/whisper-large-v3-turbo', { audio: audio.inline_data.data, language: 'uz' });
     if (!r?.text) throw new Error('whisper bo\'sh');
-    return r.text;
+    return '⚠️(zaxira) ' + r.text;
   }
   const user = parts.map((p) => p.text || '').join('\n');
   const sys = (system || '') + (json ? '\nJavobni FAQAT bitta JSON obyekt qilib qaytar, boshqa hech qanday matn yozma.' : '');
@@ -200,7 +202,9 @@ async function onMessage(env, msg) {
   let text = msg.text || msg.caption || '';
   if (msg.voice || msg.audio) {
     text = (await voiceToText(env, (msg.voice || msg.audio).file_id)).trim();
-    await say(env, chat, `🎙 <i>${esc(text)}</i>`);
+    const zaxira = text.startsWith('⚠️(zaxira) ');
+    text = text.replace('⚠️(zaxira) ', '');
+    await say(env, chat, `🎙 <i>${esc(text)}</i>` + (zaxira ? "\n<i>(Gemini band edi — zaxira model eshitdi, xato bo'lsa matn bilan yozing)</i>" : ''));
   }
   if (!text) return;
   if (text === '/start' || text === '/yordam') {
