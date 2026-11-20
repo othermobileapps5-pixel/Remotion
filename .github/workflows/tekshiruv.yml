@@ -5,8 +5,7 @@ name: Tekshiruv
 on:
   pull_request:
   push:
-    branches: [main]
-    paths: ['src/**', 'videos/**', 'package.json', 'remotion.config.ts']
+    paths: ['src/**', 'videos/**', 'scripts/kadrlar.mjs', 'package.json', 'remotion.config.ts']
 
 permissions:
   contents: read
@@ -17,6 +16,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -29,8 +30,18 @@ jobs:
         run: |
           npx remotion still src/index.ts YouTube out/youtube.png --frame=60 --props=videos/namuna.json
           npx remotion still src/index.ts Shorts out/shorts.png --frame=200 --props=videos/namuna.json
+      - name: O'zgargan ssenariylardan kadrlar (har sahnadan 2 ta)
+        run: |
+          BASE=$(git merge-base HEAD origin/main 2>/dev/null || echo "")
+          [ -z "$BASE" ] || [ "$BASE" = "$(git rev-parse HEAD)" ] && BASE=HEAD~1
+          for f in $(git diff --name-only "$BASE" HEAD -- 'videos/*.json'); do
+            [ -f "$f" ] && node scripts/kadrlar.mjs "$f" YouTube || true
+          done
+          ls out/kadrlar 2>/dev/null | head -50 || true
       - uses: actions/upload-artifact@v4
         with:
           name: kadrlar
-          path: out/*.png
+          path: |
+            out/*.png
+            out/kadrlar/*.jpeg
           retention-days: 3

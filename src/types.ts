@@ -7,11 +7,12 @@ export type Theme = {
   text: string; // matn rangi
 };
 
-// Har qanday sahnaga qo'shish mumkin: o'zbekcha ovoz (Azure, scripts/ovoz.mjs)
+// Har qanday sahnaga qo'shish mumkin: hikoya ovozi (Gemini yoki Azure, scripts/ovoz.mjs)
 export type Voice = {
   ovoz?: string; // shu sahnada o'qiladigan matn (\n — qisqa pauza)
-  ovozchi?: 'madina' | 'sardor' | string; // standart: madina
-  ovozTezligi?: string; // masalan "-10%" (sekinroq) yoki "+10%"
+  ovozchi?: 'madina' | 'sardor' | string; // Azure: madina/sardor; Gemini: Charon, Kore...
+  ovozTezligi?: string; // Azure: masalan "-10%" (sekinroq) yoki "+10%"
+  ovozUslubi?: string; // Gemini: o'qish uslubi
   ovozFayl?: string; // skript yozadi: yasalgan mp3
   ovozKalit?: string; // skript yozadi: matn o'zgarganini bilish uchun
 };
@@ -49,7 +50,14 @@ export type VideoScene = Voice & {
   muted?: boolean; // klip ovozini o'chirish (standart: o'chiq)
 };
 
-export type Scene = TitleScene | TextScene | ImageScene | VideoScene;
+// Koddan yasalgan animatsion sahna: src/videos/registry.tsx dagi komponent nomi
+export type CustomScene = Voice & {
+  type: 'custom';
+  name: string; // masalan "apollo13/hook"
+  duration: number;
+};
+
+export type Scene = TitleScene | TextScene | ImageScene | VideoScene | CustomScene;
 
 export type VideoProps = {
   title: string;
@@ -57,6 +65,12 @@ export type VideoProps = {
   voiceover?: string; // hikoya qiluvchi ovoz (mp3)
   ovozchi?: 'madina' | 'sardor' | string; // barcha sahnalar ovozi (standart: madina)
   ovozTezligi?: string; // barcha sahnalar uchun, masalan "-5%"
+  ovozXizmat?: 'azure' | 'gemini'; // ovoz xizmati (standart: azure)
+  geminiTtsModel?: string; // standart: gemini-3.8-flash-lite-tts (arzon)
+  ovozUslubi?: string; // Gemini: butun video uchun o'qish uslubi
+  ovozgaMoslash?: boolean; // sahna uzunligini aniq ovozga moslash
+  ovozPad?: number; // ovozdan keyingi pauza, sek (standart 0.8)
+  ovozBalandligi?: number; // 0..1, standart 1
   music?: string; // fon musiqasi
   musicVolume?: number; // 0..1, standart 0.15
   transition?: number; // sahnalar orasidagi o'tish, sekund (standart 0.5; 0 — o'tishsiz)

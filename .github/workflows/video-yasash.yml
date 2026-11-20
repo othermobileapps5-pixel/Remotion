@@ -48,8 +48,9 @@ jobs:
       - name: Paketlar
         run: npm install --no-audit --no-fund
 
-      - name: O'zbekcha ovoz (Azure)
+      - name: Hikoya ovozi (Gemini / Azure)
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           AZURE_TTS_KEY: ${{ secrets.AZURE_TTS_KEY }}
           AZURE_TTS_REGION: ${{ secrets.AZURE_TTS_REGION }}
         run: |
