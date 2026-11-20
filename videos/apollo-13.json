@@ -18,98 +18,130 @@
     {
       "type": "custom",
       "name": "apollo13/hook",
-      "duration": 7,
-      "ovoz": "April thirteenth, 1970. Two hundred thousand miles from Earth, three astronauts heard a loud bang."
+      "duration": 11.1,
+      "ovoz": "April thirteenth, 1970. Two hundred thousand miles from Earth, three astronauts heard a loud bang.",
+      "ovozFayl": "ovoz/apollo-13-1.wav",
+      "ovozKalit": "1cac8d8be2"
     },
     {
       "type": "custom",
       "name": "apollo13/title",
-      "duration": 7,
-      "ovoz": "This is Apollo 13. The Moon landing that never happened, and the rescue that became legend."
+      "duration": 10.1,
+      "ovoz": "This is Apollo 13. The Moon landing that never happened, and the rescue that became legend.",
+      "ovozFayl": "ovoz/apollo-13-2.wav",
+      "ovozKalit": "226edabdb3"
     },
     {
       "type": "custom",
       "name": "apollo13/crew",
-      "duration": 14,
-      "ovoz": "The mission launched on April eleventh. Commander Jim Lovell. Lunar module pilot Fred Haise. And Jack Swigert, who joined the crew just three days before launch, after Ken Mattingly was exposed to German measles."
+      "duration": 16.8,
+      "ovoz": "The mission launched on April eleventh. Commander Jim Lovell. Lunar module pilot Fred Haise. And Jack Swigert, who joined the crew just three days before launch, after Ken Mattingly was exposed to German measles.",
+      "ovozFayl": "ovoz/apollo-13-3.wav",
+      "ovozKalit": "0f1dd1cfa7"
     },
     {
       "type": "custom",
       "name": "apollo13/ship",
-      "duration": 13,
-      "ovoz": "Their spacecraft had three parts. The command module, Odyssey, where the crew lived. The service module, with their oxygen, power and engine. And the lunar module, Aquarius, built to land on the Moon."
+      "duration": 17.6,
+      "ovoz": "Their spacecraft had three parts. The command module, Odyssey, where the crew lived. The service module, with their oxygen, power and engine. And the lunar module, Aquarius, built to land on the Moon.",
+      "ovozFayl": "ovoz/apollo-13-4.wav",
+      "ovozKalit": "3c645df64e"
     },
     {
       "type": "custom",
       "name": "apollo13/explosion",
-      "duration": 13,
-      "ovoz": "Fifty-six hours into the flight, Jack Swigert flipped a routine switch to stir the oxygen tanks. Seconds later, tank number two exploded. Then came the famous words: Houston, we've had a problem."
+      "duration": 18.1,
+      "ovoz": "Fifty-six hours into the flight, Jack Swigert flipped a routine switch to stir the oxygen tanks. Seconds later, tank number two exploded. Then came the famous words: Houston, we've had a problem.",
+      "ovozFayl": "ovoz/apollo-13-5.wav",
+      "ovozKalit": "b7cb7c38cb"
     },
     {
       "type": "custom",
       "name": "apollo13/damage",
-      "duration": 13,
-      "ovoz": "The blast tore open the service module. Oxygen poured into space, and the fuel cells that made their power began to die. The Moon landing was over. The new mission: get home alive."
+      "duration": 17.8,
+      "ovoz": "The blast tore open the service module. Oxygen poured into space, and the fuel cells that made their power began to die. The Moon landing was over. The new mission: get home alive.",
+      "ovozFayl": "ovoz/apollo-13-6.wav",
+      "ovozKalit": "fc53e1e4c7"
     },
     {
       "type": "custom",
       "name": "apollo13/lifeboat",
-      "duration": 15,
-      "ovoz": "They shut down Odyssey to save its batteries for re-entry, and moved into Aquarius. The lander was built to keep two men alive for two days. Now it had to keep three men alive for four."
+      "duration": 16.5,
+      "ovoz": "They shut down Odyssey to save its batteries for re-entry, and moved into Aquarius. The lander was built to keep two men alive for two days. Now it had to keep three men alive for four.",
+      "ovozFayl": "ovoz/apollo-13-7.wav",
+      "ovozKalit": "84518793d8"
     },
     {
       "type": "custom",
       "name": "apollo13/trajectory",
-      "duration": 14,
-      "ovoz": "There was no way to simply turn around. Instead, they would swing behind the Moon and let its gravity throw them back toward Earth. On the far side, they lost all contact with home."
+      "duration": 16.3,
+      "ovoz": "There was no way to simply turn around. Instead, they would swing behind the Moon and let its gravity throw them back toward Earth. On the far side, they lost all contact with home.",
+      "ovozFayl": "ovoz/apollo-13-8.wav",
+      "ovozKalit": "8c185163ad"
     },
     {
       "type": "custom",
       "name": "apollo13/record",
-      "duration": 13,
-      "ovoz": "Behind the Moon, they were four hundred thousand, one hundred seventy-one kilometers from Earth. Farther than any humans had ever been. That record stood for fifty-six years, until Artemis Two in 2026."
+      "duration": 18.9,
+      "ovoz": "Behind the Moon, they were four hundred thousand, one hundred seventy-one kilometers from Earth. Farther than any humans had ever been. That record stood for fifty-six years, until Artemis Two in 2026.",
+      "ovozFayl": "ovoz/apollo-13-9.wav",
+      "ovozKalit": "2fd54d2dc8"
     },
     {
       "type": "custom",
       "name": "apollo13/co2",
-      "duration": 16,
-      "ovoz": "But a new danger was building: carbon dioxide from their own breath. Aquarius used round air filters. Odyssey's spares were square. Engineers in Houston invented a fix from what was on board: plastic bags, cardboard and duct tape. And it worked."
+      "duration": 21.4,
+      "ovoz": "But a new danger was building: carbon dioxide from their own breath. Aquarius used round air filters. Odyssey's spares were square. Engineers in Houston invented a fix from what was on board: plastic bags, cardboard and duct tape. And it worked.",
+      "ovozFayl": "ovoz/apollo-13-10.wav",
+      "ovozKalit": "200ab5a51e"
     },
     {
       "type": "custom",
       "name": "apollo13/cold",
-      "duration": 10,
-      "ovoz": "To save power, almost everything was switched off. The cabin grew cold, close to freezing. Water was rationed, and the crew barely slept."
+      "duration": 13.7,
+      "ovoz": "To save power, almost everything was switched off. The cabin grew cold, close to freezing. Water was rationed, and the crew barely slept.",
+      "ovozFayl": "ovoz/apollo-13-11.wav",
+      "ovozKalit": "7170afb8e5"
     },
     {
       "type": "custom",
       "name": "apollo13/reentry",
-      "duration": 14,
-      "ovoz": "On the final day, they released the damaged service module, and saw an entire panel blown away. Then they let go of Aquarius, the lifeboat that saved their lives. Odyssey, alone, fell toward Earth."
+      "duration": 18.5,
+      "ovoz": "On the final day, they released the damaged service module, and saw an entire panel blown away. Then they let go of Aquarius, the lifeboat that saved their lives. Odyssey, alone, fell toward Earth.",
+      "ovozFayl": "ovoz/apollo-13-12.wav",
+      "ovozKalit": "fef65d509d"
     },
     {
       "type": "custom",
       "name": "apollo13/blackout",
-      "duration": 13,
-      "ovoz": "As Odyssey hit the atmosphere, the radio went silent. Blackout was expected, but this one lasted longer than planned. Mission Control waited, and waited. Then, a voice. Odyssey was alive."
+      "duration": 18.5,
+      "ovoz": "As Odyssey hit the atmosphere, the radio went silent. Blackout was expected, but this one lasted longer than planned. Mission Control waited, and waited. Then, a voice. Odyssey was alive.",
+      "ovozFayl": "ovoz/apollo-13-13.wav",
+      "ovozKalit": "b8d4dc38dc"
     },
     {
       "type": "custom",
       "name": "apollo13/splashdown",
-      "duration": 8,
-      "ovoz": "Three parachutes opened over the South Pacific. On April seventeenth, 1970, Lovell, Haise and Swigert were home."
+      "duration": 11.7,
+      "ovoz": "Three parachutes opened over the South Pacific. On April seventeenth, 1970, Lovell, Haise and Swigert were home.",
+      "ovozFayl": "ovoz/apollo-13-14.wav",
+      "ovozKalit": "8092fa81bb"
     },
     {
       "type": "custom",
       "name": "apollo13/cause",
-      "duration": 17,
-      "ovoz": "Investigators later found the cause. Before launch, during a ground test, a heater switch inside tank two, built for twenty-eight volts, was hit with sixty-five. It welded shut, the wiring was damaged, and the hidden fault waited for that routine stir."
+      "duration": 22.3,
+      "ovoz": "Investigators later found the cause. Before launch, during a ground test, a heater switch inside tank two, built for twenty-eight volts, was hit with sixty-five. It welded shut, the wiring was damaged, and the hidden fault waited for that routine stir.",
+      "ovozFayl": "ovoz/apollo-13-15.wav",
+      "ovozKalit": "93b988ab9d"
     },
     {
       "type": "custom",
       "name": "apollo13/outro",
-      "duration": 13.5,
-      "ovoz": "NASA called Apollo 13 a successful failure. They never landed on the Moon, but they proved that calm minds and teamwork can turn disaster into a homecoming. Subscribe for more true stories from history."
+      "duration": 26.7,
+      "ovoz": "NASA called Apollo 13 a successful failure. They never landed on the Moon, but they proved that calm minds and teamwork can turn disaster into a homecoming. Subscribe for more true stories from history.",
+      "ovozFayl": "ovoz/apollo-13-16.wav",
+      "ovozKalit": "752ff37c56"
     }
   ]
 }
