@@ -16,27 +16,41 @@ const say = (env, chat, text, extra = {}) => TG(env, 'sendMessage', { chat_id: c
 const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
 // ---------- Gemini ----------
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Model band bo'lsa (503/429) qayta uriniladi, keyin zaxira modelga o'tiladi.
 async function gemini(env, parts, { json = false, system = '' } = {}) {
-  const model = env.GEMINI_MODEL || 'gemini-3.8-flash';
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-    method: 'POST',
-    headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
-      contents: [{ role: 'user', parts }],
-      generationConfig: json ? { responseMimeType: 'application/json', temperature: 0.8 } : { temperature: 0.7 },
-    }),
+  const models = [env.GEMINI_MODEL || 'gemini-3.8-flash', 'gemini-3.8-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-flash-lite']
+    .filter((m, i, a) => a.indexOf(m) === i);
+  const body = JSON.stringify({
+    ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
+    contents: [{ role: 'user', parts }],
+    generationConfig: json ? { responseMimeType: 'application/json', temperature: 0.8 } : { temperature: 0.7 },
   });
-  if (!res.ok) {
-    const t = (await res.text()).slice(0, 300);
-    if (res.status === 402) throw new Error("Gemini hisobida pul tugagan (402). AI Studio → Billing'da to'ldiring yoki BOT_GEMINI_KEY ga bepul kalit qo'ying.");
-    if (res.status === 429) throw new Error("Gemini bepul limiti vaqtincha tugadi (429). Bir daqiqadan keyin qayta yozing.");
-    if (res.status === 400 || res.status === 403) throw new Error(`Gemini kaliti ishlamadi (${res.status}). Kalitni tekshiring.`);
-    throw new Error(`Gemini ${res.status}: ${t}`);
+  let last = 0;
+  for (const model of models) {
+    for (let urinish = 0; urinish < 2; urinish++) {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: 'POST',
+        headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'Content-Type': 'application/json' },
+        body,
+      });
+      if (res.ok) {
+        const j = await res.json();
+        const text = (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('');
+        return json ? JSON.parse(text.replace(/^```(json)?|```$/g, '').trim()) : text;
+      }
+      last = res.status;
+      await res.text();
+      if (res.status === 402) throw new Error("Gemini hisobida pul tugagan (402). AI Studio → Billing'da to'ldiring yoki BOT_GEMINI_KEY ga bepul kalit qo'ying.");
+      if (res.status === 400 || res.status === 403) throw new Error(`Gemini kaliti ishlamadi (${res.status}). Kalitni tekshiring.`);
+      if (res.status === 404) break; // bu model yo'q — keyingisi
+      if (res.status === 503 || res.status === 429 || res.status >= 500) { await sleep(1500 * (urinish + 1)); continue; }
+      break;
+    }
   }
-  const j = await res.json();
-  const text = (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('');
-  return json ? JSON.parse(text) : text;
+  if (last === 429) throw new Error("Gemini bepul limiti vaqtincha tugadi. Bir daqiqadan keyin qayta yozing.");
+  throw new Error(`Google modellari hozir band (${last}). Bir-ikki daqiqadan keyin qayta yozing.`);
 }
 
 const NIYAT = `Sen YouTube kanal yordamchisi botining dispetcherisan. Foydalanuvchi o'zbek, AQShda tirakchi (CDL), YouTube kanal yuritadi.
