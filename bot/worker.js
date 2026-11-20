@@ -29,7 +29,7 @@ async function gemini(env, parts, { json = false, system = '' } = {}) {
   });
   let last = 0;
   for (const model of models) {
-    for (let urinish = 0; urinish < 2; urinish++) {
+    for (let urinish = 0; urinish < (model === models[0] ? 2 : 1); urinish++) {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
         method: 'POST',
         headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'Content-Type': 'application/json' },
@@ -45,12 +45,40 @@ async function gemini(env, parts, { json = false, system = '' } = {}) {
       if (res.status === 402) throw new Error("Gemini hisobida pul tugagan (402). AI Studio → Billing'da to'ldiring yoki BOT_GEMINI_KEY ga bepul kalit qo'ying.");
       if (res.status === 400 || res.status === 403) throw new Error(`Gemini kaliti ishlamadi (${res.status}). Kalitni tekshiring.`);
       if (res.status === 404) break; // bu model yo'q — keyingisi
-      if (res.status === 503 || res.status === 429 || res.status >= 500) { await sleep(1500 * (urinish + 1)); continue; }
+      if (res.status === 503 || res.status === 429 || res.status >= 500) { if (urinish === 0 && model === models[0]) await sleep(1200); continue; }
       break;
     }
   }
+  // Zaxira: Cloudflare Workers AI
+  if (env.AI) {
+    try { return await cfAI(env, parts, { json, system }); } catch (e) { console.log('cfAI', e.message); }
+  }
   if (last === 429) throw new Error("Gemini bepul limiti vaqtincha tugadi. Bir daqiqadan keyin qayta yozing.");
-  throw new Error(`Google modellari hozir band (${last}). Bir-ikki daqiqadan keyin qayta yozing.`);
+  throw new Error(`AI modellari hozir band (${last}). Bir-ikki daqiqadan keyin qayta yozing.`);
+}
+
+const CF_MODELLAR = ['@cf/meta/llama-3.3-70b-instruct-fp8-fast', '@cf/google/gemma-3-12b-it', '@cf/meta/llama-3.1-8b-instruct'];
+
+async function cfAI(env, parts, { json, system }) {
+  const audio = parts.find((p) => p.inline_data);
+  if (audio) {
+    const r = await env.AI.run('@cf/openai/whisper-large-v3-turbo', { audio: audio.inline_data.data });
+    if (!r?.text) throw new Error('whisper bo\'sh');
+    return r.text;
+  }
+  const user = parts.map((p) => p.text || '').join('\n');
+  const sys = (system || '') + (json ? '\nJavobni FAQAT bitta JSON obyekt qilib qaytar, boshqa hech qanday matn yozma.' : '');
+  let err;
+  for (const m of CF_MODELLAR) {
+    try {
+      const r = await env.AI.run(m, { messages: [...(sys ? [{ role: 'system', content: sys }] : []), { role: 'user', content: user }], max_tokens: 2048 });
+      const t = typeof r?.response === 'string' ? r.response : JSON.stringify(r?.response ?? '');
+      if (!json) return t;
+      const a = t.indexOf('{'), b = t.lastIndexOf('}');
+      return JSON.parse(t.slice(a, b + 1));
+    } catch (e) { err = e; }
+  }
+  throw err || new Error('cfAI');
 }
 
 const NIYAT = `Sen YouTube kanal yordamchisi botining dispetcherisan. Foydalanuvchi o'zbek, AQShda tirakchi (CDL), YouTube kanal yuritadi.
