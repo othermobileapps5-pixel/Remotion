@@ -132,7 +132,7 @@ const Snow: React.FC<{ amount: number }> = ({ amount }) => {
 // 12. QAYTISH — SM tashlanadi (zarar ko'rinadi), Aquarius qo'yib yuboriladi, Odyssey qiziydi
 export const Reentry: React.FC = () => {
   const { u, prog, vertical, frame } = useScene();
-  const sm = prog(0.16, 0.45);
+  const sm = prog(0.16, 0.58);
   const lm = prog(0.55, 0.8);
   const fallP = prog(0.8, 1);
   const glow = prog(0.84, 1);
@@ -166,7 +166,7 @@ export const Reentry: React.FC = () => {
         </div>
       </Center>
       <div style={{ position: 'absolute', top: vertical ? 300 * u : 170 * u, left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
-        <div style={{ opacity: prog(0.36, 0.4) * (1 - prog(0.53, 0.56)) }}>
+        <div style={{ opacity: prog(0.3, 0.34) * (1 - prog(0.52, 0.55)) }}>
           <Tag color={C.red} size={38}>AN ENTIRE PANEL BLOWN AWAY</Tag>
         </div>
       </div>
