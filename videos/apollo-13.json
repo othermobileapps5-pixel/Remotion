@@ -8,9 +8,9 @@
   "ovozXizmat": "gemini",
   "geminiTtsModel": "gemini-3.8-flash-lite-tts",
   "ovozchi": "Charon",
-  "ovozUslubi": "cinematic history documentary narrator, calm and measured, warm low voice, building quiet tension, natural pauses",
+  "ovozUslubi": "engaging YouTube history documentary narrator, confident and brisk pace, energetic but serious, short pauses between sentences",
   "ovozgaMoslash": true,
-  "ovozPad": 0.7,
+  "ovozPad": 0.5,
   "music": "audio/apollo13/music.mp3",
   "musicVolume": 0.12,
   "transition": 0.4,
@@ -143,5 +143,6 @@
       "ovozFayl": "ovoz/apollo-13-16.wav",
       "ovozKalit": "752ff37c56"
     }
-  ]
+  ],
+  "ovozTezligi": "+15%"
 }

@@ -1,7 +1,7 @@
 // Sahnalar uchun hikoya ovozi.
 //   • Gemini TTS (standart emas, ssenariyda "ovozXizmat": "gemini"): GEMINI_API_KEY. Har qanday til (ingliz, o'zbek...).
 //       ovozchi: Gemini ovozi (Charon, Kore, Puck, Gacrux...); model: "geminiTtsModel" (standart arzon: gemini-3.8-flash-lite-tts);
-//       uslub: "ovozUslubi" (masalan "calm documentary narrator").
+//       uslub: "ovozUslubi" (masalan "calm documentary narrator"); tezlik: "ovozTezligi": "+15%" (ffmpeg atempo).
 //   • Azure (eski, "ovozXizmat" yo'q bo'lsa): AZURE_TTS_KEY, AZURE_TTS_REGION; madina / sardor.
 // Ishlatish: node scripts/ovoz.mjs videos/<nom>.json
 // Sahnadagi "ovoz": "matn" → public/ovoz/<nom>-<n>.(wav|mp3), sahnaga "ovozFayl" yoziladi.
@@ -39,7 +39,21 @@ const voiceOf = (s) => {
 const rateOf = (s) => s.ovozTezligi || data.ovozTezligi || '0%';
 const styleOf = (s) => s.ovozUslubi || data.ovozUslubi || '';
 const keyOf = (s) =>
-  hash(service === 'gemini' ? `g|${GM_MODEL}|${s.ovoz}|${voiceOf(s)}|${styleOf(s)}` : `${s.ovoz}|${voiceOf(s)}|${rateOf(s)}`);
+  hash(service === 'gemini' ? `g|${GM_MODEL}|${s.ovoz}|${voiceOf(s)}|${styleOf(s)}|${rateOf(s)}` : `${s.ovoz}|${voiceOf(s)}|${rateOf(s)}`);
+
+// Gemini: "ovozTezligi": "+15%" → ffmpeg atempo (ohang o'zgarmaydi)
+import { execFileSync } from 'node:child_process';
+import os from 'node:os';
+const speedUp = (wav, rate) => {
+  const pct = parseFloat(String(rate).replace('%', ''));
+  if (!pct) return wav;
+  const tempo = Math.min(2, Math.max(0.5, 1 + pct / 100));
+  const a = path.join(os.tmpdir(), `ovoz-in-${process.pid}.wav`);
+  const b = path.join(os.tmpdir(), `ovoz-out-${process.pid}.wav`);
+  fs.writeFileSync(a, wav);
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', a, '-filter:a', `atempo=${tempo}`, '-ar', '24000', '-ac', '1', '-c:a', 'pcm_s16le', b]);
+  return fs.readFileSync(b);
+};
 
 const todo = data.scenes
   .map((s, i) => ({ s, i }))
@@ -157,7 +171,7 @@ fs.mkdirSync('public/ovoz', { recursive: true });
 for (const { s, i } of todo) {
   console.log(`▶ ${i + 1}-sahna ovozi (${service}, ${voiceOf(s)}): "${s.ovoz.slice(0, 50)}"…`);
   const isGemini = service === 'gemini';
-  const buf = isGemini ? await gemini(s) : await azure(s);
+  const buf = isGemini ? speedUp(await gemini(s), rateOf(s)) : await azure(s);
   const out = `ovoz/${name}-${i + 1}.${isGemini ? 'wav' : 'mp3'}`;
   fs.writeFileSync(path.join('public', out), buf);
   const seconds = isGemini ? wavSeconds(buf) : (buf.length * 8) / 96000;
