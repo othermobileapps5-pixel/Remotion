@@ -230,12 +230,12 @@ export const Blackout: React.FC = () => {
 };
 
 // 14. SUVGA TUSHISH — uchta parashyut, okean
-const Chute: React.FC<{ x: number; delay: number }> = ({ x, delay }) => {
+const Chute: React.FC<{ x: number; delay: number; fade: number }> = ({ x, delay, fade }) => {
   const { u, pop, frame } = useScene();
   const open = pop(delay, 12);
   const sway = Math.sin(frame / 25 + x) * 4;
   return (
-    <svg viewBox="-110 -20 220 220" style={{ position: 'absolute', left: `calc(50% + ${x * u}px - ${110 * u}px)`, top: 0, width: 220 * u, height: 220 * u, transform: `rotate(${sway}deg) scale(${open})`, transformOrigin: '50% 100%' }}>
+    <svg viewBox="-110 -20 220 220" style={{ position: 'absolute', left: `calc(50% + ${x * u}px - ${150 * u}px)`, top: 0, width: 300 * u, height: 300 * u, opacity: 1 - fade, transform: `rotate(${sway + fade * 25 * Math.sign(x || 1)}deg) scale(${open * (1 - fade * 0.3)})`, transformOrigin: '50% 100%' }}>
       <path d="M-100 60 Q0 -60 100 60 Z" fill="#F97316" />
       <path d="M-100 60 Q-50 30 -33 60 Q0 20 33 60 Q50 30 100 60" fill="#FFF" opacity={0.85} />
       <path d="M-100 60 L0 200 M-33 60 L0 200 M33 60 L0 200 M100 60 L0 200" stroke="#E2E8F0" strokeWidth={2} />
@@ -247,15 +247,16 @@ export const Splashdown: React.FC = () => {
   const { frame, u, prog, vertical, H, pop } = useScene();
   const fall = prog(0.0, 0.72);
   const splash = prog(0.72, 0.8);
-  const groupY = lerp(fall, -0.05, vertical ? 0.42 : 0.36) * H;
+  const groupY = lerp(fall, -0.15, vertical ? 0.42 : 0.3) * H;
+  const bob = splash > 0 ? Math.sin(frame / 10) * 6 * u : 0;
   return (
     <AbsoluteFill style={{ background: 'linear-gradient(180deg, #7DD3FC 0%, #BAE6FD 55%, #0EA5E9 56%, #075985 100%)' }}>
-      <div style={{ position: 'absolute', left: 0, right: 0, top: groupY, height: 480 * u, opacity: 1 - splash }}>
-        <Chute x={-170} delay={0.02} />
-        <Chute x={0} delay={0.06} />
-        <Chute x={170} delay={0.1} />
+      <div style={{ position: 'absolute', left: 0, right: 0, top: groupY + bob, height: 480 * u }}>
+        <Chute x={-230} delay={0.02} fade={splash} />
+        <Chute x={0} delay={0.06} fade={splash} />
+        <Chute x={230} delay={0.1} fade={splash} />
         {/* kapsula */}
-        <svg viewBox="0 0 100 80" style={{ position: 'absolute', left: `calc(50% - ${50 * u}px)`, top: 230 * u, width: 100 * u, height: 80 * u }}>
+        <svg viewBox="0 0 100 80" style={{ position: 'absolute', left: `calc(50% - ${60 * u}px)`, top: 300 * u, width: 120 * u, height: 96 * u }}>
           <path d="M20 70 L50 10 L80 70 Z" fill="#CBD5E1" stroke="#475569" strokeWidth={3} />
         </svg>
       </div>
@@ -266,7 +267,7 @@ export const Splashdown: React.FC = () => {
       {/* sachrash halqalari */}
       {[0, 1, 2].map((i) => {
         const p = prog(0.72 + i * 0.03, 0.92 + i * 0.03);
-        return <div key={i} style={{ position: 'absolute', left: '50%', top: '57%', width: p * 700 * u, height: p * 120 * u, marginLeft: -p * 350 * u, marginTop: -p * 60 * u, borderRadius: '50%', border: `${4 * u}px solid #fff`, opacity: (1 - p) * 0.9 }} />;
+        return <div key={i} style={{ position: 'absolute', left: '50%', top: groupY + 350 * u, width: p * 700 * u, height: p * 120 * u, marginLeft: -p * 350 * u, marginTop: -p * 60 * u, borderRadius: '50%', border: `${4 * u}px solid #fff`, opacity: (1 - p) * 0.9 }} />;
       })}
       <div style={{ position: 'absolute', left: 0, right: 0, bottom: vertical ? 420 * u : 110 * u, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 * u }}>
         <div style={{ fontFamily, fontWeight: 800, fontSize: (vertical ? 96 : 120) * u, color: '#fff', textShadow: `0 ${6 * u}px ${30 * u}px #0C4A6E`, transform: `scale(${pop(0.82, 10)})` }}>HOME.</div>

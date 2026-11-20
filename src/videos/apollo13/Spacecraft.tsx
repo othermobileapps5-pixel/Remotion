@@ -45,7 +45,7 @@ export const Spacecraft: React.FC<{
   return (
     <svg viewBox="0 0 900 400" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
       {showSm ? (
-        <g transform={`translate(${smX} ${split * 40}) rotate(${smR} 270 200)`} opacity={1 - Math.max(0, split - 0.6) * 2.5}>
+        <g transform={`translate(${smX} ${split * 40}) rotate(${smR} 270 200)`} opacity={1 - Math.max(0, split - 0.85) * 6.6}>
           <g opacity={fillOp}>
             <path d={PATHS.sm} fill={fillOf('sm')} />
           </g>

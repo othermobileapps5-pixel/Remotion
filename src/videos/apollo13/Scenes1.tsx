@@ -100,7 +100,8 @@ const Card: React.FC<{ name: string; role: string; initials: string; p: number; 
 
 export const Crew: React.FC = () => {
   const { u, prog, pop, vertical } = useScene();
-  const swap = prog(0.48, 0.58);
+  const out = prog(0.48, 0.53);
+  const inn = prog(0.53, 0.58);
   return (
     <AbsoluteFill>
       <Stars count={90} />
@@ -112,15 +113,15 @@ export const Crew: React.FC = () => {
           <Card initials="FH" name="Fred Haise" role="LUNAR MODULE PILOT" p={pop(0.24)} />
           <div style={{ position: 'relative' }}>
             {/* Mattingly kartasi chetga suriladi, o'rniga Swigert keladi */}
-            <div style={{ opacity: 1 - swap, transform: `translateY(${swap * -120 * u}px)` }}>
+            <div style={{ opacity: 1 - out, transform: `translateY(${out * -100 * u}px)` }}>
               <Card initials="KM" name="Ken Mattingly" role="COMMAND MODULE PILOT" p={pop(0.34)} crossed={prog(0.4, 0.48)} />
             </div>
-            <div style={{ position: 'absolute', inset: 0, opacity: swap, transform: `translateY(${(1 - swap) * 120 * u}px)` }}>
+            <div style={{ position: 'absolute', left: 0, right: 0, top: 0, opacity: inn, transform: `translateY(${(1 - inn) * 100 * u}px)` }}>
               <Card initials="JS" name="Jack Swigert" role="COMMAND MODULE PILOT" p={1} hi note="JOINED 3 DAYS BEFORE LAUNCH" noteP={prog(0.6, 0.66)} />
             </div>
           </div>
         </div>
-        <div style={{ opacity: prog(0.78, 0.84), fontFamily, fontWeight: 600, fontSize: 32 * u, color: C.dim }}>Mattingly was exposed to German measles</div>
+        <div style={{ opacity: prog(0.78, 0.84), fontFamily, fontWeight: 600, fontSize: 32 * u, color: C.dim, marginTop: 60 * u }}>Mattingly was exposed to German measles</div>
       </Center>
       <Sfx at={0.12} src="whoosh" volume={0.35} />
       <Sfx at={0.24} src="whoosh" volume={0.35} />

@@ -141,7 +141,7 @@ export const Words: React.FC<{ text: string; at: number; step?: number; size: nu
             {marked ? (
               <span style={{ position: 'absolute', left: -size * 0.12, right: -size * 0.12, top: '12%', bottom: '8%', background: hi, borderRadius: size * 0.12, transform: `scaleX(${bar})`, transformOrigin: 'left' }} />
             ) : null}
-            <span style={{ position: 'relative', color: marked ? C.bg : color }}>{clean}</span>
+            <span style={{ position: 'relative', color: marked && bar > 0.5 ? C.bg : marked ? hi : color }}>{clean}</span>
           </span>
         );
       })}
