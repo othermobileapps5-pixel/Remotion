@@ -24,7 +24,7 @@ jobs:
 
       - name: Secret'larni tekshirish
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.BOT_GEMINI_KEY || secrets.GEMINI_API_KEY }}
           BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
           miss=""
@@ -61,7 +61,7 @@ jobs:
       - name: Bot secret'larini qo'yish
         working-directory: bot
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.BOT_GEMINI_KEY || secrets.GEMINI_API_KEY }}
           BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}

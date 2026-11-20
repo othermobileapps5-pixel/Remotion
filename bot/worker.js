@@ -27,7 +27,13 @@ async function gemini(env, parts, { json = false, system = '' } = {}) {
       generationConfig: json ? { responseMimeType: 'application/json', temperature: 0.8 } : { temperature: 0.7 },
     }),
   });
-  if (!res.ok) throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  if (!res.ok) {
+    const t = (await res.text()).slice(0, 300);
+    if (res.status === 402) throw new Error("Gemini hisobida pul tugagan (402). AI Studio → Billing'da to'ldiring yoki BOT_GEMINI_KEY ga bepul kalit qo'ying.");
+    if (res.status === 429) throw new Error("Gemini bepul limiti vaqtincha tugadi (429). Bir daqiqadan keyin qayta yozing.");
+    if (res.status === 400 || res.status === 403) throw new Error(`Gemini kaliti ishlamadi (${res.status}). Kalitni tekshiring.`);
+    throw new Error(`Gemini ${res.status}: ${t}`);
+  }
   const j = await res.json();
   const text = (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('');
   return json ? JSON.parse(text) : text;
