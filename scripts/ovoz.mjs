@@ -51,7 +51,14 @@ const speedUp = (wav, rate) => {
   const a = path.join(os.tmpdir(), `ovoz-in-${process.pid}.wav`);
   const b = path.join(os.tmpdir(), `ovoz-out-${process.pid}.wav`);
   fs.writeFileSync(a, wav);
-  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', a, '-filter:a', `atempo=${tempo}`, '-ar', '24000', '-ac', '1', '-c:a', 'pcm_s16le', b]);
+  const args = ['-loglevel', 'error', '-y', '-i', a, '-filter:a', `atempo=${tempo}`, '-ar', '24000', '-ac', '1', '-c:a', 'pcm_s16le', b];
+  try {
+    execFileSync('ffmpeg', args, { stdio: 'inherit' });
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
+    // tizimda ffmpeg bo'lmasa — Remotion bilan keladigan ffmpeg
+    execFileSync('npx', ['remotion', 'ffmpeg', ...args], { stdio: 'inherit' });
+  }
   return fs.readFileSync(b);
 };
 
