@@ -8,7 +8,7 @@ on:
     paths: ['src/**', 'videos/**', 'scripts/kadrlar.mjs', 'package.json', 'remotion.config.ts']
 
 permissions:
-  contents: read
+  contents: write # faqat kadrlarni «kadrlar» branch'iga yozish uchun
 
 jobs:
   check:
@@ -38,6 +38,16 @@ jobs:
             [ -f "$f" ] && node scripts/kadrlar.mjs "$f" YouTube || true
           done
           ls out/kadrlar 2>/dev/null | head -50 || true
+      - name: Kadrlarni «kadrlar» branch'iga saqlash (telefondan ko'rish uchun)
+        if: ${{ github.event_name == 'push' }}
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          ls out/kadrlar/*.jpeg >/dev/null 2>&1 || exit 0
+          cd out/kadrlar
+          git init -q && git checkout -q -b kadrlar && git add .
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "Kadrlar: ${GITHUB_REF_NAME} ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}" kadrlar
       - uses: actions/upload-artifact@v4
         with:
           name: kadrlar
