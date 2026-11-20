@@ -68,12 +68,15 @@ export const Skyline: React.FC = () => {
 
 // AI klip fon: sekin yaqinlashish + pastdan qorong'i parda (matn o'qilsin)
 export const ClipBg: React.FC<{ scene: CustomScene; tone?: 'gold' | 'lapis' }> = ({ scene, tone }) => {
-  const { prog } = useScene();
+  const { prog, dur, fps } = useScene();
   const z = lerp(prog(0, 1, (x) => x), 1.02, 1.12);
+  // Gemini klip uzunligi = sahna uzunligi (3..15 s); sahna uzunroq bo'lsa klip sekinlashtiriladi — qora kadr qolmaydi
+  const clipSec = Math.min(15, Math.max(3, Math.round(dur / fps)));
+  const rate = Math.min(1, (clipSec - 0.1) / (dur / fps));
   return (
     <AbsoluteFill style={{ overflow: 'hidden' }}>
       {scene.src ? (
-        <OffthreadVideo src={resolveSrc(scene.src)} muted={scene.muted ?? true} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${z})` }} />
+        <OffthreadVideo src={resolveSrc(scene.src)} muted={scene.muted ?? true} playbackRate={rate} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${z})` }} />
       ) : (
         <>
           <Dusk tone={tone} />
