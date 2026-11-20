@@ -22,97 +22,127 @@
     {
       "type": "custom",
       "name": "bobil/hook",
-      "duration": 10.8,
+      "duration": 13.3,
       "ovoz": "Four thousand years ago, on the banks of the Euphrates, there was a city so famous that its name still echoes today. Babylon. A city of kings, of wonders, and of legends that still divide historians.",
-      "prompt": "Epic aerial drone shot at golden sunrise over the ancient Mesopotamian city of Babylon on the Euphrates river: massive mud-brick walls, a huge stepped ziggurat in the center, palm groves, boats on the river, morning mist. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera."
+      "prompt": "Epic aerial drone shot at golden sunrise over the ancient Mesopotamian city of Babylon on the Euphrates river: massive mud-brick walls, a huge stepped ziggurat in the center, palm groves, boats on the river, morning mist. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
+      "ovozFayl": "ovoz/bobil-1.wav",
+      "ovozKalit": "ad781ac8c3"
     },
     {
       "type": "custom",
       "name": "bobil/name",
-      "duration": 11,
-      "ovoz": "Its name comes from the Akkadian Bab-ilim, meaning Gate of the Gods. Its ruins lie in modern Iraq, about ninety-four kilometers from Baghdad."
+      "duration": 9.7,
+      "ovoz": "Its name comes from the Akkadian Bab-ilim, meaning Gate of the Gods. Its ruins lie in modern Iraq, about ninety-four kilometers from Baghdad.",
+      "ovozFayl": "ovoz/bobil-2.wav",
+      "ovozKalit": "a0073645f5"
     },
     {
       "type": "custom",
       "name": "bobil/hammurabi",
-      "duration": 12.2,
-      "ovoz": "Around 1792 BC, a king named Hammurabi took the throne. Through war and diplomacy, he united Mesopotamia under Babylon's rule. He turned a small town into the capital of an empire."
+      "duration": 12.7,
+      "ovoz": "Around 1792 BC, a king named Hammurabi took the throne. Through war and diplomacy, he united Mesopotamia under Babylon's rule. He turned a small town into the capital of an empire.",
+      "ovozFayl": "ovoz/bobil-3.wav",
+      "ovozKalit": "9e69b185ba"
     },
     {
       "type": "custom",
       "name": "bobil/code",
-      "duration": 16.2,
-      "ovoz": "He is remembered for one of the oldest written law codes: two hundred eighty-two laws, carved into a black stone pillar. Its most famous idea? An eye for an eye. But the punishment depended on who you were: a noble, a commoner, or a slave."
+      "duration": 15.3,
+      "ovoz": "He is remembered for one of the oldest written law codes: two hundred eighty-two laws, carved into a black stone pillar. Its most famous idea? An eye for an eye. But the punishment depended on who you were: a noble, a commoner, or a slave.",
+      "ovozFayl": "ovoz/bobil-4.wav",
+      "ovozKalit": "de7852ed51"
     },
     {
       "type": "custom",
       "name": "bobil/largest",
-      "duration": 10.8,
-      "ovoz": "By around 1755 BC, Babylon was the largest city in the world, home to more than two hundred thousand people. Merchants, priests, scribes and farmers filled its streets and markets."
+      "duration": 12.2,
+      "ovoz": "By around 1755 BC, Babylon was the largest city in the world, home to more than two hundred thousand people. Merchants, priests, scribes and farmers filled its streets and markets.",
+      "ovozFayl": "ovoz/bobil-5.wav",
+      "ovozKalit": "c41453f16c"
     },
     {
       "type": "custom",
       "name": "bobil/rebirth",
-      "duration": 14.9,
-      "ovoz": "After Hammurabi, the empire faded. Then, more than a thousand years later, a new king brought Babylon back to glory: Nebuchadnezzar the Second. Under his rule, Babylon became the most magnificent city of its age."
+      "duration": 13.9,
+      "ovoz": "After Hammurabi, the empire faded. Then, more than a thousand years later, a new king brought Babylon back to glory: Nebuchadnezzar the Second. Under his rule, Babylon became the most magnificent city of its age.",
+      "ovozFayl": "ovoz/bobil-6.wav",
+      "ovozKalit": "6256cabb1d"
     },
     {
       "type": "custom",
       "name": "bobil/ishtar",
-      "duration": 11,
+      "duration": 10.3,
       "ovoz": "He built the Ishtar Gate: a wall of shining blue glazed bricks, decorated with dragons and bulls, opening onto a grand Processional Way.",
-      "prompt": "Slow dolly forward toward the ancient Ishtar Gate of Babylon: towering walls of deep cobalt-blue glazed bricks with golden reliefs of dragons and bulls, a wide processional way lined with blue walls and golden lion reliefs, warm late-afternoon sunlight, a few robed figures walking in the distance. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera."
+      "prompt": "Slow dolly forward toward the ancient Ishtar Gate of Babylon: towering walls of deep cobalt-blue glazed bricks with golden reliefs of dragons and bulls, a wide processional way lined with blue walls and golden lion reliefs, warm late-afternoon sunlight, a few robed figures walking in the distance. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
+      "ovozFayl": "ovoz/bobil-7.wav",
+      "ovozKalit": "8bda5f4edb"
     },
     {
       "type": "custom",
       "name": "bobil/berlin",
-      "duration": 12.2,
-      "ovoz": "Today, a reconstruction of the gate, built with original bricks, stands in the Pergamon Museum in Berlin. Archaeologists shipped huge numbers of glazed brick fragments from Iraq to Germany, and pieced them together like a giant puzzle."
+      "duration": 14.4,
+      "ovoz": "Today, a reconstruction of the gate, built with original bricks, stands in the Pergamon Museum in Berlin. Archaeologists shipped huge numbers of glazed brick fragments from Iraq to Germany, and pieced them together like a giant puzzle.",
+      "ovozFayl": "ovoz/bobil-8.wav",
+      "ovozKalit": "3799e7b325"
     },
     {
       "type": "custom",
       "name": "bobil/ziggurat",
-      "duration": 13,
+      "duration": 11.8,
       "ovoz": "At the heart of the city rose Etemenanki, a giant stepped temple tower. Its name meant the temple of the foundation of heaven and earth, and many believe it inspired the story of the Tower of Babel.",
-      "prompt": "Low-angle slow crane shot rising up a colossal stepped ziggurat temple tower in ancient Babylon at dusk, monumental staircases, torches flickering on each terrace, tiny crowds of robed people at its base, dramatic orange and purple sky. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera."
+      "prompt": "Low-angle slow crane shot rising up a colossal stepped ziggurat temple tower in ancient Babylon at dusk, monumental staircases, torches flickering on each terrace, tiny crowds of robed people at its base, dramatic orange and purple sky. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
+      "ovozFayl": "ovoz/bobil-9.wav",
+      "ovozKalit": "cf1b0f826e"
     },
     {
       "type": "custom",
       "name": "bobil/gardens",
-      "duration": 17.6,
+      "duration": 14.2,
       "ovoz": "And then, the Hanging Gardens, one of the Seven Wonders of the Ancient World. But here is the mystery: archaeologists have never found clear proof that they existed in Babylon. Some historians even think they stood in a different city: Nineveh.",
-      "prompt": "Slow sweeping shot of the legendary Hanging Gardens of Babylon: lush green terraces stacked like a mountain of stone, cascading waterfalls, palm trees and flowering vines spilling over the edges, soft golden haze, dreamlike and mysterious atmosphere. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera."
+      "prompt": "Slow sweeping shot of the legendary Hanging Gardens of Babylon: lush green terraces stacked like a mountain of stone, cascading waterfalls, palm trees and flowering vines spilling over the edges, soft golden haze, dreamlike and mysterious atmosphere. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
+      "ovozFayl": "ovoz/bobil-10.wav",
+      "ovozKalit": "3f18de6cd0"
     },
     {
       "type": "custom",
       "name": "bobil/math",
-      "duration": 13,
-      "ovoz": "The Babylonians were brilliant astronomers and mathematicians. They counted in base sixty. That is why today, an hour has sixty minutes, and a circle has three hundred sixty degrees."
+      "duration": 10.8,
+      "ovoz": "The Babylonians were brilliant astronomers and mathematicians. They counted in base sixty. That is why today, an hour has sixty minutes, and a circle has three hundred sixty degrees.",
+      "ovozFayl": "ovoz/bobil-11.wav",
+      "ovozKalit": "d564b43797"
     },
     {
       "type": "custom",
       "name": "bobil/fall",
-      "duration": 12.2,
+      "duration": 19,
       "ovoz": "In 539 BC, the Persian king Cyrus the Great captured Babylon. The great city became part of a new empire. Ancient records say the city fell almost without a fight.",
-      "prompt": "Wide cinematic shot at dawn of a vast ancient Persian army with banners and chariots advancing across the desert plain toward the towering walls of Babylon, dust clouds, dramatic backlight, epic scale. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera."
+      "prompt": "Wide cinematic shot at dawn of a vast ancient Persian army with banners and chariots advancing across the desert plain toward the towering walls of Babylon, dust clouds, dramatic backlight, epic scale. Cinematic, photorealistic, 16:9, slow smooth camera movement, natural light. No text, no letters, no subtitles, no logos, no watermarks, no modern objects, no people looking at camera.",
+      "ovozFayl": "ovoz/bobil-12.wav",
+      "ovozKalit": "2a7741fb01"
     },
     {
       "type": "custom",
       "name": "bobil/alexander",
-      "duration": 8,
-      "ovoz": "Two centuries later, Alexander the Great planned to make Babylon his capital. Instead, he died there, in 323 BC."
+      "duration": 8.1,
+      "ovoz": "Two centuries later, Alexander the Great planned to make Babylon his capital. Instead, he died there, in 323 BC.",
+      "ovozFayl": "ovoz/bobil-13.wav",
+      "ovozKalit": "81c258325c"
     },
     {
       "type": "custom",
       "name": "bobil/ruins",
-      "duration": 14.9,
-      "ovoz": "Slowly, the city was abandoned and buried under sand. Then in 1899, German archaeologist Robert Koldewey began to dig, and Babylon returned to the light. His team spent eighteen years uncovering walls, palaces, and the Ishtar Gate."
+      "duration": 16.6,
+      "ovoz": "Slowly, the city was abandoned and buried under sand. Then in 1899, German archaeologist Robert Koldewey began to dig, and Babylon returned to the light. His team spent eighteen years uncovering walls, palaces, and the Ishtar Gate.",
+      "ovozFayl": "ovoz/bobil-14.wav",
+      "ovozKalit": "859d7a26e3"
     },
     {
       "type": "custom",
       "name": "bobil/outro",
-      "duration": 12,
-      "ovoz": "In 2019, Babylon became a UNESCO World Heritage Site. Four thousand years later, the Gate of the Gods still stands. Subscribe for more stories from history."
+      "duration": 11.1,
+      "ovoz": "In 2019, Babylon became a UNESCO World Heritage Site. Four thousand years later, the Gate of the Gods still stands. Subscribe for more stories from history.",
+      "ovozFayl": "ovoz/bobil-15.wav",
+      "ovozKalit": "1cd71fd02d"
     }
   ]
 }
