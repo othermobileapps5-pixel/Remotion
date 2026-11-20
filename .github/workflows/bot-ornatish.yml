@@ -1,0 +1,90 @@
+# Telegram botni Cloudflare'ga o'rnatish (qo'lda). Kerakli secret'lar:
+#   TELEGRAM_BOT_TOKEN, CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, GEMINI_API_KEY, BOT_GITHUB_TOKEN
+#   ixtiyoriy: OWNER_CHAT_ID (bo'lmasa — botga /start yozgan birinchi odam), YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN
+name: Bot o'rnatish
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Secret'larni tekshirish
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        run: |
+          miss=""
+          for v in TELEGRAM_BOT_TOKEN CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID GEMINI_API_KEY BOT_GITHUB_TOKEN; do
+            [ -z "${!v}" ] && miss="$miss $v"
+          done
+          if [ -n "$miss" ]; then echo "::error::Yo'q secret'lar:$miss"; exit 1; fi
+          echo "Hammasi bor ✓"
+
+      - name: Egasini aniqlash (chat ID)
+        id: owner
+        env:
+          OWNER_CHAT_ID: ${{ secrets.OWNER_CHAT_ID }}
+        run: |
+          if [ -n "$OWNER_CHAT_ID" ]; then echo "id=$OWNER_CHAT_ID" >> "$GITHUB_OUTPUT"; exit 0; fi
+          # webhook bo'lsa getUpdates ishlamaydi — avval o'chiramiz
+          curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/deleteWebhook" > /dev/null
+          ID=$(curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/getUpdates" | node -e '
+            let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const r=JSON.parse(s).result||[];
+            const m=r.map(u=>u.message).find(m=>m&&m.chat&&m.chat.type==="private");console.log(m?m.chat.id:"")})')
+          if [ -z "$ID" ]; then echo "::error::Botga Telegram'da /start yozing, keyin qayta ishga tushiring."; exit 1; fi
+          echo "::add-mask::$ID"
+          echo "id=$ID" >> "$GITHUB_OUTPUT"
+
+      - name: Cloudflare'ga o'rnatish
+        id: deploy
+        working-directory: bot
+        run: |
+          npx --yes wrangler@4 deploy 2>&1 | tee deploy.log
+          URL=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          if [ -z "$URL" ]; then echo "::error::workers.dev manzili topilmadi. Cloudflare → Workers & Pages sahifasini bir marta ochib, subdomain yarating."; exit 1; fi
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Bot secret'larini qo'yish
+        working-directory: bot
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          OWNER: ${{ steps.owner.outputs.id }}
+        run: |
+          WEBHOOK_SECRET=$(openssl rand -hex 24)
+          echo "WEBHOOK_SECRET=$WEBHOOK_SECRET" >> "$GITHUB_ENV"
+          echo "::add-mask::$WEBHOOK_SECRET"
+          node -e '
+            const e=process.env, o={TELEGRAM_BOT_TOKEN:e.TELEGRAM_BOT_TOKEN, GEMINI_API_KEY:e.GEMINI_API_KEY, BOT_GITHUB_TOKEN:e.BOT_GITHUB_TOKEN,
+              OWNER_CHAT_ID:e.OWNER, WEBHOOK_SECRET:process.argv[1]};
+            for (const k of ["YT_CLIENT_ID","YT_CLIENT_SECRET","YT_REFRESH_TOKEN"]) if (e[k]) o[k]=e[k];
+            require("fs").writeFileSync("/tmp/s.json", JSON.stringify(o));' "$WEBHOOK_SECRET"
+          npx --yes wrangler@4 secret bulk /tmp/s.json
+          rm -f /tmp/s.json
+
+      - name: Telegram webhook
+        run: |
+          curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setWebhook" \
+            -d "url=${{ steps.deploy.outputs.url }}" -d "secret_token=$WEBHOOK_SECRET" \
+            -d 'allowed_updates=["message","callback_query"]' -d "drop_pending_updates=true" | tee /tmp/wh.json
+          grep -q '"ok":true' /tmp/wh.json
+          curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d "chat_id=${{ steps.owner.outputs.id }}" \
+            --data-urlencode "text=✅ Bot o'rnatildi! /start yozing yoki ovozli xabar yuboring." > /dev/null
+          echo "### Bot o'rnatildi ✓" >> "$GITHUB_STEP_SUMMARY"

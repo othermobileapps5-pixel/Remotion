@@ -21,6 +21,10 @@ on:
       max_klip:
         description: "Eng ko'pi bilan nechta AI klip (xarajat chegarasi)"
         default: "10"
+      telegram:
+        description: "Tayyor videoni yuboriladigan Telegram chat (bot to'ldiradi; bo'sh qoldiring)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -137,3 +141,33 @@ jobs:
           name: ${{ github.event.inputs.video }}-mp4
           path: out/*.mp4
           retention-days: 7
+
+      # Bot so'ragan bo'lsa — tayyor videoni Telegram'ga yuboramiz (YouTube tugmasi bilan)
+      - name: Telegram'ga yuborish
+        if: ${{ github.event.inputs.telegram != '' }}
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+        run: |
+          [ -z "$TG" ] && { echo "TELEGRAM_BOT_TOKEN yo'q"; exit 0; }
+          F=$(ls out/*.mp4 | head -1)
+          NOM=$(node -e "const d=require('./videos/$VIDEO.json');console.log((d.youtube&&d.youtube.nom)||d.title||'$VIDEO')")
+          KB='{"inline_keyboard":[[{"text":"✅ YouTube'"'"'ga yuklash","callback_data":"u:'"$VIDEO"'"}]]}'
+          SIZE=$(stat -c %s "$F")
+          if [ "$SIZE" -lt 49000000 ]; then
+            curl -s -F chat_id="$CHAT" -F video=@"$F" -F supports_streaming=true -F caption="🎬 $NOM" -F reply_markup="$KB" \
+              "https://api.telegram.org/bot$TG/sendVideo" | head -c 200
+          else
+            URL="https://github.com/${{ github.repository }}/releases/download/videolar/$(basename "$F")"
+            curl -s "https://api.telegram.org/bot$TG/sendMessage" --data-urlencode chat_id="$CHAT" \
+              --data-urlencode text="🎬 $NOM (katta fayl): $URL" --data-urlencode reply_markup="$KB" | head -c 200
+          fi
+
+      - name: Telegram'ga xato xabari
+        if: ${{ failure() && github.event.inputs.telegram != '' }}
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+        run: |
+          [ -n "$TG" ] && curl -s "https://api.telegram.org/bot$TG/sendMessage" --data-urlencode chat_id="$CHAT" \
+            --data-urlencode text="⚠️ $VIDEO yig'ilmadi. Claude chatida «$VIDEO xatosini ko'r» deb yozing." > /dev/null || true

@@ -1,0 +1,10 @@
+name = "faro-kanal-bot"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+GITHUB_REPO = "othermobileapps5-pixel/Remotion"
+GITHUB_BRANCH = "claude/bot"
+GEMINI_MODEL = "gemini-3.8-flash"
+OVOZCHI = "google:Charon"
