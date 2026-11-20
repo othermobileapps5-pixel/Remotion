@@ -43,6 +43,29 @@ export const Dusk: React.FC<{ tone?: 'gold' | 'lapis' }> = ({ tone = 'gold' }) =
   );
 };
 
+// Bobil silueti (klip yo'q sahnalar uchun): devorlar, zikkurat, palmalar — sekin parallaks
+export const Skyline: React.FC = () => {
+  const { prog } = useScene();
+  const x = lerp(prog(0, 1, (t) => t), 0, -40);
+  const wall = new Array(40).fill(0).map((_, i) => `L${i * 50} 760 L${i * 50} 740 L${i * 50 + 25} 740 L${i * 50 + 25} 760`).join(' ');
+  return (
+    <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMax slice" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+      <g transform={`translate(${x * 0.5} 0)`} fill="#1A1206" opacity={0.85}>
+        <path d="M1150 820 L1150 700 L1190 700 L1190 610 L1230 610 L1230 520 L1270 520 L1270 440 L1310 440 L1310 380 L1390 380 L1390 440 L1430 440 L1430 520 L1470 520 L1470 610 L1510 610 L1510 700 L1550 700 L1550 820 Z" />
+      </g>
+      <g transform={`translate(${x} 0)`} fill="#0E0A04">
+        <path d={`M0 1080 L0 760 ${wall} L2000 760 L2000 1080 Z`} />
+        {[180, 260, 1700, 1790].map((px) => (
+          <g key={px}>
+            <path d={`M${px} 760 Q${px + 6} 680 ${px + 2} 600`} stroke="#0E0A04" strokeWidth={10} fill="none" />
+            <path d={`M${px + 2} 600 q-60 10 -80 40 M${px + 2} 600 q60 10 80 40 M${px + 2} 600 q-40 -30 -70 -20 M${px + 2} 600 q40 -30 70 -20`} stroke="#0E0A04" strokeWidth={12} fill="none" strokeLinecap="round" />
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+};
+
 // AI klip fon: sekin yaqinlashish + pastdan qorong'i parda (matn o'qilsin)
 export const ClipBg: React.FC<{ scene: CustomScene; tone?: 'gold' | 'lapis' }> = ({ scene, tone }) => {
   const { prog } = useScene();
@@ -52,7 +75,10 @@ export const ClipBg: React.FC<{ scene: CustomScene; tone?: 'gold' | 'lapis' }> =
       {scene.src ? (
         <OffthreadVideo src={resolveSrc(scene.src)} muted={scene.muted ?? true} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${z})` }} />
       ) : (
-        <Dusk tone={tone} />
+        <>
+          <Dusk tone={tone} />
+          <Skyline />
+        </>
       )}
       <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(10,15,31,0.55) 0%, rgba(10,15,31,0) 25%, rgba(10,15,31,0) 45%, rgba(10,15,31,0.85) 100%)' }} />
     </AbsoluteFill>
