@@ -391,7 +391,7 @@ async function onMessage(env, msg) {
   const havola = (text.match(/https?:\/\/(?:www\.|m\.)?(?:youtube\.com|youtu\.be)\/\S+/) || [])[0];
   if (havola && (text.startsWith('/referens') || text.trim() === havola)) {
     await dispatch(env, 'referens.yml', { url: havola, telegram: String(chat) });
-    return say(env, chat, '🔎 Referensni tahlil qilyapman (2–4 daqiqa): kesimlar tezligi, hook, tuzilma va bizga moslash g\'oyalari. Natija shu yerga keladi.');
+    return say(env, chat, "🔎 Referensni Gemini ko'ryapti (1–3 daqiqa): hook, tuzilma, temp va bizga moslash g'oyalari. Natija shu yerga keladi.");
   }
   if (text.startsWith('/referens')) return say(env, chat, 'Havolani ham yozing: /referens https://youtu.be/…');
   if (text.startsWith('/sozlama')) return sozlama(env, chat);
