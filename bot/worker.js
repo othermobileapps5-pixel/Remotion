@@ -280,7 +280,14 @@ async function onMessage(env, msg) {
     await say(env, chat, `🎙 <i>${esc(text)}</i>` + (zaxira ? "\n<i>(Gemini band edi — zaxira model eshitdi, xato bo'lsa matn bilan yozing)</i>" : ''));
   }
   if (!text) return;
+  // pastki doimiy tugmalar
+  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '❓ Yordam': '/yordam' };
+  if (TUGMA[text]) text = TUGMA[text];
+  if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
+    await say(env, chat, 'Tugmalar pastda 👇', {
+      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
+    });
     return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n\nPul sarflanadigan yoki YouTube'ga yuklanadigan har ishni faqat siz tugma bosganda qilaman.`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);

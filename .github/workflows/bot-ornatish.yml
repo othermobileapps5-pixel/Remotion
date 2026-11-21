@@ -92,6 +92,13 @@ jobs:
             -d "url=${{ steps.deploy.outputs.url }}" -d "secret_token=$WEBHOOK_SECRET" \
             -d 'allowed_updates=["message","callback_query"]' -d "drop_pending_updates=true" | tee /tmp/wh.json
           grep -q '"ok":true' /tmp/wh.json
+          # Telegram "Menu" tugmasidagi buyruqlar
+          curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setMyCommands" -H 'Content-Type: application/json' -d '{"commands":[
+            {"command":"trend","description":"Trendlar: /trend usa, /trend spanish, /trend usa trucking"},
+            {"command":"tahlil","description":"Kanal statistikasi va g‘oyalar"},
+            {"command":"yangi","description":"Yangi video ssenariysi: /yangi mavzu"},
+            {"command":"start","description":"Tugmalarni ko‘rsatish"},
+            {"command":"yordam","description":"Yordam"}]}' > /dev/null
           if [ -n "${{ steps.owner.outputs.id }}" ]; then
             curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d "chat_id=${{ steps.owner.outputs.id }}" \
               --data-urlencode "text=✅ Bot o'rnatildi! /start yozing yoki ovozli xabar yuboring." > /dev/null
