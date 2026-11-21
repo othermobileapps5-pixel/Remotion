@@ -139,6 +139,20 @@ async function loadScript(env, name) {
   const j = await r.json();
   return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, '')))));
 }
+// ---------- Imzo: tayyor Shorts'ga hook + kinetik subtitr (Whisper, bepul) + zoom + «Obuna bo'ling» ----------
+// Telegram'da video + izoh «Imzo» (yoki «Imzo: hook matni»); katta video — Drive Raw'ga, keyin «Imzo fayl.mp4: hook».
+async function imzo(env, chat, { fileId, size, driveFayl, hook }) {
+  if (fileId && size > 20 * 1024 * 1024) {
+    return say(env, chat, `📦 Video ${Math.round(size / 1048576)} MB — Telegram botlarga faqat 20 MB gacha beradi.\nVideoni Drive'dagi <b>Claude → Raw</b> papkasiga tashlang va yozing:\n<code>Imzo fayl_nomi.mp4: hook matni</code>`);
+  }
+  const name = `imzo-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}`;
+  const scene = { type: 'custom', name: 'shorts/klip', src: fileId ? `tg/${name}.mp4` : `drive/${driveFayl}`, duration: 10 };
+  if (hook) scene.hook = hook;
+  await saveScript(env, name, { title: `Imzo ${name}`, transition: 0, scenes: [scene] });
+  await dispatch(env, 'video-yasash.yml', { video: name, format: 'shorts', ai_kliplar: 'false', max_klip: '0', telegram: String(chat), tg_fayl: fileId || '' });
+  return say(env, chat, `✍️ <b>Imzo</b> qo'yilmoqda${hook ? `\nHook: <i>${esc(hook)}</i>` : "\n<i>(hook yo'q — keyingi safar «Imzo: sarlavha» deb yozing)</i>"}\nSubtitr (Whisper), zoom, «Obuna bo'ling» — bepul. 3–6 daqiqada shu yerga keladi va Drive Export'ga tushadi.`);
+}
+
 async function dispatch(env, workflow, inputs) {
   const r = await GH(env, `/actions/workflows/${workflow}/dispatches`, { method: 'POST', body: JSON.stringify({ ref: env.GITHUB_BRANCH, inputs }) });
   if (!r.ok) throw new Error(`Workflow ${r.status}: ${(await r.text()).slice(0, 200)}`);
@@ -374,16 +388,25 @@ async function onMessage(env, msg) {
     text = text.replace('⚠️(zaxira) ', '');
     await say(env, chat, `🎙 <i>${esc(text)}</i>` + (zaxira ? "\n<i>(Gemini band edi — zaxira model eshitdi, xato bo'lsa matn bilan yozing)</i>" : ''));
   }
-  if (!text) return;
+  if (!text && !msg.video && !msg.document) return;
   // pastki doimiy tugmalar
   const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '⚙️ Sozlama': '/sozlama', '❓ Yordam': '/yordam' };
   if (TUGMA[text]) text = TUGMA[text];
+  // Imzo
+  const vid = msg.video || (msg.document && /^video\//.test(msg.document.mime_type || '') ? msg.document : null);
+  if (/^\s*imzo\b/i.test(text) || (vid && !text)) {
+    const rest = text.replace(/^\s*imzo\b[\s:,-]*/i, '').trim();
+    if (vid) return imzo(env, chat, { fileId: vid.file_id, size: vid.file_size || 0, hook: rest });
+    const m = rest.match(/^(\S+\.(?:mp4|mov|m4v|webm))\s*[:,-]?\s*(.*)$/i);
+    if (m) return imzo(env, chat, { driveFayl: m[1], hook: m[2].trim() });
+    return say(env, chat, "✍️ <b>Imzo</b> — tayyor Shorts'ga hook, subtitr, zoom va «Obuna bo'ling» qo'shaman (bepul).\n\n• Videoni shu yerga yuboring, izohiga: <code>Imzo: hook matni</code>\n• 20 MB dan katta bo'lsa — Drive'dagi Claude → Raw'ga tashlang va yozing: <code>Imzo fayl.mp4: hook matni</code>");
+  }
   if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
     await say(env, chat, 'Tugmalar pastda 👇', {
       reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '⚙️ Sozlama' }], [{ text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
     });
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /sozlama — kunlik video: vaqt, trend, til, uzunlik, yuklash rejimi`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /sozlama — kunlik video: vaqt, trend, til, uzunlik, yuklash rejimi\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
   if (text.startsWith('/bugun')) return kunlik(env, chat);

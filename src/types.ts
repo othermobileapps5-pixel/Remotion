@@ -49,7 +49,22 @@ export type VideoScene = Voice & {
   muted?: boolean; // klip ovozini o'chirish (standart: o'chiq)
 };
 
-export type Scene = TitleScene | TextScene | ImageScene | VideoScene;
+// Koddan yasalgan sahna (src/videos/registry.tsx). "shorts/klip" — tayyor Shorts'ga imzo: hook, kinetik subtitr, zoom, «Obuna bo'ling»
+export type CustomScene = Voice & {
+  type: 'custom';
+  name: string;
+  duration: number;
+  src?: string;
+  muted?: boolean;
+  hook?: string;
+  til?: string;
+  subtitr?: { w: string; s: number; e: number }[]; // scripts/subtitr.mjs (Whisper) yozadi
+  zoomlar?: { t: number; x: number; y: number }[];
+  obuna?: string;
+  vertikal?: boolean;
+};
+
+export type Scene = TitleScene | TextScene | ImageScene | VideoScene | CustomScene;
 
 export type VideoProps = {
   title: string;

@@ -8,6 +8,7 @@ import { resolveSrc, sceneFrames, themeOf, transitionFrames } from './util';
 import { TitleSceneView } from './scenes/TitleSceneView';
 import { TextSceneView } from './scenes/TextSceneView';
 import { ImageSceneView, VideoSceneView } from './scenes/MediaScenes';
+import { CUSTOM_SCENES } from './videos/registry';
 
 const SceneView: React.FC<{ scene: Scene; theme: Theme }> = ({ scene, theme }) => {
   switch (scene.type) {
@@ -19,6 +20,10 @@ const SceneView: React.FC<{ scene: Scene; theme: Theme }> = ({ scene, theme }) =
       return <ImageSceneView scene={scene} theme={theme} />;
     case 'video':
       return <VideoSceneView scene={scene} theme={theme} />;
+    case 'custom': {
+      const Comp = CUSTOM_SCENES[scene.name];
+      return Comp ? <Comp theme={theme} scene={scene} /> : null;
+    }
     default:
       return null;
   }
