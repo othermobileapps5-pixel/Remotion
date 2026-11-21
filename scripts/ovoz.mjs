@@ -11,6 +11,7 @@ const [, , file] = process.argv;
 const KEY = process.env.AZURE_TTS_KEY;
 const GKEY = process.env.GEMINI_API_KEY;
 // pullik kalitda pul tugasa (402) yoki limit bo'lsa — bepul kalit (BOT_GEMINI_KEY) bilan qayta urinamiz
+const PULSIZ = new Set(); // 402 bergan kalitlar — keyingi sahnalarda o'tkazib yuboriladi
 const GKEYS = [GKEY, process.env.GEMINI_FREE_KEY].filter((k, i, a) => k && a.indexOf(k) === i);
 const GOOGLE_MODELS = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview'];
 const REGION = process.env.AZURE_TTS_REGION || 'eastus';
@@ -54,7 +55,7 @@ async function googleTts(s) {
   const voice = voiceOf(s).split(':')[1];
   const style = styleOf(s) || "o'zbek tilida, tabiiy, ishonchli va energik, tezroq sur'atda gapiradigan erkak diktor";
   let lastErr;
-  for (const key of GKEYS) for (const model of GOOGLE_MODELS) {
+  for (const key of GKEYS.filter((k) => !PULSIZ.has(k))) for (const model of GOOGLE_MODELS) {
     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
       method: 'POST',
       headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
@@ -65,7 +66,11 @@ async function googleTts(s) {
         generation_config: { speech_config: [{ voice }] },
       }),
     });
-    if (!res.ok) { lastErr = `${model}: ${res.status} ${(await res.text()).slice(0, 300)}`; console.log(`  ${lastErr}`); continue; }
+    if (!res.ok) {
+      lastErr = `${model}: ${res.status} ${(await res.text()).slice(0, 300)}`; console.log(`  ${lastErr}`);
+      if (res.status === 402 && GKEYS.length > 1) { PULSIZ.add(key); console.log('  pullik kalitda pul tugagan — bepul kalitga o\'tildi'); break; }
+      continue;
+    }
     const j = await res.json();
     const step = (j.steps || []).filter((x) => x.type === 'model_output').pop();
     const audio = step && (step.content || []).filter((c) => c.type === 'audio').pop();
