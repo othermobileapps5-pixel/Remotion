@@ -113,11 +113,11 @@ export const Klip: React.FC<{ theme: Theme; scene: CustomScene }> = ({ scene }) 
 
       {/* Kinetik subtitr: guruh sakrab chiqadi, aytilayotgan so'z sariq */}
       {group && t < ctaStart + 0.3 ? (
-        <div style={{ position: 'absolute', top: height * 0.6, left: width * 0.06, right: width * 0.12, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: `0 ${22 * u}px`, transform: `scale(${0.75 + 0.25 * groupPop})` }}>
+        <div style={{ position: 'absolute', top: height * 0.6, left: width * 0.06, right: width * 0.12, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: `${6 * u}px ${36 * u}px`, transform: `scale(${0.75 + 0.25 * groupPop})` }}>
           {group.map((w, i) => {
             const active = t >= w.s && t < w.e + 0.05;
             return (
-              <span key={i} style={{ fontFamily, fontWeight: 900, fontSize: 92 * u, lineHeight: 1.1, color: active ? YELLOW : '#fff', textTransform: 'uppercase', transform: `scale(${active ? 1.12 : 1})`, display: 'inline-block', textShadow: `0 ${6 * u}px ${18 * u}px rgba(0,0,0,0.6)`, ...stroke }}>
+              <span key={i} style={{ fontFamily, fontWeight: 900, fontSize: 92 * u, lineHeight: 1.1, color: active ? YELLOW : '#fff', textTransform: 'uppercase', transform: `scale(${active ? 1.07 : 1})`, display: 'inline-block', textShadow: `0 ${6 * u}px ${18 * u}px rgba(0,0,0,0.6)`, ...stroke }}>
                 {w.w}
               </span>
             );
