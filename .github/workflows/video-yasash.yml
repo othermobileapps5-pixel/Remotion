@@ -1,5 +1,5 @@
 # Video yasash: faqat qo'lda — Actions → «Video yasash» → yashil «Run workflow».
-# Natija (MP4) «videolar» relizida va Actions artifact'ida.
+# Natija (MP4) «videolar» relizida, Drive «Export» papkasida va Actions artifact'ida.
 name: Video yasash
 
 on:
@@ -48,8 +48,9 @@ jobs:
       - name: Paketlar
         run: npm install --no-audit --no-fund
 
-      - name: O'zbekcha ovoz (Azure)
+      - name: Hikoya ovozi (Gemini / Azure)
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           AZURE_TTS_KEY: ${{ secrets.AZURE_TTS_KEY }}
           AZURE_TTS_REGION: ${{ secrets.AZURE_TTS_REGION }}
         run: |
@@ -86,6 +87,13 @@ jobs:
             git commit -m "AI kliplar: $VIDEO"
             git push
           fi
+      - name: Drive'dagi manbalar (ssenariyda "drive/<fayl>")
+        env:
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        run: node scripts/drive.mjs fetch "videos/$VIDEO.json"
+
       - name: Render
         run: |
           mkdir -p out
@@ -105,6 +113,13 @@ jobs:
           gh release upload videolar out/*.mp4 --clobber
           echo "### Tayyor" >> "$GITHUB_STEP_SUMMARY"
           for f in out/*.mp4; do echo "- https://github.com/${{ github.repository }}/releases/download/videolar/$(basename "$f")" >> "$GITHUB_STEP_SUMMARY"; done
+
+      - name: Drive «Export» papkasiga yuklash
+        env:
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        run: for f in out/*.mp4; do node scripts/drive.mjs upload "$f" | tee -a "$GITHUB_STEP_SUMMARY"; done
 
       - uses: actions/upload-artifact@v4
         with:

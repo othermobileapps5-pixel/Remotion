@@ -1,0 +1,50 @@
+# Drive: qo'lda — tayyor videolarni (relizdan) Drive «Export» papkasiga yuklash yoki papkani ko'rish.
+name: Drive
+
+on:
+  workflow_dispatch:
+    inputs:
+      amal:
+        description: "Nima qilish kerak"
+        type: choice
+        options: [export, royxat]
+        default: export
+      fayl:
+        description: "«videolar» relizidagi fayl nomi(lar)i, vergul bilan (masalan venus-treyler.mp4)"
+        default: ""
+      papka:
+        description: "royxat uchun: raw / export / reference"
+        default: raw
+
+permissions:
+  contents: read
+
+jobs:
+  drive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+      GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+      GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Kalitlar borligini tekshirish
+        run: test -n "$GDRIVE_REFRESH_TOKEN" || { echo "::error::GDRIVE_* secret'lari qo'yilmagan"; exit 1; }
+      - name: Relizdan Export'ga
+        if: ${{ github.event.inputs.amal == 'export' }}
+        run: |
+          mkdir -p out
+          IFS=',' read -ra FILES <<< "${{ github.event.inputs.fayl }}"
+          for f in "${FILES[@]}"; do
+            f=$(echo "$f" | xargs); [ -z "$f" ] && continue
+            gh release download videolar -p "$f" -D out --clobber
+            node scripts/drive.mjs upload "out/$f" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+      - name: Papka ro'yxati
+        if: ${{ github.event.inputs.amal == 'royxat' }}
+        run: node scripts/drive.mjs list "${{ github.event.inputs.papka }}" | tee -a "$GITHUB_STEP_SUMMARY"

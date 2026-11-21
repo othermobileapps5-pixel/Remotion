@@ -13,7 +13,7 @@ if (!file || !fs.existsSync(file)) throw new Error(`Ssenariy topilmadi: ${file |
 const data = JSON.parse(fs.readFileSync(file, 'utf8'));
 const model = data.geminiModel || 'gemini-omni-1.2-flash';
 const scenes = data.scenes.map((scene, index) => ({ scene, index }))
-  .filter(({ scene }) => scene.type === 'video' && scene.prompt && !scene.src);
+  .filter(({ scene }) => (scene.type === 'video' || scene.type === 'custom') && scene.prompt && !scene.src);
 if (!scenes.length) {
   console.log('Gemini uchun yangi video sahnasi yo\'q (src allaqachon mavjud).');
   process.exit(0);
