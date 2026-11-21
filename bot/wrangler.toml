@@ -16,6 +16,6 @@ KUNLIK_DAQIQA = "3"
 [ai]
 binding = "AI"
 
-# Har kungi video: 15:00 UTC = 7:00 Los Anjeles (qishki vaqt; yozda 8:00)
+# Har soat tekshiradi; video sozlamadagi soatda (Los Anjeles vaqti) yasaladi — /sozlama
 [triggers]
-crons = ["0 15 * * *"]
+crons = ["0 * * * *"]

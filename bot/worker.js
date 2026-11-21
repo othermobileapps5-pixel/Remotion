@@ -173,17 +173,17 @@ async function ytStats(env) {
 }
 
 // ---------- amallar ----------
-async function newVideo(env, chat, { mavzu, format, til, soniya, avto }) {
+async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYuklash }) {
   await say(env, chat, `✍️ Ssenariy yozyapman: <b>${esc(mavzu)}</b> (${format}${soniya ? ', ~' + Math.round(soniya / 60) + ' daq' : ''})…`);
   const s = await gemini(env, [{ text: `Mavzu: ${mavzu}\nFormat: ${format}\nTil: ${til}${soniya ? `\nDavomiylik: ${soniya} soniya` : ''}` }], { json: true, system: SSENARIY });
   const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}`;
-  const data = { ...s, ovozchi: env.OVOZCHI || 'google:Charon', bot: { format, mavzu } };
+  const data = { ...s, ovozchi: env.OVOZCHI || 'google:Charon', ...(OVOZ_USLUB[til] ? { ovozUslubi: OVOZ_USLUB[til] } : {}), bot: { format, mavzu, til } };
   await saveScript(env, name, data);
   if (avto) {
-    // kunlik rejim: tasdiqsiz darrov yig'iladi (AI klipsiz, faqat ovoz — bir necha sent); tayyor video ✅ tugmasi bilan keladi
-    await dispatch(env, 'video-yasash.yml', { video: name, format, ai_kliplar: 'false', max_klip: '0', telegram: String(chat) });
+    // kunlik rejim: tasdiqsiz darrov yig'iladi (AI klipsiz, faqat ovoz — bir necha sent)
+    await dispatch(env, 'video-yasash.yml', { video: name, format, ai_kliplar: 'false', max_klip: '0', telegram: String(chat), avto_yuklash: avtoYuklash ? 'true' : 'false' });
     const total = (s.scenes || []).reduce((a, x) => a + (x.duration || 0), 0);
-    return say(env, chat, `🗓 <b>Bugungi video:</b> ${esc(s.title)}\n~${Math.round(total / 60 * 10) / 10} daq · ${s.scenes?.length} sahna\nYouTube nomi: <i>${esc(s.youtube?.nom)}</i>\n\n⏳ Yig'ilmoqda — tayyor bo'lgach shu yerga keladi, ✅ bossangiz YouTube'ga yuklanadi.`);
+    return say(env, chat, `🗓 <b>Bugungi video:</b> ${esc(s.title)}\n~${Math.round(total / 60 * 10) / 10} daq · ${s.scenes?.length} sahna\nYouTube nomi: <i>${esc(s.youtube?.nom)}</i>\n\n⏳ Yig'ilmoqda — tayyor bo'lgach shu yerga keladi${avtoYuklash ? ' va YouTube\'ga o\'zi yuklanadi.' : ', ✅ bossangiz YouTube\'ga yuklanadi.'}`);
   }
   const total = (s.scenes || []).reduce((a, x) => a + (x.duration || 0), 0);
   const lines = (s.scenes || []).map((x, i) => `${i + 1}. ${esc((x.text || '').replace(/\n/g, ' '))}`).join('\n');
@@ -274,11 +274,74 @@ G'oyalar: egasi o'zi yasay oladigan, trendga mos, aniq mavzu (har biri 4-8 so'z,
   await say(env, chat, `🧠 <b>Xulosa</b>\n${esc(r.xulosa || '')}\n\n💡 <b>G'oyalar</b> — bossangiz ssenariy yozaman:`, { reply_markup: { inline_keyboard: kb } });
 }
 
+// ---------- sozlamalar (GitHub'da bot/sozlama.json — bot o'zi o'qiydi/yozadi) ----------
+const SOZ_FAYL = 'bot/sozlama.json';
+let sozKesh = null, sozVaqt = 0;
+function sozStandart(env) {
+  return { yoqiq: true, soat: 7, joy: env.KUNLIK_JOY || 'usa', til: env.KUNLIK_TIL || 'uz', daqiqa: Number(env.KUNLIK_DAQIQA || 3), yuklash: 'tasdiq' };
+}
+async function sozOl(env) {
+  if (sozKesh && Date.now() - sozVaqt < 30000) return sozKesh;
+  const r = await GH(env, `/contents/${SOZ_FAYL}?ref=${env.GITHUB_BRANCH}`);
+  let s = sozStandart(env), sha;
+  if (r.ok) {
+    const j = await r.json();
+    sha = j.sha;
+    try { s = { ...s, ...JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, ''))))) }; } catch {}
+  }
+  sozKesh = { ...s, _sha: sha }; sozVaqt = Date.now();
+  return sozKesh;
+}
+async function sozYoz(env, s) {
+  const { _sha, ...toza } = s;
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(toza, null, 2) + '\n')));
+  const r = await GH(env, `/contents/${SOZ_FAYL}`, { method: 'PUT', body: JSON.stringify({ message: 'Bot: sozlama', content, branch: env.GITHUB_BRANCH, ...(_sha ? { sha: _sha } : {}) }) });
+  if (!r.ok) throw new Error(`Sozlamani saqlab bo'lmadi (${r.status})`);
+  const j = await r.json();
+  sozKesh = { ...toza, _sha: j.content?.sha }; sozVaqt = Date.now();
+}
+const JOY_NOM = { usa: '🇺🇸 USA', spanish: '🇪🇸 Spanish', uz: '🇺🇿 UZ', ru: '🇷🇺 RU' };
+const TIL_NOM = { uz: "O'zbek", en: 'English', es: 'Español', ru: 'Русский' };
+const OVOZ_USLUB = {
+  en: 'natural, confident and energetic male narrator speaking English at a brisk pace',
+  es: 'narrador masculino natural, seguro y enérgico, hablando español con ritmo ágil',
+  ru: 'естественный, уверенный и энергичный мужской диктор, говорит по-русски в бодром темпе',
+};
+function sozMatn(s) {
+  return `⚙️ <b>Kunlik video sozlamalari</b>\n\nHolat: ${s.yoqiq ? '✅ yoqiq' : '⏸ o\'chiq'}\nVaqt: har kuni ${s.soat}:00 (Los Anjeles)\nTrend: ${JOY_NOM[s.joy] || s.joy}\nVideo tili: ${TIL_NOM[s.til] || s.til}\nUzunlik: ${s.daqiqa <= 1 ? 'Shorts (~45 s)' : s.daqiqa + ' daqiqa'}\nYuklash: ${s.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\n\nO'zgartirish uchun tugmani bosing:`;
+}
+function sozTugma(s) {
+  const b = (t, k, v) => ({ text: (String(s[k]) === String(v) ? '● ' : '') + t, callback_data: `s:${k}:${v}` });
+  return { inline_keyboard: [
+    [{ text: s.yoqiq ? '⏸ To\'xtatish' : '▶️ Yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }, { text: '🎬 Hozir yasash', callback_data: 's:bugun:1' }],
+    [5, 7, 9, 12, 18, 21].map((h) => b(`${h}:00`, 'soat', h)),
+    Object.entries(JOY_NOM).map(([k, t]) => b(t, 'joy', k)),
+    Object.entries(TIL_NOM).map(([k, t]) => b(t, 'til', k)),
+    [b('Shorts', 'daqiqa', 1), b('3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
+    [b('✅ Tasdiq bilan', 'yuklash', 'tasdiq'), b('🤖 Avto yuklash', 'yuklash', 'avto')],
+  ] };
+}
+async function sozlama(env, chat) {
+  const s = await sozOl(env);
+  return say(env, chat, sozMatn(s), { reply_markup: sozTugma(s) });
+}
+async function sozBos(env, cb, k, v) {
+  const chat = cb.message.chat.id;
+  if (k === 'bugun') return kunlik(env, chat);
+  const s = await sozOl(env);
+  if (k === 'yoqiq') s.yoqiq = v === '1';
+  else if (k === 'soat' || k === 'daqiqa') s[k] = Number(v);
+  else if (['joy', 'til', 'yuklash'].includes(k)) s[k] = v;
+  await sozYoz(env, s);
+  await TG(env, 'editMessageText', { chat_id: chat, message_id: cb.message.message_id, text: sozMatn(sozKesh), parse_mode: 'HTML', reply_markup: sozTugma(sozKesh) });
+}
+
 // ---------- kunlik avtomatik video ----------
-// Har kuni (wrangler.toml → crons) yoki /bugun: trend → eng yaxshi g'oya → ~3 daq ssenariy → yig'ish → Telegram (✅ bilan)
+// Har kuni (sozlamadagi soatda) yoki /bugun: trend → eng yaxshi g'oya → ssenariy → yig'ish → Telegram (✅ yoki avto yuklash)
 async function kunlik(env, chat) {
-  const joy = env.KUNLIK_JOY || 'usa', til = env.KUNLIK_TIL || 'uz';
-  const soniya = Math.round(Number(env.KUNLIK_DAQIQA || 3) * 60);
+  const soz = await sozOl(env);
+  const joy = soz.joy, til = soz.til;
+  const soniya = Math.round(Number(soz.daqiqa || 3) * 60);
   await say(env, chat, `🗓 Kunlik video: trendni ko'ryapman (${esc(joy)})…`);
   const a = trendArg(joy);
   const vids = await ytTrend(env, a);
@@ -289,7 +352,7 @@ async function kunlik(env, chat) {
 FAQAT JSON: {"mavzu": "aniq mavzu, 5-10 so'z, ${til === 'uz' ? "o'zbekcha" : til}", "sabab": "nega aynan shu (1 qator, o'zbekcha)"}`,
   });
   await say(env, chat, `🎯 Tanlangan mavzu: <b>${esc(r.mavzu)}</b>\n<i>${esc(r.sabab || '')}</i>`);
-  return newVideo(env, chat, { mavzu: r.mavzu, format: 'youtube', til, soniya, avto: true });
+  return newVideo(env, chat, { mavzu: r.mavzu, format: soniya <= 60 ? 'shorts' : 'youtube', til, soniya: soniya <= 60 ? 0 : soniya, avto: true, avtoYuklash: soz.yuklash === 'avto' });
 }
 
 async function voiceToText(env, fileId) {
@@ -313,17 +376,18 @@ async function onMessage(env, msg) {
   }
   if (!text) return;
   // pastki doimiy tugmalar
-  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '❓ Yordam': '/yordam' };
+  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '⚙️ Sozlama': '/sozlama', '❓ Yordam': '/yordam' };
   if (TUGMA[text]) text = TUGMA[text];
   if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
     await say(env, chat, 'Tugmalar pastda 👇', {
-      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
+      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '⚙️ Sozlama' }], [{ text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
     });
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash (har kuni ertalab 7:00 da o'zi yasaladi)\n\nYouTube'ga faqat siz ✅ bosganda yuklayman.`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• /sozlama — kunlik video: vaqt, trend, til, uzunlik, yuklash rejimi`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
   if (text.startsWith('/bugun')) return kunlik(env, chat);
+  if (text.startsWith('/sozlama')) return sozlama(env, chat);
   if (text.startsWith('/trend')) return trend(env, chat, text.replace(/^\/trend\S*/, ''));
   if (text.startsWith('/yangi')) return newVideo(env, chat, { mavzu: text.replace('/yangi', '').trim() || 'kanal mavzusida qiziqarli fakt', format: 'shorts', til: 'uz' });
   const n = await gemini(env, [{ text }], { json: true, system: NIYAT });
@@ -337,6 +401,7 @@ async function onCallback(env, cb) {
   const chat = cb.message.chat.id;
   const [k, name, fmt] = cb.data.split(':');
   await TG(env, 'answerCallbackQuery', { callback_query_id: cb.id });
+  if (k === 's') return sozBos(env, cb, name, fmt); // sozlama tugmalari (xabar qoladi, yangilanadi)
   if (k === 'n') return newVideo(env, chat, { mavzu: cb.data.slice(2), format: 'shorts', til: 'uz' }); // trend g'oyasi (tugmalar qoladi)
   await TG(env, 'editMessageReplyMarkup', { chat_id: chat, message_id: cb.message.message_id, reply_markup: { inline_keyboard: [] } });
   if (k === 'x') return say(env, chat, '❌ Bekor qilindi.');
@@ -397,11 +462,15 @@ export default {
     return new Response('ok');
   },
   // Cloudflare cron (wrangler.toml → [triggers]) — har kungi video
+  // har soat ishga tushadi; sozlamadagi soat (Los Anjeles vaqti, yoz/qish o'zi hisoblanadi) kelganda video yasaydi
   async scheduled(event, env, ctx) {
     const chat = env.OWNER_CHAT_ID;
     if (!chat) return;
-    ctx.waitUntil(
-      kunlik(env, chat).catch((e) => say(env, chat, `⚠️ Kunlik video xatosi: ${esc(e.message).slice(0, 400)}`)),
-    );
+    ctx.waitUntil((async () => {
+      const s = await sozOl(env);
+      const soat = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', hourCycle: 'h23' }).format(new Date(event.scheduledTime || Date.now())));
+      if (!s.yoqiq || soat !== Number(s.soat)) return;
+      await kunlik(env, chat);
+    })().catch((e) => say(env, chat, `⚠️ Kunlik video xatosi: ${esc(e.message).slice(0, 400)}`)));
   },
 };

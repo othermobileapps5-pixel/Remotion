@@ -25,9 +25,14 @@ on:
         description: "Tayyor videoni yuboriladigan Telegram chat (bot to'ldiradi; bo'sh qoldiring)"
         required: false
         default: ""
+      avto_yuklash:
+        description: "Tayyor bo'lgach YouTube'ga o'zi yuklansin (bot kunlik avto rejimi)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: video-${{ github.event.inputs.video }}
@@ -154,6 +159,7 @@ jobs:
           F=$(ls out/*.mp4 | head -1)
           NOM=$(node -e "const d=require('./videos/$VIDEO.json');console.log((d.youtube&&d.youtube.nom)||d.title||'$VIDEO')")
           KB='{"inline_keyboard":[[{"text":"✅ YouTube'"'"'ga yuklash","callback_data":"u:'"$VIDEO"'"}]]}'
+          if [ "${{ github.event.inputs.avto_yuklash }}" = "true" ]; then KB='{"inline_keyboard":[]}'; NOM="$NOM — 🤖 YouTube'ga o'zi yuklanmoqda"; fi
           SIZE=$(stat -c %s "$F")
           if [ "$SIZE" -lt 49000000 ]; then
             curl -s -F chat_id="$CHAT" -F video=@"$F" -F supports_streaming=true -F caption="🎬 $NOM" -F reply_markup="$KB" \
@@ -163,6 +169,14 @@ jobs:
             curl -s "https://api.telegram.org/bot$TG/sendMessage" --data-urlencode chat_id="$CHAT" \
               --data-urlencode text="🎬 $NOM (katta fayl): $URL" --data-urlencode reply_markup="$KB" | head -c 200
           fi
+
+      # Kunlik avto rejim: tasdiqsiz YouTube'ga yuklash (alohida «YouTube yuklash» jarayoni)
+      - name: YouTube'ga avtomatik yuklash
+        if: ${{ github.event.inputs.avto_yuklash == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHAT: ${{ github.event.inputs.telegram }}
+        run: gh workflow run youtube-yuklash.yml --repo "${{ github.repository }}" --ref "${{ github.ref_name }}" -f video="$VIDEO" -f telegram="$CHAT"
 
       - name: Telegram'ga xato xabari
         if: ${{ failure() && github.event.inputs.telegram != '' }}
