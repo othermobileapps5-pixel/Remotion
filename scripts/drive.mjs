@@ -4,6 +4,7 @@
 //   node scripts/drive.mjs upload out/video.mp4 [papkaId]   → Export papkasiga yuklaydi (shu nomli fayl bo'lsa — yangilaydi)
 //   node scripts/drive.mjs fetch videos/<nom>.json          → ssenariydagi "drive/<fayl>" manbalarni Drive'dan public/drive/ ga oladi
 //   node scripts/drive.mjs list [papkaId]                   → papkadagi fayllar ro'yxati
+//   node scripts/drive.mjs get <fayl> <chiqish>             → Claude papkasidan nom bo'yicha yuklab olish
 import fs from 'node:fs';
 import path from 'node:path';
 import { Readable } from 'node:stream';
@@ -122,6 +123,14 @@ async function fetchFor(scriptFile) {
 
 const [, , cmd, a, b] = process.argv;
 if (cmd === 'upload') await upload(a, b || FOLDERS.export);
+else if (cmd === 'get') {
+  // node scripts/drive.mjs get <fayl nomi> <chiqish yo'li> — Claude papkasidan (Raw va boshqalar) nom bo'yicha
+  const f = await findByName(a);
+  if (!f) throw new Error(`Drive'da topilmadi: ${a} (Claude papkasi ichida bo'lishi kerak)`);
+  console.log(`▶ ${a} (${(Number(f.size || 0) / 1e6).toFixed(1)} MB)…`);
+  await download(f.id, b);
+  console.log(`  ✓ ${b}`);
+}
 else if (cmd === 'fetch') await fetchFor(a);
 else if (cmd === 'list') {
   for (const f of await list(FOLDERS[a] || a || FOLDERS.claude)) console.log(`${f.mimeType.includes('folder') ? '📁' : '📄'} ${f.name}  ${f.size ? (f.size / 1e6).toFixed(1) + ' MB' : ''}`);

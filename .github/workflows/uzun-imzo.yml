@@ -1,0 +1,94 @@
+# Uzun imzo: qo'lda. Drive'dagi uzun videoga imzo — faqat boshi, o'rtasi va oxiri qayta yasaladi (butun video render qilinmaydi).
+name: Uzun imzo
+
+on:
+  workflow_dispatch:
+    inputs:
+      fayl:
+        description: "Drive'dagi video nomi (Claude → Raw), masalan intervyu.mp4"
+        required: true
+      hook:
+        description: "Boshidagi hook sarlavha (ixtiyoriy)"
+        default: ""
+      til:
+        description: "Til (bo'sh — Whisper o'zi aniqlaydi): uz / en / ru / tr"
+        default: ""
+      telegram:
+        description: "Natija yuboriladigan Telegram chat (bot to'ldiradi; bo'sh qoldiring)"
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  imzo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      FAYL: ${{ github.event.inputs.fayl }}
+      GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+      GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+      GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
+      - name: Whisper modeli keshi
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small-v1
+      - name: Paketlar
+        run: |
+          npm install --no-audit --no-fund
+          pip install -q faster-whisper
+
+      - name: Videoni olish
+        run: |
+          mkdir -p public/uzun
+          NOM=$(basename "$FAYL")
+          echo "NOM=${NOM%.*}" >> "$GITHUB_ENV"
+          if [ -f "public/$FAYL" ]; then cp "public/$FAYL" "public/uzun/$NOM"; else node scripts/drive.mjs get "$FAYL" "public/uzun/$NOM"; fi
+          echo "SRC=uzun/$NOM" >> "$GITHUB_ENV"
+
+      - name: Imzo (3 oyna + ffmpeg)
+        run: |
+          mkdir -p out
+          node scripts/uzun-imzo.mjs "$SRC" "out/$NOM-imzo.mp4" --hook "${{ github.event.inputs.hook }}" --til "${{ github.event.inputs.til }}"
+
+      - name: «videolar» relizga yuklash
+        run: |
+          gh release view videolar >/dev/null 2>&1 || gh release create videolar --title "Videolar" --notes "Tayyor videolar"
+          gh release upload videolar "out/$NOM-imzo.mp4" --clobber
+
+      - name: Drive «Export» papkasiga
+        id: drive
+        run: |
+          node scripts/drive.mjs upload "out/$NOM-imzo.mp4" | tee drive.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "link=$(grep -o 'https://drive[^ ]*' drive.txt | head -1)" >> "$GITHUB_OUTPUT"
+
+      - name: Telegram'ga
+        if: ${{ github.event.inputs.telegram != '' }}
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+          LINK: ${{ steps.drive.outputs.link }}
+        run: |
+          F="out/$NOM-imzo.mp4"
+          if [ $(stat -c%s "$F") -lt 49000000 ]; then
+            curl -s -F chat_id="$CHAT" -F video=@"$F" -F caption="✍️ Imzo tayyor: $NOM" "https://api.telegram.org/bot$TG/sendVideo" >/dev/null
+          else
+            curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=✍️ Imzo tayyor: $NOM (Telegram uchun katta — Drive Export'da): $LINK" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null
+          fi
+
+      - name: Xato bo'lsa Telegram'ga
+        if: ${{ failure() && github.event.inputs.telegram != '' }}
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+        run: |
+          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Uzun imzo xatosi ($FAYL): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null
