@@ -1,0 +1,61 @@
+{
+  "title": "30 soniyaliq video",
+  "theme": {
+    "bg": "#0b1020",
+    "accent": "#ffcc33",
+    "text": "#ffffff"
+  },
+  "scenes": [
+    {
+      "type": "title",
+      "text": "30 soniya\nvideo",
+      "subtitle": "Qanday yaratamiz?",
+      "duration": 4,
+      "ovoz": "30 soniyaliq video qanday yaratamiz?"
+    },
+    {
+      "type": "text",
+      "text": "1. Mavzu tanlang",
+      "duration": 5,
+      "ovoz": "Avvalo, video mavzusini tanlaymiz."
+    },
+    {
+      "type": "text",
+      "text": "2. Ssenariy",
+      "duration": 5,
+      "ovoz": "Keyin, ssenariy yozamiz."
+    },
+    {
+      "type": "text",
+      "text": "3. Tasvir",
+      "duration": 5,
+      "ovoz": "Tasvirlar tayyorlaymiz."
+    },
+    {
+      "type": "text",
+      "text": "4. Montaj",
+      "duration": 5,
+      "ovoz": "Montaj qilamiz."
+    },
+    {
+      "type": "text",
+      "text": "5. Obuna",
+      "duration": 5,
+      "ovoz": "Obuna bo'ling va ko'proq bilib olasiz."
+    }
+  ],
+  "youtube": {
+    "nom": "30 soniya video",
+    "tavsif": "30 soniya video yaratish bo'yicha qisqa ko'rsatma",
+    "teglar": [
+      "video",
+      "montaj",
+      "yaratish"
+    ]
+  },
+  "ovozchi": "google:Charon",
+  "bot": {
+    "format": "shorts",
+    "mavzu": "30 s moution video yarat"
+  }
+}
