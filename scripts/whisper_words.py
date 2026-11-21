@@ -18,7 +18,13 @@ words = []
 for seg in segments:
     for w in seg.words or []:
         t = w.word.strip()
-        if t:
+        if not t:
+            continue
+        # "-six", "'s", "," kabi bo'laklarni oldingi so'zga qo'shish
+        if words and (t[0] in "-'’.,!?;:%" or not any(ch.isalnum() for ch in t)):
+            words[-1]["w"] += t
+            words[-1]["e"] = round(w.end, 2)
+        else:
             words.append({"w": t, "s": round(w.start, 2), "e": round(w.end, 2)})
 
 # Zoom joylari: 0.1 s lik bo'laklar bo'yicha ovoz kuchi, keskin ko'tarilgan 2–3 joy
