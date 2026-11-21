@@ -1,7 +1,8 @@
-// Shorts uchun Gemini tahlili: videodan nutq matni (vaqtlari bilan), hook sarlavha, 2–3 ta zoom joyi.
+// Shorts tahlili: videodan nutq matni (so'z vaqtlari bilan) va 2–3 ta zoom joyi.
+//   • Standart — Whisper (bepul, GitHub serverida): so'zlar + ovoz eng baland joylar. Hook'ni egasi yozadi ("hook").
+//   • Ixtiyoriy — Gemini (ssenariyda "tahlil": "gemini", pullik): hook ham taklif qiladi.
 // Ishlatish: node scripts/subtitr.mjs videos/<nom>.json
-// "shorts/klip" sahnalari uchun: subtitr, hook (bo'sh bo'lsa), zoomlar (bo'sh bo'lsa), til, duration yoziladi.
-// Natija ssenariyga saqlanadi — qayta ishga tushganda pul to'lanmaydi.
+// Natija ssenariyga saqlanadi — qayta ishga tushganda qayta hisoblanmaydi.
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -15,7 +16,8 @@ if (!todo.length) {
   console.log('Subtitr kerak emas.');
   process.exit(0);
 }
-if (!KEY) throw new Error("GEMINI_API_KEY yo'q — subtitr yasab bo'lmaydi.");
+const useGemini = data.tahlil === 'gemini';
+if (useGemini && !KEY) throw new Error("GEMINI_API_KEY yo'q — Gemini tahlili ishlamaydi (\"tahlil\" ni olib tashlang, Whisper ishlaydi).");
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const localPath = (src) => path.join('public', src.replace(/^\/+/, ''));
@@ -93,6 +95,29 @@ Rules:
 - zoomlar: pick only 2 or 3 of the most important or emotional moments for a quick punch-in zoom; x/y is where the key subject is in the frame. Not in the first 1.5 s.
 - Do not add any words that are not spoken.`;
 
+// ---------- Whisper (standart, bepul) ----------
+if (!useGemini) {
+  for (const s of todo) {
+    const f = localPath(s.src);
+    if (!fs.existsSync(f)) throw new Error(`Video topilmadi: ${f} (Drive'dan olinmaganmi?)`);
+    const meta = probe(f);
+    console.log(`▶ Whisper: ${s.src} — ${meta.duration.toFixed(1)} s, ${meta.width}×${meta.height}`);
+    const out = JSON.parse(
+      execFileSync('python3', ['scripts/whisper_words.py', f, data.whisperModel || 'small', s.til || data.til || ''], { maxBuffer: 64 * 1024 * 1024 }).toString(),
+    );
+    s.til = s.til || out.til || 'en';
+    s.subtitr = out.words;
+    if (!s.zoomlar) s.zoomlar = out.zoomlar;
+    if (s.hook === undefined) s.hook = '';
+    s.duration = +meta.duration.toFixed(2);
+    s.vertikal = meta.height > meta.width;
+    fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
+    console.log(`  ✓ til=${s.til}, ${out.words.length} so'z, zoom=${s.zoomlar.length}${s.hook ? `, hook="${s.hook}"` : " (hook yo'q)"}`);
+  }
+  process.exit(0);
+}
+
+// ---------- Gemini (ixtiyoriy) ----------
 const model = await pickModel();
 console.log(`Gemini model: ${model}`);
 for (const s of todo) {

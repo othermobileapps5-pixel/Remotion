@@ -6,7 +6,8 @@
       "type": "custom",
       "name": "shorts/klip",
       "src": "test/shorts-sinov.mp4",
-      "duration": 12.0
+      "duration": 12.0,
+      "hook": "The switch that almost killed them"
     }
   ]
 }
