@@ -1,15 +1,19 @@
 # Whisper (bepul, mahalliy): videodan so'zlar va vaqtlari + ovoz eng baland 2–3 joy (zoom uchun).
-# python3 scripts/whisper_words.py <video> [model] [til]
-import json, sys
+# python3 scripts/whisper_words.py <16kHz mono WAV> [model] [til]   (WAV ni subtitr.mjs ffmpeg bilan tayyorlaydi)
+import json, sys, wave
 import numpy as np
-from faster_whisper import WhisperModel, decode_audio
+from faster_whisper import WhisperModel
 
 path = sys.argv[1]
 model_name = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] else "small"
 lang = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] else None
 
+sr = 16000
+with wave.open(path, "rb") as wf:
+    audio = np.frombuffer(wf.readframes(wf.getnframes()), dtype=np.int16).astype(np.float32) / 32768.0
+
 model = WhisperModel(model_name, device="cpu", compute_type="int8")
-segments, info = model.transcribe(path, word_timestamps=True, language=lang, vad_filter=True)
+segments, info = model.transcribe(audio, word_timestamps=True, language=lang, vad_filter=True)
 words = []
 for seg in segments:
     for w in seg.words or []:
@@ -18,8 +22,6 @@ for seg in segments:
             words.append({"w": t, "s": round(w.start, 2), "e": round(w.end, 2)})
 
 # Zoom joylari: 0.1 s lik bo'laklar bo'yicha ovoz kuchi, keskin ko'tarilgan 2–3 joy
-sr = 16000
-audio = decode_audio(path, sampling_rate=sr)
 dur = len(audio) / sr
 win = sr // 10
 n = len(audio) // win

@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import os from 'node:os';
 
 const [, , file] = process.argv;
 const data = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -102,8 +103,17 @@ if (!useGemini) {
     if (!fs.existsSync(f)) throw new Error(`Video topilmadi: ${f} (Drive'dan olinmaganmi?)`);
     const meta = probe(f);
     console.log(`▶ Whisper: ${s.src} — ${meta.duration.toFixed(1)} s, ${meta.width}×${meta.height}`);
+    // ovozni 16 kHz mono WAV ga ajratish (tizim ffmpeg'i yoki Remotion'niki)
+    const wav = path.join(os.tmpdir(), `whisper-${process.pid}.wav`);
+    const ffArgs = ['-loglevel', 'error', '-y', '-i', f, '-vn', '-ac', '1', '-ar', '16000', '-c:a', 'pcm_s16le', wav];
+    try {
+      execFileSync('ffmpeg', ffArgs, { stdio: 'inherit' });
+    } catch (e) {
+      if (e.code !== 'ENOENT') throw e;
+      execFileSync('npx', ['remotion', 'ffmpeg', ...ffArgs], { stdio: 'inherit' });
+    }
     const out = JSON.parse(
-      execFileSync('python3', ['scripts/whisper_words.py', f, data.whisperModel || 'small', s.til || data.til || ''], { maxBuffer: 64 * 1024 * 1024 }).toString(),
+      execFileSync('python3', ['scripts/whisper_words.py', wav, data.whisperModel || 'small', s.til || data.til || ''], { maxBuffer: 64 * 1024 * 1024 }).toString(),
     );
     s.til = s.til || out.til || 'en';
     s.subtitr = out.words;
