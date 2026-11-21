@@ -10,6 +10,8 @@ import crypto from 'node:crypto';
 const [, , file] = process.argv;
 const KEY = process.env.AZURE_TTS_KEY;
 const GKEY = process.env.GEMINI_API_KEY;
+// pullik kalitda pul tugasa (402) yoki limit bo'lsa — bepul kalit (BOT_GEMINI_KEY) bilan qayta urinamiz
+const GKEYS = [GKEY, process.env.GEMINI_FREE_KEY].filter((k, i, a) => k && a.indexOf(k) === i);
 const GOOGLE_MODELS = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview'];
 const REGION = process.env.AZURE_TTS_REGION || 'eastus';
 const VOICES = { madina: 'uz-UZ-MadinaNeural', sardor: 'uz-UZ-SardorNeural' };
@@ -52,10 +54,10 @@ async function googleTts(s) {
   const voice = voiceOf(s).split(':')[1];
   const style = styleOf(s) || "o'zbek tilida, tabiiy, ishonchli va energik, tezroq sur'atda gapiradigan erkak diktor";
   let lastErr;
-  for (const model of GOOGLE_MODELS) {
+  for (const key of GKEYS) for (const model of GOOGLE_MODELS) {
     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
       method: 'POST',
-      headers: { 'x-goog-api-key': GKEY, 'Content-Type': 'application/json' },
+      headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model,
         input: [{ type: 'user_input', content: [{ type: 'text', text: s.ovoz.trim(), annotations: [{ type: 'speech_metadata', style }] }] }],
