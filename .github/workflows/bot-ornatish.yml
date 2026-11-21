@@ -24,7 +24,8 @@ jobs:
 
       - name: Secret'larni tekshirish
         env:
-          GEMINI_API_KEY: ${{ secrets.BOT_GEMINI_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.BOT_GEMINI_KEY }}
+          GEMINI_FREE_KEY: ${{ secrets.BOT_GEMINI_KEY }}
           BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
           miss=""
@@ -67,7 +68,8 @@ jobs:
       - name: Bot secret'larini qo'yish
         working-directory: bot
         env:
-          GEMINI_API_KEY: ${{ secrets.BOT_GEMINI_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.BOT_GEMINI_KEY }}
+          GEMINI_FREE_KEY: ${{ secrets.BOT_GEMINI_KEY }}
           BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -80,6 +82,7 @@ jobs:
           node -e '
             const e=process.env, o={TELEGRAM_BOT_TOKEN:e.TELEGRAM_BOT_TOKEN, GEMINI_API_KEY:e.GEMINI_API_KEY, BOT_GITHUB_TOKEN:e.BOT_GITHUB_TOKEN,
               WEBHOOK_SECRET:process.argv[1]};
+            if (e.GEMINI_FREE_KEY) o.GEMINI_FREE_KEY=e.GEMINI_FREE_KEY;
             if (e.OWNER) o.OWNER_CHAT_ID=e.OWNER;
             for (const k of ["YT_CLIENT_ID","YT_CLIENT_SECRET","YT_REFRESH_TOKEN"]) if (e[k]) o[k]=e[k];
             require("fs").writeFileSync("/tmp/s.json", JSON.stringify(o));' "$WEBHOOK_SECRET"
@@ -95,6 +98,7 @@ jobs:
           # Telegram "Menu" tugmasidagi buyruqlar
           curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setMyCommands" -H 'Content-Type: application/json' -d '{"commands":[
             {"command":"trend","description":"Trendlar: /trend usa, /trend spanish, /trend usa trucking"},
+            {"command":"bugun","description":"Kunlik videoni hozir yasash"},
             {"command":"tahlil","description":"Kanal statistikasi va g‘oyalar"},
             {"command":"yangi","description":"Yangi video ssenariysi: /yangi mavzu"},
             {"command":"start","description":"Tugmalarni ko‘rsatish"},

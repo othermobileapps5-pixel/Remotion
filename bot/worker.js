@@ -17,6 +17,7 @@ const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<'
 
 // ---------- Gemini ----------
 let geminiBandGacha = 0; // Gemini band bo'lsa shu vaqtgacha to'g'ridan-to'g'ri Cloudflare
+const pulTugagan = new Set(); // 402 bergan kalitlar (shu nusxa ishlaguncha)
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Model band bo'lsa (503/429) qayta uriniladi, keyin zaxira modelga o'tiladi.
@@ -29,30 +30,36 @@ async function gemini(env, parts, { json = false, system = '' } = {}) {
     generationConfig: json ? { responseMimeType: 'application/json', temperature: 0.8 } : { temperature: 0.7 },
   });
   let last = 0;
+  // avval pullik kalit, pul tugasa (402) — bepul zaxira kalit
+  const kalitlar = [env.GEMINI_API_KEY, env.GEMINI_FREE_KEY].filter((k, i, a) => k && a.indexOf(k) === i && !pulTugagan.has(k));
   const ovoz = parts.some((p) => p.inline_data);
   // matn uchun: Gemini band bo'lsa darrov zaxira; ovoz uchun har doim Gemini'ga urinamiz (o'zbekchani yaxshi tushunadi)
   if (!ovoz && Date.now() < geminiBandGacha && env.AI) return cfAI(env, parts, { json, system });
-  for (const model of models) {
-    for (let urinish = 0; urinish < (model === models[0] ? (ovoz ? 3 : 2) : (ovoz ? 2 : 1)); urinish++) {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-        method: 'POST',
-        headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'Content-Type': 'application/json' },
-        body,
-      });
-      if (res.ok) {
-        const j = await res.json();
-        const text = (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('');
-        return json ? JSON.parse(text.replace(/^```(json)?|```$/g, '').trim()) : text;
+  kalit: for (const key of kalitlar) {
+    for (const model of models) {
+      for (let urinish = 0; urinish < (model === models[0] ? (ovoz ? 3 : 2) : (ovoz ? 2 : 1)); urinish++) {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: 'POST',
+          headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
+          body,
+        });
+        if (res.ok) {
+          const j = await res.json();
+          const text = (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('');
+          return json ? JSON.parse(text.replace(/^```(json)?|```$/g, '').trim()) : text;
+        }
+        last = res.status;
+        await res.text();
+        if (res.status === 402) { pulTugagan.add(key); continue kalit; } // pul tugagan — keyingi kalit
+        if (res.status === 400 || res.status === 403) throw new Error(`Gemini kaliti ishlamadi (${res.status}). Kalitni tekshiring.`);
+        if (res.status === 404) break; // bu model yo'q — keyingisi
+        if (res.status === 503 || res.status === 429 || res.status >= 500) { if (ovoz) await sleep(1500 * (urinish + 1)); else if (urinish === 0 && model === models[0]) await sleep(1200); continue; }
+        break;
       }
-      last = res.status;
-      await res.text();
-      if (res.status === 402) throw new Error("Gemini hisobida pul tugagan (402). AI Studio → Billing'da to'ldiring yoki BOT_GEMINI_KEY ga bepul kalit qo'ying.");
-      if (res.status === 400 || res.status === 403) throw new Error(`Gemini kaliti ishlamadi (${res.status}). Kalitni tekshiring.`);
-      if (res.status === 404) break; // bu model yo'q — keyingisi
-      if (res.status === 503 || res.status === 429 || res.status >= 500) { if (ovoz) await sleep(1500 * (urinish + 1)); else if (urinish === 0 && model === models[0]) await sleep(1200); continue; }
-      break;
     }
+    break; // kalit ishladi, lekin modellar band — zaxiraga
   }
+  if (last === 402 && !env.AI) throw new Error("Gemini hisobida pul tugagan (402). AI Studio → Billing'da to'ldiring.");
   if (!ovoz && (last === 503 || last === 429 || last >= 500)) geminiBandGacha = Date.now() + 180000;
   // Zaxira: Cloudflare Workers AI
   if (env.AI) {
@@ -101,6 +108,7 @@ Qoidalar:
 - Moliya, sog'liq mavzularida maslahat berma, faqat umumiy ta'lim; oxirida "Maslahat emas" kabi eslatma qo'y.
 - 1-sahna kuchli hook (savol yoki hayratli fakt). Oxirgi sahna — chaqiriq (obuna/saqlash).
 - Shorts: 6-9 sahna, jami 35-50 soniya. YouTube: 10-16 sahna, 70-120 soniya.
+- Agar "Davomiylik" berilsa — aynan shunga mosla (har sahna ~6-8 soniya; masalan 180 soniya ≈ 24-28 sahna), mavzuni chuqurroq, bo'limlarga bo'lib yorit.
 - Har sahnada "ovoz" — o'qiladigan gap (sahna matnidan uzunroq bo'lishi mumkin, 1-2 gap). "text" — ekrandagi qisqa matn (5-9 so'z, \\n bilan 2 qator).
 - duration: ovoz uzunligiga mos (o'zbekcha ~2.3 so'z/soniya) + 0.8.
 FAQAT JSON qaytar:
@@ -165,12 +173,18 @@ async function ytStats(env) {
 }
 
 // ---------- amallar ----------
-async function newVideo(env, chat, { mavzu, format, til }) {
-  await say(env, chat, `✍️ Ssenariy yozyapman: <b>${esc(mavzu)}</b> (${format})…`);
-  const s = await gemini(env, [{ text: `Mavzu: ${mavzu}\nFormat: ${format}\nTil: ${til}` }], { json: true, system: SSENARIY });
+async function newVideo(env, chat, { mavzu, format, til, soniya, avto }) {
+  await say(env, chat, `✍️ Ssenariy yozyapman: <b>${esc(mavzu)}</b> (${format}${soniya ? ', ~' + Math.round(soniya / 60) + ' daq' : ''})…`);
+  const s = await gemini(env, [{ text: `Mavzu: ${mavzu}\nFormat: ${format}\nTil: ${til}${soniya ? `\nDavomiylik: ${soniya} soniya` : ''}` }], { json: true, system: SSENARIY });
   const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}`;
   const data = { ...s, ovozchi: env.OVOZCHI || 'google:Charon', bot: { format, mavzu } };
   await saveScript(env, name, data);
+  if (avto) {
+    // kunlik rejim: tasdiqsiz darrov yig'iladi (AI klipsiz, faqat ovoz — bir necha sent); tayyor video ✅ tugmasi bilan keladi
+    await dispatch(env, 'video-yasash.yml', { video: name, format, ai_kliplar: 'false', max_klip: '0', telegram: String(chat) });
+    const total = (s.scenes || []).reduce((a, x) => a + (x.duration || 0), 0);
+    return say(env, chat, `🗓 <b>Bugungi video:</b> ${esc(s.title)}\n~${Math.round(total / 60 * 10) / 10} daq · ${s.scenes?.length} sahna\nYouTube nomi: <i>${esc(s.youtube?.nom)}</i>\n\n⏳ Yig'ilmoqda — tayyor bo'lgach shu yerga keladi, ✅ bossangiz YouTube'ga yuklanadi.`);
+  }
   const total = (s.scenes || []).reduce((a, x) => a + (x.duration || 0), 0);
   const lines = (s.scenes || []).map((x, i) => `${i + 1}. ${esc((x.text || '').replace(/\n/g, ' '))}`).join('\n');
   await say(env, chat, `🎬 <b>${esc(s.title)}</b>\n~${Math.round(total)} s · ${format} · ${s.scenes?.length} sahna\n\n${lines}\n\nYouTube nomi: <i>${esc(s.youtube?.nom)}</i>\n\nNarx: AI klipsiz — bepul (faqat ovoz ~1 sent).`, {
@@ -260,6 +274,24 @@ G'oyalar: egasi o'zi yasay oladigan, trendga mos, aniq mavzu (har biri 4-8 so'z,
   await say(env, chat, `🧠 <b>Xulosa</b>\n${esc(r.xulosa || '')}\n\n💡 <b>G'oyalar</b> — bossangiz ssenariy yozaman:`, { reply_markup: { inline_keyboard: kb } });
 }
 
+// ---------- kunlik avtomatik video ----------
+// Har kuni (wrangler.toml → crons) yoki /bugun: trend → eng yaxshi g'oya → ~3 daq ssenariy → yig'ish → Telegram (✅ bilan)
+async function kunlik(env, chat) {
+  const joy = env.KUNLIK_JOY || 'usa', til = env.KUNLIK_TIL || 'uz';
+  const soniya = Math.round(Number(env.KUNLIK_DAQIQA || 3) * 60);
+  await say(env, chat, `🗓 Kunlik video: trendni ko'ryapman (${esc(joy)})…`);
+  const a = trendArg(joy);
+  const vids = await ytTrend(env, a);
+  if (!vids.length) return say(env, chat, '🗓 Bugun trend topilmadi — ertaga yana urinaman.');
+  const r = await gemini(env, [{ text: JSON.stringify(vids.slice(0, 20).map(({ id, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
+    json: true,
+    system: `Sen YouTube strategisan. Egasi o'zbek, AQShda tirakchi; kanalida kinetik matn + ovozli videolar (rasm/klip yo'q). Trend ro'yxatidan ilhomlanib BITTA eng yaxshi ${Math.round(soniya / 60)} daqiqalik video mavzusini tanla: trendga yaqin, foydali, haqiqatga asoslangan, boshqalarning videosini ko'chirmaydigan, siyosat/sog'liq/moliya maslahati bo'lmagan.
+FAQAT JSON: {"mavzu": "aniq mavzu, 5-10 so'z, ${til === 'uz' ? "o'zbekcha" : til}", "sabab": "nega aynan shu (1 qator, o'zbekcha)"}`,
+  });
+  await say(env, chat, `🎯 Tanlangan mavzu: <b>${esc(r.mavzu)}</b>\n<i>${esc(r.sabab || '')}</i>`);
+  return newVideo(env, chat, { mavzu: r.mavzu, format: 'youtube', til, soniya, avto: true });
+}
+
 async function voiceToText(env, fileId) {
   const f = await TG(env, 'getFile', { file_id: fileId });
   const buf = await (await fetch(`https://api.telegram.org/file/bot${env.TELEGRAM_BOT_TOKEN}/${f.result.file_path}`)).arrayBuffer();
@@ -288,9 +320,10 @@ async function onMessage(env, msg) {
     await say(env, chat, 'Tugmalar pastda 👇', {
       reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
     });
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n\nPul sarflanadigan yoki YouTube'ga yuklanadigan har ishni faqat siz tugma bosganda qilaman.`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash (har kuni ertalab 7:00 da o'zi yasaladi)\n\nYouTube'ga faqat siz ✅ bosganda yuklayman.`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
+  if (text.startsWith('/bugun')) return kunlik(env, chat);
   if (text.startsWith('/trend')) return trend(env, chat, text.replace(/^\/trend\S*/, ''));
   if (text.startsWith('/yangi')) return newVideo(env, chat, { mavzu: text.replace('/yangi', '').trim() || 'kanal mavzusida qiziqarli fakt', format: 'shorts', til: 'uz' });
   const n = await gemini(env, [{ text }], { json: true, system: NIYAT });
@@ -362,5 +395,13 @@ export default {
       })(),
     );
     return new Response('ok');
+  },
+  // Cloudflare cron (wrangler.toml → [triggers]) — har kungi video
+  async scheduled(event, env, ctx) {
+    const chat = env.OWNER_CHAT_ID;
+    if (!chat) return;
+    ctx.waitUntil(
+      kunlik(env, chat).catch((e) => say(env, chat, `⚠️ Kunlik video xatosi: ${esc(e.message).slice(0, 400)}`)),
+    );
   },
 };
