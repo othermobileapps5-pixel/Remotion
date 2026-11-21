@@ -61,6 +61,13 @@ export type CustomScene = Voice & {
   image?: string;
   model?: string;
   muted?: boolean;
+  // "shorts/klip" uchun (scripts/subtitr.mjs to'ldiradi)
+  hook?: string;
+  til?: string;
+  subtitr?: { w: string; s: number; e: number }[];
+  zoomlar?: { t: number; x: number; y: number }[];
+  obuna?: string;
+  vertikal?: boolean;
 };
 
 export type Scene = TitleScene | TextScene | ImageScene | VideoScene | CustomScene;
