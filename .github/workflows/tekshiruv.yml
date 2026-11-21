@@ -35,7 +35,8 @@ jobs:
           BASE=$(git merge-base HEAD origin/main 2>/dev/null || echo "")
           [ -z "$BASE" ] || [ "$BASE" = "$(git rev-parse HEAD)" ] && BASE=HEAD~1
           for f in $(git diff --name-only "$BASE" HEAD -- 'videos/*.json'); do
-            [ -f "$f" ] && node scripts/kadrlar.mjs "$f" YouTube || true
+            C=YouTube; grep -q '"shorts/klip"' "$f" 2>/dev/null && C=Shorts
+            [ -f "$f" ] && node scripts/kadrlar.mjs "$f" $C || true
           done
           ls out/kadrlar 2>/dev/null | head -50 || true
       - name: Kadrlarni «kadrlar» branch'iga saqlash (telefondan ko'rish uchun)

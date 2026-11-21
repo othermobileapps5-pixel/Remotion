@@ -16,7 +16,8 @@ const marks = [];
 frames.forEach((f, i) => {
   if (i > 0) start -= Math.min(t, frames[i - 1] - 1, f - 1);
   const label = (props.scenes[i].name || props.scenes[i].type).split('/').pop();
-  for (const k of [0.5, 0.88]) marks.push({ frame: start + Math.floor(f * k), label: `${String(i + 1).padStart(2, '0')}-${label}-${Math.round(k * 100)}` });
+  const ks = frames.length === 1 ? [0.06, 0.2, 0.45, 0.6, 0.75, 0.82, 0.95] : [0.5, 0.88];
+  for (const k of ks) marks.push({ frame: start + Math.floor(f * k), label: `${String(i + 1).padStart(2, '0')}-${label}-${Math.round(k * 100)}` });
   start += f;
 });
 
