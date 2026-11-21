@@ -235,9 +235,35 @@ async function onCallback(env, cb) {
   }
 }
 
+
+// ---------- Ochiq sahifalar (Google OAuth: bosh sahifa, maxfiylik, shartlar) ----------
+const SAHIFALAR = {
+  '/': ['Kanal bot', `<p>Kanal bot — bitta egasining shaxsiy YouTube kanal yordamchisi (Telegram bot). U egasining buyrug'i bilan video ssenariy yozadi, video yasaydi va egasi tasdiqlagandan keyingina uning o'z YouTube kanaliga yuklaydi.</p>
+<p>Bot faqat egasi uchun ishlaydi; boshqa foydalanuvchilarga xizmat ko'rsatmaydi.</p>
+<p><a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a></p>
+<hr><p lang="en">Kanal bot is a private assistant for a single owner's YouTube channel. It writes video scripts, renders videos and uploads them to the owner's own channel only after the owner approves each upload. It does not serve other users.</p>`],
+  '/privacy': ['Privacy Policy', `<p lang="en"><b>Last updated:</b> November 20, 2026</p>
+<p lang="en">Kanal bot is used only by its owner. With the owner's permission it uses Google OAuth to access the owner's YouTube account with two scopes: <i>youtube.upload</i> (to upload videos the owner approved) and <i>youtube.readonly</i> (to read channel and video statistics for the owner's own analysis).</p>
+<ul lang="en"><li>YouTube data is used only to show statistics to the owner and to upload the owner's videos. It is not sold, shared with third parties or used for advertising.</li>
+<li>OAuth tokens are stored encrypted as secrets of the owner's Cloudflare Worker and GitHub repository and are never published.</li>
+<li>Statistics are processed on request and are not stored permanently.</li>
+<li>The owner can revoke access at any time at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</li></ul>
+<p lang="en">Kanal bot's use of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements. YouTube API Services are used under the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a> and the <a href="https://policies.google.com/privacy">Google Privacy Policy</a>.</p>
+<p lang="en">Contact: othermobileapps5@gmail.com</p>`],
+  '/terms': ['Terms of Service', `<p lang="en">Kanal bot is a private tool operated by and for its single owner. It is provided as is, without warranty. Using it means agreeing to the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>. Contact: othermobileapps5@gmail.com</p>`],
+};
+
+function sahifa(yol) {
+  const p = SAHIFALAR[yol] || SAHIFALAR['/'];
+  const html = `<!DOCTYPE html><html lang="uz"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${p[0]}</title>
+<style>body{font:16px/1.6 system-ui,sans-serif;max-width:680px;margin:40px auto;padding:0 20px;color:#222}a{color:#1a73e8}</style></head>
+<body><h1>${p[0]}</h1>${p[1]}</body></html>`;
+  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
 export default {
   async fetch(req, env, ctx) {
-    if (req.method !== 'POST') return new Response('FARO bot ishlayapti');
+    if (req.method !== 'POST') return sahifa(new URL(req.url).pathname);
     if (req.headers.get('X-Telegram-Bot-Api-Secret-Token') !== env.WEBHOOK_SECRET) return new Response('no', { status: 403 });
     const u = await req.json();
     const from = u.message?.chat?.id ?? u.callback_query?.message?.chat?.id;
