@@ -64,11 +64,12 @@ jobs:
                 for (let u = 0; u < 2 && !xulosa; u++) {
                   const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
                     method: 'POST', headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ role: 'user', parts }] }),
-                  });
+                    body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ role: 'user', parts }], generationConfig: { mediaResolution: 'MEDIA_RESOLUTION_LOW' } }),
+                    signal: AbortSignal.timeout(150000),
+                  }).catch((err) => ({ ok: false, status: 'vaqt', text: async () => String(err.name) }));
                   if (r.ok) { const j = await r.json(); xulosa = (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('').trim(); break; }
                   oxirgi = `${model} ${r.status} ${(await r.text()).slice(0, 200)}`; console.log(oxirgi);
-                  if (r.status === 402 || r.status === 404) break;
+                  if (r.status === 402 || r.status === 404 || r.status === 'vaqt') break;
                   await new Promise((s) => setTimeout(s, 3000));
                 }
                 if (xulosa) break;
