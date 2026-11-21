@@ -1,13 +1,12 @@
-# Referens video tahlili: yt-dlp vaqtincha yuklaydi → ffmpeg (kesimlar, kadrlar) + subtitr → Gemini xulosa → Telegram.
-# Repo ochiq: yuklangan video HECH QAYERGA joylanmaydi (commit/release/artifact yo'q), ish tugagach o'chadi.
-# Faqat tahlil uchun — boshqalarning videosini qayta yuklamang.
+# Referens video tahlili: Gemini videoni YouTube havolasidan o'zi ko'radi (tasvir + ovoz), statistika — YouTube API.
+# Hech narsa yuklab olinmaydi va hech qayerga joylanmaydi (repo ochiq). yt-dlp GitHub serverlarida YouTube tomonidan bloklanadi.
 name: Referens tahlil
 
 on:
   workflow_dispatch:
     inputs:
       url:
-        description: "YouTube (yoki boshqa) video havolasi"
+        description: "YouTube video havolasi"
         required: true
       telegram:
         description: "Natija yuboriladigan Telegram chat (bot to'ldiradi)"
@@ -20,124 +19,80 @@ permissions:
 jobs:
   tahlil:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     env:
       URL: ${{ github.event.inputs.url }}
       CHAT: ${{ github.event.inputs.telegram }}
       TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     steps:
-      - name: ffmpeg
-        uses: FedericoCarboni/setup-ffmpeg@v3
-        continue-on-error: true
-
-      - name: yt-dlp o'rnatish
-        run: pipx install yt-dlp && yt-dlp --version
-
-      - name: Yuklash (480p gacha, vaqtincha)
-        run: |
-          mkdir -p /tmp/ref && cd /tmp/ref
-          yt-dlp --no-playlist --restrict-filenames \
-            -f "bv*[height<=480]+ba/b[height<=480]/b" --merge-output-format mp4 \
-            --write-info-json --write-auto-subs --write-subs --sub-langs "en.*,uz.*,ru.*,es.*" --convert-subs srt \
-            -o "ref.%(ext)s" "$URL"
-          ls -la
-
-      - name: Tahlil (kesimlar, kadrlar, matn)
-        run: |
-          cd /tmp/ref
-          DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 ref.mp4)
-          # sahna kesimlari
-          ffmpeg -hide_banner -i ref.mp4 -vf "select='gt(scene,0.3)',showinfo" -f null - 2>&1 | grep -o 'pts_time:[0-9.]*' | cut -d: -f2 > cuts.txt || true
-          # 6 ta kadr (teng oraliqda)
-          mkdir -p kadr
-          for i in 0 1 2 3 4 5; do
-            T=$(python3 -c "print(round($DUR*($i+0.5)/6,2))")
-            ffmpeg -hide_banner -loglevel error -ss "$T" -i ref.mp4 -frames:v 1 -vf scale=480:-1 "kadr/$i.jpg" || true
-          done
-          python3 - "$DUR" <<'PY'
-          import json, glob, re, sys
-          dur = float(sys.argv[1])
-          info = json.load(open(glob.glob('ref.info.json')[0]))
-          cuts = [float(x) for x in open('cuts.txt').read().split()] if open('cuts.txt').read().strip() else []
-          srt = sorted(glob.glob('ref*.srt'))
-          matn = ''
-          if srt:
-              raw = open(srt[0], encoding='utf-8', errors='ignore').read()
-              lines = [l for l in raw.splitlines() if l.strip() and not l.strip().isdigit() and '-->' not in l]
-              seen = []
-              for l in lines:
-                  l = re.sub(r'<[^>]+>', '', l).strip()
-                  if l and (not seen or seen[-1] != l): seen.append(l)
-              matn = ' '.join(seen)
-          sozlar = len(matn.split())
-          out = {
-              'nom': info.get('title'), 'kanal': info.get('uploader'), 'sana': info.get('upload_date'),
-              'korish': info.get('view_count'), 'layk': info.get('like_count'), 'izoh': info.get('comment_count'),
-              'uzunlik_s': round(dur, 1), 'kesimlar_soni': len(cuts),
-              'ortacha_kadr_s': round(dur / (len(cuts) + 1), 2),
-              'birinchi_kesimlar': cuts[:8], 'boblar': [c.get('title') for c in (info.get('chapters') or [])],
-              'tavsif': (info.get('description') or '')[:600], 'teglar': (info.get('tags') or [])[:15],
-              'soz_daqiqada': round(sozlar / max(dur / 60, 0.1)), 'matn': matn[:6000],
-          }
-          json.dump(out, open('tahlil.json', 'w'), ensure_ascii=False, indent=1)
-          print(json.dumps({k: v for k, v in out.items() if k != 'matn'}, ensure_ascii=False, indent=1))
-          PY
-
-      - name: Gemini xulosa
+      - name: Tahlil (YouTube API + Gemini video)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_FREE_KEY: ${{ secrets.BOT_GEMINI_KEY }}
+          YTC: ${{ secrets.YT_CLIENT_ID }}
+          YTS: ${{ secrets.YT_CLIENT_SECRET }}
+          YTR: ${{ secrets.YT_REFRESH_TOKEN }}
         run: |
-          cd /tmp/ref
           node - <<'JS'
           const fs = require('fs');
-          const t = JSON.parse(fs.readFileSync('tahlil.json', 'utf8'));
-          const system = `Sen YouTube video tahlilchisisan. Egasi o'zbek, AQShda tirakchi; o'z kanalida kinetik matn + ovozli videolar yasaydi. Berilgan referens video ma'lumotlarini (statistika, kesimlar tezligi, matn) tahlil qil. O'zbek tilida, qisqa:
-          1) Hook — birinchi 3-5 soniyada nima qilingan.
-          2) Tuzilma — qanday bo'limlar, temp (o'rtacha kadr uzunligi, so'z/daqiqa).
-          3) Nega ishlayapti — 3 ta sabab (raqamlar faqat berilgandan).
-          4) Bizga moslash — shu uslubda O'Z videomiz uchun 3 ta aniq g'oya (ko'chirmasdan).
-          HTML teglarsiz, oddiy matn, 15-20 qator.`;
+          const e = process.env;
+          const id = (e.URL.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/) || [])[1];
+          if (!id) { console.log('::error::YouTube video ID topilmadi'); process.exit(1); }
+          const url = `https://www.youtube.com/watch?v=${id}`;
           (async () => {
-            for (const key of [process.env.GEMINI_API_KEY, process.env.GEMINI_FREE_KEY].filter(Boolean)) {
-              for (const model of ['gemini-3.8-flash', 'gemini-2.5-flash']) {
-                const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-                  method: 'POST', headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ role: 'user', parts: [{ text: JSON.stringify(t) }] }] }),
-                });
-                if (!r.ok) { console.log(model, r.status); continue; }
-                const j = await r.json();
-                fs.writeFileSync('xulosa.txt', (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join(''));
-                return;
-              }
+            // 1) statistika (YouTube Data API, 1 birlik)
+            let info = {};
+            if (e.YTR) {
+              const tk = await fetch('https://oauth2.googleapis.com/token', { method: 'POST', body: new URLSearchParams({ client_id: e.YTC.trim(), client_secret: e.YTS.trim(), refresh_token: e.YTR.trim(), grant_type: 'refresh_token' }) }).then((r) => r.json());
+              if (tk.access_token) {
+                const v = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${id}`, { headers: { Authorization: `Bearer ${tk.access_token}` } }).then((r) => r.json());
+                const x = v.items?.[0];
+                if (x) info = { nom: x.snippet.title, kanal: x.snippet.channelTitle, sana: x.snippet.publishedAt.slice(0, 10), uzunlik: x.contentDetails.duration, korish: +x.statistics.viewCount || 0, layk: +x.statistics.likeCount || 0, izoh: +x.statistics.commentCount || 0, teglar: (x.snippet.tags || []).slice(0, 12), rasm: x.snippet.thumbnails?.high?.url };
+              } else console.log('YouTube token:', JSON.stringify(tk).slice(0, 120));
             }
-            fs.writeFileSync('xulosa.txt', '(Gemini javob bermadi — faqat statistika)');
-          })();
+            console.log(JSON.stringify(info));
+            // 2) Gemini videoni o'zi ko'radi
+            const system = `Sen YouTube video tahlilchisisan. Egasi o'zbek, AQShda tirakchi; o'z kanalida kinetik matn + ovozli videolar yasaydi (Remotion). Videoni KO'RIB tahlil qil. O'zbek tilida, oddiy matn (HTML/markdown yulduzchalarsiz), 18-25 qator:
+          1) Hook — birinchi 3-5 soniyada aynan nima ko'rsatiladi/aytiladi.
+          2) Tuzilma — bo'limlar vaqtlari bilan (0:00 …), temp: kadr almashish tezligi, ovoz/musiqa, ekrandagi matn uslubi.
+          3) Nega ishlayapti — 3 sabab (raqamlar faqat berilgan statistikadan).
+          4) Bizga moslash — shu uslubda O'Z videomiz uchun 3 ta aniq g'oya; ko'chirmasdan, kinetik matn + ovoz bilan qilsa bo'ladigan.`;
+            const parts = [{ file_data: { file_uri: url } }, { text: 'Statistika: ' + JSON.stringify(info) }];
+            let xulosa = '', oxirgi = '';
+            for (const key of [e.GEMINI_API_KEY, e.GEMINI_FREE_KEY].filter((k, i, a) => k && a.indexOf(k) === i)) {
+              for (const model of ['gemini-3.8-flash', 'gemini-2.5-flash']) {
+                for (let u = 0; u < 2 && !xulosa; u++) {
+                  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+                    method: 'POST', headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ role: 'user', parts }] }),
+                  });
+                  if (r.ok) { const j = await r.json(); xulosa = (j.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('').trim(); break; }
+                  oxirgi = `${model} ${r.status} ${(await r.text()).slice(0, 200)}`; console.log(oxirgi);
+                  if (r.status === 402 || r.status === 404) break;
+                  await new Promise((s) => setTimeout(s, 3000));
+                }
+                if (xulosa) break;
+              }
+              if (xulosa) break;
+            }
+            if (!xulosa) { fs.writeFileSync('/tmp/xato.txt', oxirgi); process.exit(1); }
+            const k = (n) => (n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(n ?? '?'));
+            const bosh = info.nom ? `🔎 Referens: ${info.nom}\n${info.kanal} · ${k(info.korish)} ko'rish · ${k(info.layk)} layk · ${info.sana}` : `🔎 Referens: ${url}`;
+            fs.writeFileSync('/tmp/natija.json', JSON.stringify({ matn: (bosh + '\n\n' + xulosa).slice(0, 4000), rasm: info.rasm || '' }));
+            console.log(xulosa);
+          })().catch((err) => { console.log(err); process.exit(1); });
           JS
-          cat xulosa.txt
 
       - name: Telegram'ga yuborish
         if: ${{ env.CHAT != '' }}
         run: |
-          cd /tmp/ref
-          HEAD=$(python3 -c "
-          import json;t=json.load(open('tahlil.json'))
-          k=lambda n:(f'{n/1e6:.1f}M' if n and n>=1e6 else f'{round(n/1e3)}K' if n and n>=1e3 else str(n))
-          print(f\"🔎 Referens: {t['nom']}\n{t['kanal']} · {k(t['korish'])} ko'rish · {round(t['uzunlik_s'])} s\nKesimlar: {t['kesimlar_soni']} (o'rtacha {t['ortacha_kadr_s']} s) · {t['soz_daqiqada']} so'z/daq\")")
-          MEDIA=$(python3 -c "import json,glob;f=sorted(glob.glob('kadr/*.jpg'));print(json.dumps([{'type':'photo','media':f'attach://k{i}'} for i,_ in enumerate(f)]))")
-          ARGS=(); i=0; for f in $(ls kadr/*.jpg 2>/dev/null | sort); do ARGS+=(-F "k$i=@$f"); i=$((i+1)); done
-          [ $i -gt 0 ] && curl -s -F chat_id="$CHAT" -F media="$MEDIA" "${ARGS[@]}" "https://api.telegram.org/bot$TG/sendMediaGroup" | head -c 150; echo
-          TEXT="$HEAD
-
-          $(head -c 3500 xulosa.txt)"
-          curl -s "https://api.telegram.org/bot$TG/sendMessage" --data-urlencode chat_id="$CHAT" --data-urlencode text="$TEXT" | head -c 150
-
-      - name: Tozalash
-        if: ${{ always() }}
-        run: rm -rf /tmp/ref
+          RASM=$(node -p "require('/tmp/natija.json').rasm")
+          [ -n "$RASM" ] && curl -s "https://api.telegram.org/bot$TG/sendPhoto" --data-urlencode chat_id="$CHAT" --data-urlencode photo="$RASM" > /dev/null
+          node -e "process.stdout.write(require('/tmp/natija.json').matn)" > /tmp/matn.txt
+          curl -s "https://api.telegram.org/bot$TG/sendMessage" --data-urlencode chat_id="$CHAT" --data-urlencode text@/tmp/matn.txt | head -c 150
 
       - name: Telegram'ga xato
         if: ${{ failure() && env.CHAT != '' }}
         run: |
           curl -s "https://api.telegram.org/bot$TG/sendMessage" --data-urlencode chat_id="$CHAT" \
-            --data-urlencode text="⚠️ Referensni yuklab bo'lmadi. YouTube GitHub serverlarini ba'zan bloklaydi («bot emasligingizni tasdiqlang»). Boshqa havola bilan urinib ko'ring yoki Claude chatida «referens xatosini ko'r» deb yozing." > /dev/null || true
+            --data-urlencode text="⚠️ Referensni tahlil qilib bo'lmadi (video yopiq/yosh cheklovli bo'lishi yoki Gemini band bo'lishi mumkin). Birozdan keyin qayta yuboring yoki Claude chatida «referens xatosini ko'r» deb yozing." > /dev/null || true
