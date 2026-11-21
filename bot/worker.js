@@ -88,9 +88,10 @@ async function cfAI(env, parts, { json, system }) {
 
 const NIYAT = `Sen YouTube kanal yordamchisi botining dispetcherisan. Foydalanuvchi o'zbek, AQShda tirakchi (CDL), YouTube kanal yuritadi.
 Uning xabarini o'qib, FAQAT JSON qaytar:
-{"amal": "yangi_video" | "tahlil" | "suhbat", "mavzu": "...", "format": "shorts" | "youtube", "til": "uz" | "en" | "ru", "javob": "..."}
+{"amal": "yangi_video" | "tahlil" | "trend" | "suhbat", "mavzu": "...", "joy": "usa" | "uz" | "ru" | "spanish" | "", "format": "shorts" | "youtube", "til": "uz" | "en" | "ru", "javob": "..."}
 - yangi_video: video/ssenariy/reklama/qisqa video yasash so'ralsa. mavzu — aniq mavzu. format: aytilmasa "shorts".
-- tahlil: kanal statistikasi, qaysi video yaxshi, g'oya so'ralsa.
+- tahlil: O'Z kanali statistikasi, qaysi videosi yaxshi so'ralsa.
+- trend: YouTube'da nima trendda, nima ko'p ko'rilyapti, mashhur videolar so'ralsa. joy — mamlakat yoki til (Amerika→usa, ispancha→spanish), mavzu — aytilgan bo'lsa (masalan "trucking"), aks holda "".
 - suhbat: boshqa hamma narsa; "javob" ga qisqa, foydali o'zbekcha javob yoz.
 til — video tili (aytilmasa "uz").`;
 
@@ -187,6 +188,78 @@ async function analysis(env, chat) {
   await say(env, chat, esc(txt));
 }
 
+// ---------- trendlar ----------
+const JOYLAR = {
+  usa: ['US'], us: ['US'], amerika: ['US'], aqsh: ['US'],
+  uz: ['UZ'], uzbekiston: ['UZ'], ozbekiston: ['UZ'],
+  ru: ['RU'], rossiya: ['RU'], russia: ['RU'],
+  spanish: ['MX', 'ES', 'CO', 'AR'], ispanish: ['MX', 'ES', 'CO', 'AR'], ispan: ['MX', 'ES', 'CO', 'AR'], es: ['MX', 'ES', 'CO', 'AR'], espanol: ['MX', 'ES', 'CO', 'AR'],
+  mexico: ['MX'], meksika: ['MX'], spain: ['ES'], ispaniya: ['ES'], uk: ['GB'], turkiya: ['TR'], tr: ['TR'], india: ['IN'],
+};
+const SPANISH = new Set(['spanish', 'ispanish', 'ispan', 'es', 'espanol']);
+
+function trendArg(s) {
+  const so = String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean);
+  let joy = null, kalit = null;
+  const qolgan = [];
+  for (const w of so) {
+    if (!joy && JOYLAR[w]) { joy = JOYLAR[w]; kalit = w; } else qolgan.push(w);
+  }
+  return { joy: joy || ['US'], kalit: kalit || 'usa', mavzu: qolgan.join(' ').trim(), ispan: SPANISH.has(kalit) };
+}
+
+async function ytTrend(env, { joy, mavzu, ispan }) {
+  const t = await ytToken(env);
+  const api = (p) => fetch(`https://www.googleapis.com/youtube/v3/${p}`, { headers: { Authorization: `Bearer ${t}` } }).then((r) => r.json());
+  let ids = [];
+  if (mavzu) {
+    // mavzu bo'yicha: oxirgi 7 kunda eng ko'p ko'rilganlar (100 birlik)
+    const after = new Date(Date.now() - 7 * 864e5).toISOString();
+    const q = new URLSearchParams({ part: 'id', type: 'video', order: 'viewCount', maxResults: '15', q: mavzu, publishedAfter: after, regionCode: joy[0] });
+    if (ispan) q.set('relevanceLanguage', 'es');
+    const s = await api(`search?${q}`);
+    if (s.error) throw new Error('YouTube: ' + (s.error.message || s.error.code));
+    ids = (s.items || []).map((i) => i.id.videoId).filter(Boolean);
+  } else {
+    // mamlakat trendi (har mamlakat 1 birlik)
+    for (const r of joy) {
+      const p = await api(`videos?part=id&chart=mostPopular&maxResults=${joy.length > 1 ? 8 : 15}&regionCode=${r}`);
+      if (p.error) throw new Error('YouTube: ' + (p.error.message || p.error.code));
+      ids.push(...(p.items || []).map((i) => i.id));
+    }
+  }
+  ids = [...new Set(ids)].slice(0, 25);
+  if (!ids.length) return [];
+  const v = await api(`videos?part=snippet,statistics,contentDetails&id=${ids.join(',')}`);
+  return (v.items || [])
+    .map((x) => ({ nom: x.snippet.title, kanal: x.snippet.channelTitle, sana: x.snippet.publishedAt.slice(0, 10), uzunlik: x.contentDetails.duration, korish: Number(x.statistics.viewCount || 0), id: x.id }))
+    .sort((a, b) => b.korish - a.korish);
+}
+
+const kq = (n) => (n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(n));
+const sek = (d) => { const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(d || '') || []; return (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0); };
+const qisqa = (s, max) => { let o = ''; for (const ch of s) { if (new TextEncoder().encode(o + ch).length > max) break; o += ch; } return o; };
+
+async function trend(env, chat, arg) {
+  if (!env.YT_REFRESH_TOKEN) return say(env, chat, '📈 YouTube hali ulanmagan.');
+  const a = typeof arg === 'string' ? trendArg(arg) : arg;
+  const joyNom = a.ispan ? 'ispan tilidagi (MX, ES, CO, AR)' : a.joy.join(', ');
+  await say(env, chat, `📈 Trendlarni yig'yapman: <b>${esc(a.mavzu || 'umumiy')}</b> · ${esc(joyNom)}…`);
+  const vids = await ytTrend(env, a);
+  if (!vids.length) return say(env, chat, 'Hech narsa topilmadi. Boshqa mavzu yoki mamlakat bilan urinib ko\'ring.');
+  const top = vids.slice(0, 10).map((v, i) => `${i + 1}. ${esc(v.nom.slice(0, 70))} — ${kq(v.korish)} · ${sek(v.uzunlik) <= 60 ? 'shorts' : Math.round(sek(v.uzunlik) / 60) + ' daq'}`).join('\n');
+  await say(env, chat, `🔥 <b>Top videolar</b> (${esc(joyNom)}${a.mavzu ? ', «' + esc(a.mavzu) + '»' : ''}):\n${top}`);
+  const r = await gemini(env, [{ text: JSON.stringify(vids.map(({ id, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
+    json: true,
+    system: `Sen YouTube strategisan. Egasi o'zbek, AQShda tirakchi, Shorts va qisqa videolar yasaydi (kinetik matn + ovoz, rasm/klip kam). Berilgan trend videolar ro'yxatini tahlil qil.
+FAQAT JSON: {"xulosa": "o'zbekcha 4-6 qator: nima ishlayapti (mavzu, nom uslubi, uzunlik, format), raqamlar faqat berilgandan", "goyalar": ["g'oya 1", "g'oya 2", "g'oya 3", "g'oya 4"]}
+G'oyalar: egasi o'zi yasay oladigan, trendga mos, aniq mavzu (har biri 4-8 so'z, o'zbekcha). Boshqalarning videosini ko'chirma, o'z burchagidan ber.`,
+  });
+  const goya = (r.goyalar || []).slice(0, 4);
+  const kb = goya.map((g) => [{ text: '🎬 ' + qisqa(g, 40), callback_data: 'n:' + qisqa(g, 58) }]);
+  await say(env, chat, `🧠 <b>Xulosa</b>\n${esc(r.xulosa || '')}\n\n💡 <b>G'oyalar</b> — bossangiz ssenariy yozaman:`, { reply_markup: { inline_keyboard: kb } });
+}
+
 async function voiceToText(env, fileId) {
   const f = await TG(env, 'getFile', { file_id: fileId });
   const buf = await (await fetch(`https://api.telegram.org/file/bot${env.TELEGRAM_BOT_TOKEN}/${f.result.file_path}`)).arrayBuffer();
@@ -208,13 +281,15 @@ async function onMessage(env, msg) {
   }
   if (!text) return;
   if (text === '/start' || text === '/yordam') {
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n\nPul sarflanadigan yoki YouTube'ga yuklanadigan har ishni faqat siz tugma bosganda qilaman.`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n\nPul sarflanadigan yoki YouTube'ga yuklanadigan har ishni faqat siz tugma bosganda qilaman.`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
+  if (text.startsWith('/trend')) return trend(env, chat, text.replace(/^\/trend\S*/, ''));
   if (text.startsWith('/yangi')) return newVideo(env, chat, { mavzu: text.replace('/yangi', '').trim() || 'kanal mavzusida qiziqarli fakt', format: 'shorts', til: 'uz' });
   const n = await gemini(env, [{ text }], { json: true, system: NIYAT });
   if (n.amal === 'yangi_video') return newVideo(env, chat, { mavzu: n.mavzu || text, format: n.format === 'youtube' ? 'youtube' : 'shorts', til: n.til || 'uz' });
   if (n.amal === 'tahlil') return analysis(env, chat);
+  if (n.amal === 'trend') return trend(env, chat, `${n.joy || ''} ${n.mavzu || ''}`);
   return say(env, chat, esc(n.javob || 'Tushunmadim, qaytadan yozing.'));
 }
 
@@ -222,6 +297,7 @@ async function onCallback(env, cb) {
   const chat = cb.message.chat.id;
   const [k, name, fmt] = cb.data.split(':');
   await TG(env, 'answerCallbackQuery', { callback_query_id: cb.id });
+  if (k === 'n') return newVideo(env, chat, { mavzu: cb.data.slice(2), format: 'shorts', til: 'uz' }); // trend g'oyasi (tugmalar qoladi)
   await TG(env, 'editMessageReplyMarkup', { chat_id: chat, message_id: cb.message.message_id, reply_markup: { inline_keyboard: [] } });
   if (k === 'x') return say(env, chat, '❌ Bekor qilindi.');
   if (k === 'y') {
@@ -249,8 +325,8 @@ const SAHIFALAR = {
 <li>Statistics are processed on request and are not stored permanently.</li>
 <li>The owner can revoke access at any time at <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.</li></ul>
 <p lang="en">Kanal bot's use of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements. YouTube API Services are used under the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a> and the <a href="https://policies.google.com/privacy">Google Privacy Policy</a>.</p>
-<p lang="en">Contact: othermobileapps5@gmail.com</p>`],
-  '/terms': ['Terms of Service', `<p lang="en">Kanal bot is a private tool operated by and for its single owner. It is provided as is, without warranty. Using it means agreeing to the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>. Contact: othermobileapps5@gmail.com</p>`],
+<p lang="en">Contact: via Telegram, <a href="https://t.me/Farolabsbot">@Farolabsbot</a>.</p>`],
+  '/terms': ['Terms of Service', `<p lang="en">Kanal bot is a private tool operated by and for its single owner. It is provided as is, without warranty. Using it means agreeing to the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a>. Contact: via Telegram, <a href="https://t.me/Farolabsbot">@Farolabsbot</a>.</p>`],
 };
 
 function sahifa(yol) {
