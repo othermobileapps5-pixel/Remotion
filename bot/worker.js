@@ -158,8 +158,11 @@ async function dispatchMain(env, workflow, inputs) {
   if (!r.ok) throw new Error(`Workflow ${r.status}: ${(await r.text()).slice(0, 200)}`);
 }
 async function imzoUzun(env, chat, { driveFayl, hook }) {
-  await dispatchMain(env, 'uzun-imzo.yml', { fayl: driveFayl, hook: hook || '', til: '', telegram: String(chat) });
-  return say(env, chat, `✍️ <b>Uzun imzo</b>: ${esc(driveFayl)}${hook ? `\nHook: <i>${esc(hook)}</i>` : ''}\nFaqat boshi, o'rtasi va oxiri qayta yasaladi — butun video render qilinmaydi. 10 daqiqalik video ~6–8 daqiqada tayyor; Drive Export'ga tushadi, shu yerga xabar keladi.`);
+  // «hook | kim» — kim: rang ajratiladigan qahramon (sher, ayol, yuk mashinasi…)
+  const [h, kim] = (hook || '').split('|').map((x) => x.trim());
+  await dispatchMain(env, 'uzun-imzo.yml', { fayl: driveFayl, hook: h || '', til: '', kim: kim || '', telegram: String(chat) });
+  hook = h;
+  return say(env, chat, `✍️ <b>Uzun imzo</b>: ${esc(driveFayl)}${hook ? `\nHook: <i>${esc(hook)}</i>` : ''}${kim ? `\nRang ajratish: <i>${esc(kim)}</i>` : ''}\nFaqat boshi, o'rtasi va oxiri qayta yasaladi — butun video render qilinmaydi. 10 daqiqalik video ~6–8 daqiqada tayyor; Drive Export'ga tushadi, shu yerga xabar keladi.`);
 }
 
 async function dispatch(env, workflow, inputs) {
@@ -410,7 +413,7 @@ async function onMessage(env, msg) {
     const r2 = rest.replace(/^uzun\b[\s:,-]*/i, '');
     const m = r2.match(/^(\S+\.(?:mp4|mov|m4v|webm))\s*[:,-]?\s*(.*)$/i);
     if (m) return uzun ? imzoUzun(env, chat, { driveFayl: m[1], hook: m[2].trim() }) : imzo(env, chat, { driveFayl: m[1], hook: m[2].trim() });
-    return say(env, chat, "✍️ <b>Imzo</b> — tayyor Shorts'ga hook, subtitr, zoom va «Obuna bo'ling» qo'shaman (bepul).\n\n• Videoni shu yerga yuboring, izohiga: <code>Imzo: hook matni</code>\n• 20 MB dan katta bo'lsa — Drive'dagi Claude → Raw'ga tashlang va yozing: <code>Imzo fayl.mp4: hook matni</code>\n• Uzun video (10–20 daqiqa) — Raw'ga tashlang: <code>Imzo uzun fayl.mp4: hook matni</code> (faqat boshi, o'rtasi, oxiri yasaladi — tez)");
+    return say(env, chat, "✍️ <b>Imzo</b> — tayyor Shorts'ga hook, subtitr, zoom va «Obuna bo'ling» qo'shaman (bepul).\n\n• Videoni shu yerga yuboring, izohiga: <code>Imzo: hook matni</code>\n• 20 MB dan katta bo'lsa — Drive'dagi Claude → Raw'ga tashlang va yozing: <code>Imzo fayl.mp4: hook matni</code>\n• Uzun video (10–20 daqiqa) — Raw'ga tashlang: <code>Imzo uzun fayl.mp4: hook matni | sher</code> (faqat boshi, o'rtasi, oxiri yasaladi — tez; «| sher» — qahramon rangli, fon oq-qora)");
   }
   if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
