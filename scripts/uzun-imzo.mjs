@@ -66,7 +66,7 @@ for (const w of wins) {
 
 // --- 5. Butun video bo'ylab SFX: sahna kesimlari (ffmpeg scene) + urg'u joylari (ovoz) ---
 console.log('▶ Sahna kesimlari va urg\'u joylari…');
-const scRes = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-threads', '0', '-i', src, '-an', '-vf', "scale=320:-2,select='gt(scene,0.4)',showinfo", '-f', 'null', '-'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
+const scRes = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-threads', '0', '-i', src, '-an', '-vf', "fps=4,scale=320:-2,select='gt(scene,0.25)',showinfo", '-f', 'null', '-'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
 const sc = scRes.stderr || '';
 const cuts = [...sc.matchAll(/pts_time:([\d.]+)/g)].map((m) => +Number(m[1]).toFixed(2));
 fs.writeFileSync('out/uzun/cuts.json', JSON.stringify(cuts));
