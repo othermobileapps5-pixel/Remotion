@@ -10,7 +10,8 @@ import crypto from 'node:crypto';
 const [, , file] = process.argv;
 const KEY = process.env.AZURE_TTS_KEY;
 const GKEY = process.env.GEMINI_API_KEY;
-// pullik kalitda pul tugasa (402) yoki limit bo'lsa — bepul kalit (BOT_GEMINI_KEY) bilan qayta urinamiz
+// Faqat pullik kalit (GEMINI_API_KEY). Bepul kalit (BOT_GEMINI_KEY) ovoz uchun egasining so'rovi bilan o'chirilgan:
+// kuniga 10 so'rov — uzun videoga yetmaydi. Qayta yoqish: video-yasash.yml da GEMINI_FREE_KEY ni qaytarish.
 const PULSIZ = new Set(); // 402 bergan kalitlar — keyingi sahnalarda o'tkazib yuboriladi
 const GKEYS = [GKEY, process.env.GEMINI_FREE_KEY].filter((k, i, a) => k && a.indexOf(k) === i);
 const GOOGLE_MODELS = ['gemini-3.8-flash-tts', 'gemini-3.1-flash-tts-preview'];
@@ -81,12 +82,12 @@ async function googleTts(s) {
         lastErr = `${model}: ${res.status} ${body}`;
         console.log(`  ${lastErr}`);
         if (res.status === 402) {
-          if (GKEYS.length > 1) { PULSIZ.add(key); console.log("  pullik kalitda pul tugagan — bepul kalitga o'tildi"); }
-          keyDone = true;
-          break;
+          PULSIZ.add(key);
+          throw new Error("Gemini krediti tugagan (402) — ai.studio → Billing'da to'ldiring, keyin videoni qayta yasang.");
         }
         if (res.status === 429) {
-          const sec = Math.min(90, Number((body.match(/retry in (\d+)/i) || [])[1]) || 60) + 2;
+          if (/per day|\d+h\d+m/i.test(body)) { keyDone = true; break; } // kunlik limit — kutishdan foyda yo'q
+          const sec = Math.min(90, Number((body.match(/retry in (\d+)s/i) || [])[1]) || 60) + 2;
           console.log(`  limit — ${sec} s kutamiz va qayta urinamiz`);
           await sleep(sec * 1000);
           continue;

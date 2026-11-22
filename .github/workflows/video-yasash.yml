@@ -70,7 +70,6 @@ jobs:
       - name: Ovoz (Google Gemini TTS; Azure — zaxira)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_FREE_KEY: ${{ secrets.BOT_GEMINI_KEY }}
           AZURE_TTS_KEY: ${{ secrets.AZURE_TTS_KEY }}
           AZURE_TTS_REGION: ${{ secrets.AZURE_TTS_REGION }}
         run: |
