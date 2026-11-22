@@ -70,7 +70,8 @@ jobs:
       # Tekin mahalliy ovoz (Chatterbox / Kokoro) — faqat ssenariy shuni so'rasa o'rnatiladi
       - name: Tekin ovoz kerakmi
         id: lok
-        run: grep -qE '"ovozchi": "(chatterbox|kokoro)' "videos/$VIDEO.json" && echo "kerak=1" >> "$GITHUB_OUTPUT" || true
+        run: |
+          grep -qE '"ovozchi": "(chatterbox|kokoro)' "videos/$VIDEO.json" && echo "kerak=1" >> "$GITHUB_OUTPUT" || true
       - uses: actions/setup-python@v5
         if: ${{ steps.lok.outputs.kerak == '1' }}
         with:
