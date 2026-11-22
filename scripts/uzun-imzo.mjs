@@ -3,7 +3,10 @@
 // ffmpeg ularni asl video ustiga aynan o'sha vaqtga qo'yadi. Qolgan qismi asl holicha.
 // Butun video bo'ylab: sahna almashganda «whoosh», urg'u joylarda «pop» (scripts/sfx_track.py, 8 s da ko'pi bilan bitta, past ovozda).
 //
-//   node scripts/uzun-imzo.mjs <video (public/ ichida)> <chiqish.mp4> [--hook "matn"] [--til en]
+// Rang ajratish: --kim "sher" bo'lsa — butun videodan o'sha qahramon eng yaxshi ko'ringan kadr topiladi (CLIPSeg),
+// o'sha joyda kadr ~1.6 s to'xtaydi: fon oq-qora, qahramon rangli. --kim bo'lmasa — boshida, asosiy obyekt (rembg).
+//
+//   node scripts/uzun-imzo.mjs <video (public/ ichida)> <chiqish.mp4> [--hook "matn"] [--til en] [--kim "sher"]
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -20,6 +23,16 @@ if (!srcRel || !outFile) {
 }
 const src = path.join('public', srcRel);
 const hook = opt('hook');
+// o'zbekcha → inglizcha (CLIPSeg inglizcha tushunadi); topilmasa so'z o'zicha
+const UZ_EN = {
+  odam: 'person', erkak: 'man', ayol: 'woman', qiz: 'girl', bola: 'child', "o'g'il bola": 'boy', chol: 'old man', kampir: 'old woman',
+  sher: 'lion', "yo'lbars": 'tiger', it: 'dog', mushuk: 'cat', ot: 'horse', sigir: 'cow', "qo'y": 'sheep', echki: 'goat', ayiq: 'bear',
+  "bo'ri": 'wolf', tulki: 'fox', fil: 'elephant', maymun: 'monkey', qush: 'bird', burgut: 'eagle', baliq: 'fish', ilon: 'snake', tuya: 'camel',
+  mashina: 'car', 'yuk mashinasi': 'truck', tirak: 'semi truck', fura: 'semi truck', samolyot: 'airplane', kema: 'ship', poyezd: 'train',
+  shahzoda: 'prince', malika: 'princess', qahramon: 'person', haydovchi: 'driver', shifokor: 'doctor', politsiya: 'police officer',
+};
+const kimRaw = opt('kim').trim().toLowerCase();
+const kim = UZ_EN[kimRaw] || kimRaw;
 let til = opt('til');
 const run = (cmd, a, o = {}) => execFileSync(cmd, a, { stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 256 * 1024 * 1024, ...o }).toString();
 
@@ -41,6 +54,29 @@ if (dur >= 40) wins.push({ kind: 'orta', start: +(dur / 2 - 3.5).toFixed(2), len
 if (dur >= 20) wins.push({ kind: 'oxir', start: +Math.max(0, dur - 9).toFixed(2), len: +Math.min(9, dur).toFixed(2) });
 
 fs.mkdirSync('out/uzun', { recursive: true });
+
+// Rang ajratish oynasi: mavzudagi qahramon eng yaxshi ko'ringan joy
+if (kim) {
+  try {
+    const step = dur <= 120 ? 1 : dur <= 600 ? 2 : 3;
+    fs.rmSync('out/uzun/fr', { recursive: true, force: true });
+    fs.mkdirSync('out/uzun/fr', { recursive: true });
+    console.log(`▶ «${kim}» qidirilmoqda (har ${step} s dan kadr)…`);
+    run('ffmpeg', ['-loglevel', 'error', '-y', '-i', src, '-vf', `fps=1/${step},scale=352:-2`, '-q:v', '4', 'out/uzun/fr/%05d.jpg']);
+    fs.writeFileSync('out/uzun/excl.json', JSON.stringify(wins.map(({ start, len }) => ({ start, len }))));
+    const f = JSON.parse(run('python3', ['scripts/subject.py', 'find', 'out/uzun/fr', String(step), kim, 'out/uzun/excl.json']));
+    const start = +Math.max(0, Math.min(dur - 2.6, f.t - 0.4)).toFixed(2);
+    const fr = 'uzun/fr-rang.png';
+    const cut = 'uzun/cut-rang.png';
+    run('ffmpeg', ['-loglevel', 'error', '-y', '-ss', String(start + 0.4), '-i', src, '-frames:v', '1', '-vf', `scale=${W}:${H}`, path.join('public', fr)]);
+    const r = run('python3', ['scripts/subject.py', 'cut', path.join('public', fr), kim, path.join('public', cut)]).trim();
+    console.log(`  «${kim}»: ${f.t} s (ishonch ${f.score}) → ${r}`);
+    if (r.startsWith('OK')) wins.push({ kind: 'rang', start, len: 2.4, rang: { t: 0.4, len: 1.6, frame: fr, cut } });
+  } catch (e) {
+    console.log(`  rang ajratish o'tkazib yuborildi: ${e.message.split('\n')[0]}`);
+  }
+}
+
 for (const w of wins) {
   // --- 3. Shu oyna ovozidan subtitr va zoom (Whisper, bepul) ---
   let words = [];
@@ -53,11 +89,12 @@ for (const w of wins) {
     words = r.words;
     zoomlar = (r.zoomlar || []).filter((z) => z.t >= 1 && z.t <= w.len - 2.2).slice(0, 1);
   }
-  if (!zoomlar.length && w.kind !== 'oxir') zoomlar = [{ t: +(w.len * 0.45).toFixed(1), x: 0.5, y: 0.45 }];
+  if (w.kind === 'rang') zoomlar = [];
+  else if (!zoomlar.length && w.kind !== 'oxir') zoomlar = [{ t: +(w.len * 0.45).toFixed(1), x: 0.5, y: 0.45 }];
 
   // Rang ajratish (boshida): kadr ~1.6 s to'xtaydi, fon oq-qora, qahramon rangli (rembg, bepul)
-  let rang;
-  if (w.kind === 'bosh' && process.env.RANG !== '0') {
+  let rang = w.rang;
+  if (w.kind === 'bosh' && !kim && process.env.RANG !== '0') {
     const tf = zoomlar[0] && zoomlar[0].t >= 1 && zoomlar[0].t <= w.len - 2.6 ? zoomlar[0].t : Math.min(1.5, Math.max(0.5, w.len - 2.6));
     const fr = `uzun/fr-${w.kind}.png`;
     const cut = `uzun/cut-${w.kind}.png`;

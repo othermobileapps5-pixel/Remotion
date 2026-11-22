@@ -13,6 +13,9 @@ on:
       til:
         description: "Til (bo'sh — Whisper o'zi aniqlaydi): uz / en / ru / tr"
         default: ""
+      kim:
+        description: "Rang ajratish: video kim/nima haqida (sher, ayol, yuk mashinasi yoki inglizcha). Bo'sh — boshidagi asosiy obyekt"
+        default: ""
       telegram:
         description: "Natija yuboriladigan Telegram chat (bot to'ldiradi; bo'sh qoldiring)"
         default: ""
@@ -26,6 +29,7 @@ jobs:
     timeout-minutes: 90
     env:
       FAYL: ${{ github.event.inputs.fayl }}
+      U2NET_HOME: /home/runner/.u2net
       GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
       GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
       GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
@@ -41,7 +45,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
-          key: whisper-small-v1
+          key: hf-models-v2
       - name: rembg modeli keshi
         uses: actions/cache@v4
         with:
@@ -51,6 +55,10 @@ jobs:
         run: |
           npm install --no-audit --no-fund
           pip install -q faster-whisper "rembg[cpu]"
+          if [ -n "${{ github.event.inputs.kim }}" ]; then
+            pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+            pip install -q transformers
+          fi
 
       - name: Videoni olish
         run: |
@@ -63,7 +71,7 @@ jobs:
       - name: Imzo (3 oyna + ffmpeg)
         run: |
           mkdir -p out
-          node scripts/uzun-imzo.mjs "$SRC" "out/$NOM-imzo.mp4" --hook "${{ github.event.inputs.hook }}" --til "${{ github.event.inputs.til }}"
+          node scripts/uzun-imzo.mjs "$SRC" "out/$NOM-imzo.mp4" --hook "${{ github.event.inputs.hook }}" --til "${{ github.event.inputs.til }}" --kim "${{ github.event.inputs.kim }}"
 
       - name: «videolar» relizga yuklash
         run: |

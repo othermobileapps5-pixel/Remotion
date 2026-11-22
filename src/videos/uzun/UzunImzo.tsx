@@ -10,7 +10,7 @@ export type UzunProps = {
   src: string; // asl video (public/ ga nisbatan)
   start: number; // oyna boshlanishi asl videoda, sek
   len: number; // oyna uzunligi, sek
-  kind: 'bosh' | 'orta' | 'oxir';
+  kind: 'bosh' | 'orta' | 'oxir' | 'rang';
   width: number;
   height: number;
   fps: number;
@@ -181,8 +181,8 @@ export const UzunImzo: React.FC<UzunProps> = (p) => {
       {(p.zoomlar || []).map((z, i) => (
         <Sfx key={i} sec={Math.max(0, z.t - 0.1)} src="whoosh" volume={0.2} />
       ))}
-      {p.kind !== 'bosh' ? <Sfx sec={ctaAt} src="pulse" volume={0.4} /> : null}
-      {p.kind !== 'bosh' ? <Sfx sec={ctaTap} src="switch" volume={0.6} /> : null}
+      {p.kind === 'orta' || p.kind === 'oxir' ? <Sfx sec={ctaAt} src="pulse" volume={0.4} /> : null}
+      {p.kind === 'orta' || p.kind === 'oxir' ? <Sfx sec={ctaTap} src="switch" volume={0.6} /> : null}
     </AbsoluteFill>
   );
 };
