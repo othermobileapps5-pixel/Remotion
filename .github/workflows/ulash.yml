@@ -1,0 +1,121 @@
+# Ulash (faqat bot «Ula» buyrug'i yoki qo'lda): bir nechta videoni yuborilgan tartibda silliq o'tishlar bilan bitta videoga
+# ulaydi va Imzo qo'yadi (hook, Whisper subtitr, zoom, «Obuna bo'ling»).
+# Manba: Telegram albomi (bot file_id'larni beradi, har biri 20 MB gacha) yoki Drive «Claude → Raw» dagi fayllar.
+# Natija repoga/relizga yuklanmaydi (repo ochiq) — faqat Telegram'ga va Drive «Export» ga.
+name: Ulash
+
+on:
+  workflow_dispatch:
+    inputs:
+      tg_fayllar:
+        description: "Telegram video file_id'lari, vergul bilan (bot to'ldiradi; bo'sh qoldiring)"
+        default: ""
+      fayllar:
+        description: "Yoki Drive'dagi videolar (Claude → Raw), bo'sh joy bilan, tartibda: a.mp4 b.mp4"
+        default: ""
+      format:
+        description: "Format"
+        type: choice
+        options: [auto, shorts, youtube]
+        default: auto
+      hook:
+        description: "Boshidagi hook sarlavha (ixtiyoriy)"
+        default: ""
+      telegram:
+        description: "Natija yuboriladigan Telegram chat (bot to'ldiradi; bo'sh qoldiring)"
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  ulash:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CHAT: ${{ github.event.inputs.telegram }}
+      TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+      GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+      GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        continue-on-error: true
+      - name: Whisper modeli keshi
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small-v1
+      - name: Paketlar
+        run: |
+          npm install --no-audit --no-fund
+          pip install -q faster-whisper
+
+      - name: Videolarni olish
+        env:
+          FIDS: ${{ github.event.inputs.tg_fayllar }}
+          FAYLLAR: ${{ github.event.inputs.fayllar }}
+        run: |
+          mkdir -p public/ulash
+          NOM="ulash-$(date -u +%Y%m%d%H%M)"
+          echo "NOM=$NOM" >> "$GITHUB_ENV"
+          LIST=""; k=0
+          for FID in ${FIDS//,/ }; do
+            k=$((k+1))
+            P=$(curl -s "https://api.telegram.org/bot$TG/getFile?file_id=$FID" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);if(!j.ok){console.error(s);process.exit(1)}console.log(j.result.file_path)})')
+            curl -sfL "https://api.telegram.org/file/bot$TG/$P" -o "public/ulash/$NOM-$k.mp4"
+            LIST="$LIST ulash/$NOM-$k.mp4"
+          done
+          for F in $FAYLLAR; do
+            k=$((k+1))
+            node scripts/drive.mjs get "$F" "public/ulash/$NOM-$k.mp4"
+            LIST="$LIST ulash/$NOM-$k.mp4"
+          done
+          if [ "$k" -lt 2 ]; then echo "::error::Kamida 2 ta video kerak"; exit 1; fi
+          echo "LIST=$LIST" >> "$GITHUB_ENV"
+          ls -lh public/ulash
+
+      - name: Ulash (silliq o'tishlar)
+        env:
+          HOOK: ${{ github.event.inputs.hook }}
+        run: node scripts/ula.mjs "$NOM" "${{ github.event.inputs.format }}" $LIST --hook "$HOOK"
+
+      - name: Imzo — subtitr va zoom (Whisper)
+        run: node scripts/subtitr.mjs "videos/$NOM.json"
+
+      - name: Render
+        run: |
+          COMP=$(node -e "console.log(require('./out/ulash.json').komp)")
+          mkdir -p out
+          npx remotion render src/index.ts "$COMP" "out/$NOM.mp4" --props="videos/$NOM.json"
+          ls -lh out
+
+      - name: Drive «Export» papkasiga
+        id: drive
+        continue-on-error: true
+        run: |
+          node scripts/drive.mjs upload "out/$NOM.mp4" | tee drive.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "link=$(grep -o 'https://drive[^ ]*' drive.txt | head -1)" >> "$GITHUB_OUTPUT"
+
+      - name: Telegram'ga
+        if: ${{ github.event.inputs.telegram != '' }}
+        env:
+          LINK: ${{ steps.drive.outputs.link }}
+        run: |
+          C=$(node -e "const u=require('./out/ulash.json');console.log('🔗 Ulandi: '+u.soni+' ta video, '+u.uzunlik+' s · '+(u.format==='shorts'?'Shorts (tik)':'YouTube (yotiq)'))")
+          F="out/$NOM.mp4"
+          if [ $(stat -c%s "$F") -lt 49000000 ]; then
+            curl -s -F chat_id="$CHAT" -F video=@"$F" -F caption="$C" "https://api.telegram.org/bot$TG/sendVideo" | head -c 120; echo
+          else
+            curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=$C — Telegram uchun katta, Drive «Export» da: $LINK" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null
+          fi
+
+      - name: Xato bo'lsa Telegram'ga
+        if: ${{ failure() && github.event.inputs.telegram != '' }}
+        run: |
+          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Ulashda xato: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null

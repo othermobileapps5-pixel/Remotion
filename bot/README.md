@@ -6,3 +6,6 @@
 - Bot `main` tarmog'iga yozadi. Bot faqat egasiga javob beradi (OWNER_CHAT_ID; bo'lmasa — o'rnatishdan oldin /start yozgan odam).
 - Video: bot `videos/bot-*.json` yozadi → «▶️ Yasash» → «Video yasash» (telegram input) → MP4 Telegram'ga → «✅ YouTube'ga» → «YouTube yuklash».
 - Pul sarflanadigan va YouTube'ga chiqadigan har ish faqat tugma bosilganda.
+- Qirqish: video + izoh «Qirq» (yoki «Qirq 2», «Qirq: hook») → «Qirqish» workflow → eng yaxshi 2–3 sahna, ball bilan, Shorts qilib Telegram'ga.
+- Montaj: video + izoh «Montaj» (yoki «Montaj 4») → eng yaxshi lahzalar silliq o'tishlar bilan bitta Shorts'ga ulanadi.
+- Ulash: 2–10 videoni albom qilib yuborib, izohga «Ula» (yoki «Ula shorts» / «Ula youtube») → «Ulash» workflow → bitta videoga ulanadi. Albom KV «ALBOM» da eslab qolinadi («Bot o'rnatish» o'zi yaratadi).

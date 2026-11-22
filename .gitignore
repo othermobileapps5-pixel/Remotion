@@ -5,3 +5,5 @@ out/
 public/drive/
 __pycache__/
 *.pyc
+public/qirq/
+public/ulash/
