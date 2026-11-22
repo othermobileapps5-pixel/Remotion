@@ -55,27 +55,50 @@ async function googleTts(s) {
   const voice = voiceOf(s).split(':')[1];
   const style = styleOf(s) || "o'zbek tilida, tabiiy, ishonchli va energik, tezroq sur'atda gapiradigan erkak diktor";
   let lastErr;
-  for (const key of GKEYS.filter((k) => !PULSIZ.has(k))) for (const model of GOOGLE_MODELS) {
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
-      method: 'POST',
-      headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model,
-        input: [{ type: 'user_input', content: [{ type: 'text', text: s.ovoz.trim(), annotations: [{ type: 'speech_metadata', style }] }] }],
-        response_format: { type: 'audio' },
-        generation_config: { speech_config: [{ voice }] },
-      }),
-    });
-    if (!res.ok) {
-      lastErr = `${model}: ${res.status} ${(await res.text()).slice(0, 300)}`; console.log(`  ${lastErr}`);
-      if (res.status === 402 && GKEYS.length > 1) { PULSIZ.add(key); console.log('  pullik kalitda pul tugagan — bepul kalitga o\'tildi'); break; }
-      continue;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  for (const key of GKEYS.filter((k) => !PULSIZ.has(k))) {
+    let keyDone = false;
+    for (const model of GOOGLE_MODELS) {
+      if (keyDone) break;
+      let withStyle = true;
+      // 429 (bepul kalit: daqiqasiga 3 so'rov) — kutib, xuddi shu model bilan qayta; uslubni qabul qilmasa — uslubsiz
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const content = [{ type: 'text', text: s.ovoz.trim(), ...(withStyle ? { annotations: [{ type: 'speech_metadata', style }] } : {}) }];
+        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
+          method: 'POST',
+          headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model, input: [{ type: 'user_input', content }], response_format: { type: 'audio' }, generation_config: { speech_config: [{ voice }] } }),
+        });
+        if (res.ok) {
+          const j = await res.json();
+          const step = (j.steps || []).filter((x) => x.type === 'model_output').pop();
+          const audio = step && (step.content || []).filter((c) => c.type === 'audio').pop();
+          if (audio && audio.data) return { buf: Buffer.from(audio.data, 'base64'), model };
+          lastErr = `${model}: javobda audio yo'q`;
+          break;
+        }
+        const body = (await res.text()).slice(0, 300);
+        lastErr = `${model}: ${res.status} ${body}`;
+        console.log(`  ${lastErr}`);
+        if (res.status === 402) {
+          if (GKEYS.length > 1) { PULSIZ.add(key); console.log("  pullik kalitda pul tugagan — bepul kalitga o'tildi"); }
+          keyDone = true;
+          break;
+        }
+        if (res.status === 429) {
+          const sec = Math.min(90, Number((body.match(/retry in (\d+)/i) || [])[1]) || 60) + 2;
+          console.log(`  limit — ${sec} s kutamiz va qayta urinamiz`);
+          await sleep(sec * 1000);
+          continue;
+        }
+        if (res.status === 400 && /speech metadata/i.test(body) && withStyle) {
+          withStyle = false; // bu model uslubni qabul qilmaydi — uslubsiz qayta
+          continue;
+        }
+        if (res.status >= 500) { await sleep(5000); continue; }
+        break; // boshqa xato — keyingi model
+      }
     }
-    const j = await res.json();
-    const step = (j.steps || []).filter((x) => x.type === 'model_output').pop();
-    const audio = step && (step.content || []).filter((c) => c.type === 'audio').pop();
-    if (audio && audio.data) return { buf: Buffer.from(audio.data, 'base64'), model };
-    lastErr = `${model}: javobda audio yo'q`;
   }
   throw new Error(`Google TTS xatosi — ${lastErr}`);
 }
