@@ -22,6 +22,9 @@ permissions:
 
 jobs:
   check:
+    # Bot o'zi yozgan ssenariy/sozlama commit'lari ("Bot: ...") tekshirilmaydi — har videoda Actions vaqti ketmasin.
+    # (Workflow'lar github-actions[bot] nomidan qilgan commit'lar Tekshiruvni umuman ishga tushirmaydi.)
+    if: ${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Bot:') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

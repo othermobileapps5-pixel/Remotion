@@ -17,10 +17,10 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
-      # Bot kodi (bot/) faqat claude/bot tarmog'ida — workflow qaysi tarmoqdan ishga tushirilsa ham shuni olamiz
+      # Bot kodi (bot/) va bot yozadigan tarmoq — main
       - uses: actions/checkout@v4
         with:
-          ref: claude/bot
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22

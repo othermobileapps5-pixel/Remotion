@@ -7,7 +7,7 @@ Egasi telefon orqali ishlaydi: javoblar **o'zbek tilida**, qisqa va aniq.
 - Barcha animatsiya `useCurrentFrame()` dan; CSS animatsiya/transition ishlatilmaydi. Rasm — `<Img>`, klip — `<OffthreadVideo>`, ovoz — `@remotion/media` `<Audio>`.
 - Remotion paketlari bir xil versiyada bo'lsin (package.json).
 - AI kliplar: `scripts/fal.mjs` — fal.ai (`FAL_KEY`) yoki Runway (`RUNWAY_KEY`, sahnada `"provider": "runway"`). Yasalgan klip `public/fal/` ga saqlanadi va ssenariyga `src` bo'lib yoziladi.
-- Hikoya ovozi: sahnada `"ovoz": "matn"` → `scripts/ovoz.mjs`. Ssenariyda `"ovozXizmat": "gemini"` — Gemini TTS (`GEMINI_API_KEY`, standart arzon `gemini-3.8-flash-lite-tts`, ovoz `ovozchi`: Charon, Kore...; `ovozgaMoslash` — sahna ovoz uzunligiga). Aks holda Azure (`AZURE_TTS_KEY`, `AZURE_TTS_REGION`; madina/sardor).
+- Hikoya ovozi: sahnada `"ovoz": "matn"` → `scripts/ovoz.mjs` (yo'naltiruvchi: `"ovozXizmat": "gemini"` → `scripts/ovoz-gemini.mjs`, qolganlari → `scripts/ovoz-bot.mjs` — `google:Charon`, `kokoro:...`, Azure ovozlari). Ssenariyda `"ovozXizmat": "gemini"` — Gemini TTS (`GEMINI_API_KEY`, standart arzon `gemini-3.8-flash-lite-tts`, ovoz `ovozchi`: Charon, Kore...; `ovozgaMoslash` — sahna ovoz uzunligiga). Aks holda Azure (`AZURE_TTS_KEY`, `AZURE_TTS_REGION`; madina/sardor).
 - Murakkab animatsiya: `src/videos/<nom>/` da komponentlar, `src/videos/registry.tsx` ga ro'yxatdan o'tadi, ssenariyda `{ "type": "custom", "name": "<nom>/<sahna>" }`. Animatsiya vaqtlari sahna uzunligining ulushi bo'yicha (`useScene().prog`).
 - «Tekshiruv» o'zgargan ssenariylardan har sahnadan 2 ta kadr chiqaradi (`scripts/kadrlar.mjs`, artifact «kadrlar»).
 - Google Drive (egasining «Claude» papkasi: Raw / Export / Reference): `scripts/drive.mjs`, secret'lar `GDRIVE_CLIENT_ID`, `GDRIVE_CLIENT_SECRET`, `GDRIVE_REFRESH_TOKEN`. «Video yasash» tayyor MP4 ni Export'ga yuklaydi; ssenariyda `"src": "drive/<fayl>"` bo'lsa, render oldidan Drive'dan oladi. «Drive» workflow (qo'lda): relizdagi videoni Export'ga yuklash yoki papka ro'yxati.
@@ -21,3 +21,9 @@ Egasi telefon orqali ishlaydi: javoblar **o'zbek tilida**, qisqa va aniq.
 
 - **«Imzo»** (bot va chat): tayyor Shorts'ga `shorts/klip` shabloni — hook sarlavha, kinetik subtitr (Whisper, bepul: `scripts/subtitr.mjs` + `scripts/whisper_words.py`), 2–3 zoom, «Obuna bo'ling». Botga video + izoh «Imzo: hook» → `videos/imzo-*.json` (`src: tg/<nom>.mp4`, workflow `tg_fayl` input bilan Telegram'dan oladi); 20 MB dan katta — Drive Raw (`src: drive/<fayl>`, `scripts/drive.mjs`). Tayyor MP4 Telegram'ga va Drive Export'ga.
 - **Uzun imzo** (botda «Imzo uzun fayl.mp4: hook»): `main`dagi «Uzun imzo» workflow — faqat boshi/o'rtasi/oxiri `UzunImzo` bilan render qilinib, ffmpeg bilan asl videoga qo'yiladi (`scripts/uzun-imzo.mjs`).
+
+## Tarmoqlar (branch) qoidasi
+- **Telegram bot faqat `main` ga yozadi** (`bot/wrangler.toml` → `GITHUB_BRANCH = "main"`). Bot sozlamasini o'zgartirgach — Actions → «Bot o'rnatish».
+- `claude/bot` — eski tarmoq (main'ga birlashtirilgan), unga yangi ish yozilmaydi.
+- Har sessiya o'z `claude/...` tarmog'ida ishlaydi, lekin ish tugagach **PR orqali tezda `main` ga qo'shiladi** — tarmoqlar uzoq vaqt alohida qolmasin.
+- Bot commit'lari (`Bot: ...`) «Tekshiruv» ni ishga tushirmaydi.
