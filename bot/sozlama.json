@@ -3,6 +3,8 @@
   "soat": 18,
   "joy": "usa",
   "til": "en",
+  "tillar": ["en", "es"],
+  "format": "ikkalasi",
   "daqiqa": 3,
   "yuklash": "tasdiq"
 }
