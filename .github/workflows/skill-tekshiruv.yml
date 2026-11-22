@@ -1,0 +1,82 @@
+# Skill tekshiruv: NVIDIA SkillSpector (Apache 2.0) bilan AI ko'nikmalarni xavfsizlikka tekshirish.
+# Bepul rejim (--no-llm): statik tahlil, pullik AI ishlatilmaydi.
+# Avtomatik: .claude/skills/ o'zgarganda. Qo'lda: istalgan GitHub havolasini o'rnatishdan oldin tekshirish.
+name: Skill tekshiruv
+
+on:
+  workflow_dispatch:
+    inputs:
+      manba:
+        description: "Tekshiriladigan narsa: GitHub havola yoki repo ichidagi papka"
+        required: false
+        default: '.claude/skills'
+      telegram:
+        description: "Natijani Telegram chat_id ga yuborish (ixtiyoriy)"
+        required: false
+        default: ''
+  push:
+    paths: ['.claude/skills/**', '.github/workflows/skill-tekshiruv.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: SkillSpector o'rnatish
+        run: uv tool install --python 3.12 git+https://github.com/NVIDIA/skillspector.git
+      - name: Tekshirish
+        id: scan
+        env:
+          MANBA: ${{ github.event.inputs.manba || '.claude/skills' }}
+        run: |
+          mkdir -p hisobot
+          # Manba: havola bo'lsa — o'zi; papka bo'lsa — ichidagi har bir ko'nikma alohida
+          if echo "$MANBA" | grep -qE '^https?://'; then
+            set -- "$MANBA"
+          elif [ -f "$MANBA/SKILL.md" ]; then
+            set -- "$MANBA"
+          else
+            set -- $(find "$MANBA" -name SKILL.md -exec dirname {} \; | sort)
+          fi
+          [ $# -gt 0 ] || { echo "Ko'nikma topilmadi: $MANBA"; echo "natija=yo'q" >> "$GITHUB_OUTPUT"; exit 0; }
+          xavf=0; qisqa=""
+          for s in "$@"; do
+            nom=$(basename "$s" .git)
+            set +e
+            skillspector scan "$s" --no-llm --format markdown --output "hisobot/$nom.md"
+            kod=$?
+            skillspector scan "$s" --no-llm --format json --output "hisobot/$nom.json" >/dev/null 2>&1
+            set -e
+            tavsiya=$(python3 -c "import json,sys;d=json.load(open(sys.argv[1]));print(d.get('recommendation','?'),d.get('risk_score','?'))" "hisobot/$nom.json" 2>/dev/null || echo "? ?")
+            [ "$kod" = 0 ] || xavf=1
+            qisqa="$qisqa
+          $nom: $tavsiya"
+            { echo "## $nom — $tavsiya"; cat "hisobot/$nom.md" 2>/dev/null; echo; } >> "$GITHUB_STEP_SUMMARY"
+          done
+          echo "$qisqa"
+          { echo "qisqa<<EOF"; echo "$qisqa"; echo "EOF"; echo "xavf=$xavf"; } >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: skill-hisobot
+          path: hisobot/
+          retention-days: 14
+      - name: Telegram
+        if: always() && github.event.inputs.telegram != ''
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+          QISQA: ${{ steps.scan.outputs.qisqa }}
+          XAVF: ${{ steps.scan.outputs.xavf }}
+        run: |
+          [ "$XAVF" = 1 ] && b="⚠️ Xavfli topildi" || b="✅ Skill tekshiruv"
+          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=$b$QISQA
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null
+      - name: Xavfli bo'lsa — qizil
+        if: steps.scan.outputs.xavf == '1'
+        run: echo "::error::SkillSpector xavf topdi — hisobotni ko'ring" && exit 1
