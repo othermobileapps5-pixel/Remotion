@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import https from 'node:https';
+import { geminiOmniVideo } from './gemini-omni.mjs';
 
 const [, , file, aspect = '16:9', maxArg = '10'] = process.argv;
 const KEY = process.env.FAL_KEY;
@@ -65,71 +65,15 @@ async function generate(scene) {
   return isRunway(scene) ? generateRunway(scene) : generateFal(scene);
 }
 
-// Google Gemini Omni Flash (Interactions API): bitta so'rovda 3–15 s video, ovoz va dialog bilan.
-// delivery: "uri" uchun store: true shart (aks holda 400 xato).
-// Hujjat: https://ai.google.dev/gemini-api/docs/omni — natija steps[] ichidagi "model_output" qadamida (data yoki uri).
-function httpsJson(url, body) {
-  // Uzoq kutish (bir necha daqiqa) uchun fetch o'rniga https — vaqt chegarasi yo'q
-  return new Promise((resolve, reject) => {
-    const u = new URL(url);
-    const req = https.request(
-      { hostname: u.hostname, path: u.pathname + u.search, method: body ? 'POST' : 'GET', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY } },
-      (res) => {
-        const chunks = [];
-        res.on('data', (c) => chunks.push(c));
-        res.on('end', () => {
-          const text = Buffer.concat(chunks).toString('utf8');
-          if (res.statusCode >= 400) return reject(new Error(`Google xatosi (${res.statusCode}): ${text.slice(0, 600)}`));
-          try { resolve(JSON.parse(text)); } catch { reject(new Error(`Google javobi JSON emas: ${text.slice(0, 300)}`)); }
-        });
-      },
-    );
-    req.on('error', reject);
-    req.setTimeout(0);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
-}
+// Google Gemini Omni Flash: so'rov va javobni o'qish — scripts/gemini-omni.mjs (gemini-video.mjs bilan bir xil)
 async function generateGoogle(scene) {
   const model = scene.model.replace(/^google\//, '');
-  const input = [];
-  if (scene.image) {
-    const url = imageUrl(scene.image);
-    const [, mime, data] = url.match(/^data:([^;]+);base64,(.*)$/) || [];
-    if (!data) throw new Error('Google uchun rasm mahalliy fayl bo\'lishi kerak');
-    input.push({ type: 'image', data, mime_type: mime });
-  }
-  input.push({ type: 'text', text: scene.prompt });
-  const response_format = { type: 'video', aspect_ratio: aspect, resolution: scene.resolution || '720p', delivery: 'uri' };
-  if (scene.duration) response_format.duration = `${Math.max(3, Math.min(15, Math.round(scene.duration)))}s`;
-  const API = 'https://generativelanguage.googleapis.com/v1beta';
-  let res;
-  try {
-    res = await httpsJson(`${API}/interactions`, { model, input, response_format, store: true, stream: false, background: false });
-  } catch (e) {
-    // eski hujjatlarda "duration" yo'q — rad etilsa, usiz qayta urinamiz (pul faqat muvaffaqiyatli javob uchun olinadi)
-    if (!/duration/i.test(String(e.message))) throw e;
-    delete response_format.duration;
-    console.log('  duration qabul qilinmadi, usiz qayta so\'rayapman…');
-    res = await httpsJson(`${API}/interactions`, { model, input, response_format, store: true, stream: false, background: false });
-  }
-  const step = (res.steps || []).find((st) => st.type === 'model_output') || {};
-  const out = (step.content || []).find((c) => c.data || c.uri) || {};
-  if (out.data) return { buf: Buffer.from(out.data, 'base64'), model: `google/${model}` };
-  if (!out.uri) throw new Error(`Google javobida video yo'q: ${JSON.stringify(res).slice(0, 600)}`);
-  // URI: fayl tayyor (ACTIVE) bo'lguncha kutamiz, keyin yuklab olamiz
-  const fileName = (out.uri.match(/files\/[^/?:]+/) || [])[0];
-  if (fileName) {
-    for (let k = 0; k < 120; k++) {
-      const meta = await httpsJson(`${API}/${fileName}`);
-      if (meta.state === 'ACTIVE' || !meta.state) break;
-      if (meta.state === 'FAILED') throw new Error(`Google fayli xato: ${JSON.stringify(meta).slice(0, 300)}`);
-      await sleep(5000);
-    }
-  }
-  const dl = await fetch(fileName ? `${API}/${fileName}:download?alt=media` : out.uri, { headers: { 'x-goog-api-key': GEMINI_KEY } });
-  if (!dl.ok) throw new Error(`Google videosini yuklab bo'lmadi (${dl.status}): ${(await dl.text()).slice(0, 300)}`);
-  return { buf: Buffer.from(await dl.arrayBuffer()), model: `google/${model}` };
+  if (scene.image && /^https?:\/\//.test(scene.image)) throw new Error("Google uchun rasm mahalliy fayl bo'lishi kerak");
+  const buf = await geminiOmniVideo({
+    key: GEMINI_KEY, model, prompt: scene.prompt, image: scene.image, aspect,
+    resolution: scene.resolution || '720p', duration: scene.duration,
+  });
+  return { buf, model: `google/${model}` };
 }
 
 // Runway: https://docs.dev.runwayml.com — vazifa yaratiladi, keyin /tasks/{id} kuzatiladi

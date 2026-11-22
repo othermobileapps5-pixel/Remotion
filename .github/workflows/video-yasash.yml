@@ -160,33 +160,6 @@ jobs:
           curl -sfL "https://api.telegram.org/file/bot$TG/$P" -o "public/tg/$VIDEO.mp4"
           ls -lh public/tg
 
-      - name: Imzo — Drive'dagi manbalar (ssenariyda "drive/<fayl>")
-        env:
-          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
-          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
-          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
-        run: node scripts/drive.mjs fetch "videos/$VIDEO.json"
-
-      - name: Whisper modeli keshi
-        if: ${{ contains(github.event.inputs.video, 'imzo') }}
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/huggingface
-          key: whisper-small-v1
-
-      - name: Imzo — subtitr va zoom (Whisper, bepul)
-        run: |
-          if grep -q '"shorts/klip"' "videos/$VIDEO.json"; then
-            pip install -q faster-whisper
-            node scripts/subtitr.mjs "videos/$VIDEO.json"
-            if [ -n "$(git status --porcelain videos)" ]; then
-              git config user.name "github-actions[bot]"
-              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-              git add "videos/$VIDEO.json"
-              git commit -m "Subtitr: $VIDEO"
-              git pull --rebase -q && git push
-            fi
-          fi
       - name: Drive'dagi manbalar (ssenariyda "drive/<fayl>")
         env:
           GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
@@ -200,20 +173,20 @@ jobs:
           path: ~/.cache/huggingface
           key: whisper-small-v1
 
-      - name: Shorts subtitr va zoom (Whisper — bepul; Gemini ixtiyoriy)
+      # Imzo / Shorts: subtitr va zoom — Whisper (bepul); ssenariyda "tahlil": "gemini" bo'lsa Gemini (pullik)
+      - name: Imzo — subtitr va zoom
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          if grep -q '"shorts/klip"' "videos/$VIDEO.json" && ! grep -q '"tahlil": "gemini"' "videos/$VIDEO.json"; then
-            pip install -q faster-whisper
-          fi
+          grep -q '"shorts/klip"' "videos/$VIDEO.json" || exit 0
+          grep -q '"tahlil": "gemini"' "videos/$VIDEO.json" || pip install -q faster-whisper
           node scripts/subtitr.mjs "videos/$VIDEO.json"
           if [ -n "$(git status --porcelain videos)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add "videos/$VIDEO.json"
             git commit -m "Subtitr: $VIDEO"
-            git push
+            git pull --rebase -q && git push
           fi
 
       - name: Render
@@ -242,20 +215,13 @@ jobs:
           echo "### Tayyor" >> "$GITHUB_STEP_SUMMARY"
           for f in out/*.mp4; do echo "- https://github.com/${{ github.repository }}/releases/download/videolar/$(basename "$f")" >> "$GITHUB_STEP_SUMMARY"; done
 
-      - name: Drive «Export» papkasiga yuklash
-        env:
-          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
-          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
-          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
-        run: for f in out/*.mp4; do node scripts/drive.mjs upload "$f" | tee -a "$GITHUB_STEP_SUMMARY"; done
-
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.inputs.video }}-mp4
           path: out/*.mp4
           retention-days: 7
 
-      # Bot so'ragan bo'lsa — tayyor videoni Telegram'ga yuboramiz (YouTube tugmasi bilan)
+      # Drive xato bersa ham video Telegram'ga boraveradi
       - name: Drive «Export» papkasiga yuklash
         continue-on-error: true
         env:
@@ -264,6 +230,7 @@ jobs:
           GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
         run: for f in out/*.mp4; do node scripts/drive.mjs upload "$f" | tee -a "$GITHUB_STEP_SUMMARY"; done
 
+      # Bot so'ragan bo'lsa — tayyor videoni Telegram'ga yuboramiz (YouTube tugmasi bilan)
       - name: Telegram'ga yuborish
         if: ${{ github.event.inputs.telegram != '' }}
         env:
