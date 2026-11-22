@@ -153,6 +153,16 @@ async function imzo(env, chat, { fileId, size, driveFayl, hook }) {
   return say(env, chat, `✍️ <b>Imzo</b> qo'yilmoqda${hook ? `\nHook: <i>${esc(hook)}</i>` : "\n<i>(hook yo'q — keyingi safar «Imzo: sarlavha» deb yozing)</i>"}\nSubtitr (Whisper), zoom, «Obuna bo'ling» — bepul. 3–6 daqiqada shu yerga keladi va Drive Export'ga tushadi.`);
 }
 
+// ---------- Qirqish: videodan eng yaxshi 2–3 sahna, ball bilan, har biri Imzo'li Shorts ----------
+// Telegram'da video + izoh «Qirq» (yoki «Qirq 2», «Qirq: hook»); katta video — Drive Raw'ga, keyin «Qirq fayl.mp4».
+async function qirq(env, chat, { fileId, size, driveFayl, soni, hook }) {
+  if (fileId && size > 20 * 1048576) {
+    return say(env, chat, `📦 Video ${Math.round(size / 1048576)} MB — Telegram botlarga faqat 20 MB gacha beradi.\nVideoni Drive'dagi <b>Claude → Raw</b> papkasiga tashlang va yozing:\n<code>Qirq fayl_nomi.mp4</code>`);
+  }
+  await dispatchMain(env, 'qirqish.yml', { tg_fayl: fileId || '', fayl: driveFayl || '', soni: String(soni), hook: hook || '', telegram: String(chat) });
+  return say(env, chat, `✂️ <b>Qirqyapman</b>: eng yaxshi ${soni} ta sahnani topib, har biriga ball qo'yaman (1–10).\nHar biri hook, subtitr, zoom va «Obuna bo'ling» bilan Shorts bo'ladi. Uzunligiga qarab 5–15 daqiqada shu yerga keladi.`);
+}
+
 async function dispatchMain(env, workflow, inputs) {
   const r = await GH(env, `/actions/workflows/${workflow}/dispatches`, { method: 'POST', body: JSON.stringify({ ref: 'main', inputs }) });
   if (!r.ok) throw new Error(`Workflow ${r.status}: ${(await r.text()).slice(0, 200)}`);
@@ -406,8 +416,23 @@ async function onMessage(env, msg) {
   // pastki doimiy tugmalar
   const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '⚙️ Sozlama': '/sozlama', '❓ Yordam': '/yordam' };
   if (TUGMA[text]) text = TUGMA[text];
-  // Imzo
   const vid = msg.video || (msg.document && /^video\//.test(msg.document.mime_type || '') ? msg.document : null);
+  // Qirqish
+  const QIRQ = /^\s*(qirq\w*|kes(ib|ing)?)(?![a-z'ʻ’])/i;
+  if (QIRQ.test(text)) {
+    const rest = text.replace(QIRQ, '').replace(/^[\s:,-]+/, '').trim();
+    const soni = /\b2\b/.test(rest) ? 2 : 3;
+    const hm = /https?:\/\//.test(text) ? null : text.match(/^[^:]*:\s*(.+)$/);
+    const hook = hm ? hm[1].trim() : '';
+    if (vid) return qirq(env, chat, { fileId: vid.file_id, size: vid.file_size || 0, soni, hook });
+    const f = rest.match(/(\S+\.(?:mp4|mov|m4v|webm))/i);
+    if (f) return qirq(env, chat, { driveFayl: f[1], soni, hook });
+    if (/https?:\/\//.test(rest)) {
+      return say(env, chat, "🔗 Havoladan videoni yuklab bo'lmaydi — YouTube GitHub serverlarini bloklaydi.\nVideo faylning o'zini shu yerga yuboring (20 MB gacha), izohiga <code>Qirq</code> yozing; kattasini Drive'dagi <b>Claude → Raw</b> ga tashlab <code>Qirq fayl.mp4</code> deb yozing.");
+    }
+    return say(env, chat, "✂️ <b>Qirqish</b> — videodan eng yaxshi 2–3 sahnani topib, ball bilan Shorts qilib beraman.\n\n• Videoni yuboring, izohiga: <code>Qirq</code> (yoki <code>Qirq 2</code> — 2 ta sahna)\n• 20 MB dan katta — Drive'dagi Claude → Raw'ga tashlang: <code>Qirq fayl.mp4</code>\n• Hamma sahnaga bitta sarlavha: <code>Qirq: hook matni</code>");
+  }
+  // Imzo
   if (/^\s*imzo\b/i.test(text) || (vid && !text)) {
     const rest = text.replace(/^\s*imzo\b[\s:,-]*/i, '').trim();
     if (vid) return imzo(env, chat, { fileId: vid.file_id, size: vid.file_size || 0, hook: rest });
@@ -422,12 +447,15 @@ async function onMessage(env, msg) {
     await say(env, chat, 'Tugmalar pastda 👇', {
       reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '⚙️ Sozlama' }], [{ text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
     });
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /sozlama — kunlik video: vaqt, trend, til, uzunlik, yuklash rejimi\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /sozlama — kunlik video: vaqt, trend, til, uzunlik, yuklash rejimi\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
   if (text.startsWith('/bugun')) return kunlik(env, chat);
   // YouTube havola yoki /referens <havola> — referens tahlili (yt-dlp, GitHub'da; video hech qayerga joylanmaydi)
   const havola = (text.match(/https?:\/\/(?:www\.|m\.)?(?:youtube\.com|youtu\.be)\/\S+/) || [])[0];
+  if (havola && /(qirq|\bkes)/i.test(text)) {
+    return say(env, chat, "🔗 Havoladan videoni yuklab bo'lmaydi — YouTube GitHub serverlarini bloklaydi.\nVideo faylning o'zini shu yerga yuboring (20 MB gacha), izohiga <code>Qirq</code> yozing; kattasini Drive'dagi <b>Claude → Raw</b> ga tashlab <code>Qirq fayl.mp4</code> deb yozing.");
+  }
   if (havola && (text.startsWith('/referens') || text.trim() === havola)) {
     await dispatch(env, 'referens.yml', { url: havola, telegram: String(chat) });
     return say(env, chat, "🔎 Referensni Gemini ko'ryapti (1–3 daqiqa): hook, tuzilma, temp va bizga moslash g'oyalari. Natija shu yerga keladi.");

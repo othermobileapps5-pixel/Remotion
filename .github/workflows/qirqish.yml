@@ -1,0 +1,116 @@
+# Qirqish (bot yoki qo'lda): videodan eng yaxshi 2–3 sahna — ball (1–10) bilan, har biri Imzo'li Shorts.
+# Manba: Telegram'dagi video (bot file_id beradi, 20 MB gacha) yoki Drive «Claude → Raw» dagi fayl.
+# Kesilgan videolar repoga, relizga yuklanmaydi (repo ochiq) — faqat Telegram'ga va Drive «Export» ga.
+name: Qirqish
+
+on:
+  workflow_dispatch:
+    inputs:
+      tg_fayl:
+        description: "Telegram video file_id (bot to'ldiradi; bo'sh qoldiring)"
+        default: ""
+      fayl:
+        description: "Yoki Drive'dagi video nomi (Claude → Raw), masalan intervyu.mp4"
+        default: ""
+      soni:
+        description: "Nechta sahna (2 yoki 3)"
+        type: choice
+        options: ["3", "2"]
+        default: "3"
+      hook:
+        description: "Hamma sahnaga bir xil hook (ixtiyoriy; bo'sh — har biriga o'zi tanlaydi)"
+        default: ""
+      telegram:
+        description: "Natija yuboriladigan Telegram chat (bot to'ldiradi; bo'sh qoldiring)"
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  qirq:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CHAT: ${{ github.event.inputs.telegram }}
+      TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+      GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+      GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        continue-on-error: true
+      - name: Whisper modeli keshi
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small-v1
+      - name: Paketlar
+        run: |
+          npm install --no-audit --no-fund
+          pip install -q faster-whisper
+
+      - name: Videoni olish
+        env:
+          FID: ${{ github.event.inputs.tg_fayl }}
+          FAYL: ${{ github.event.inputs.fayl }}
+        run: |
+          mkdir -p public/qirq
+          NOM="qirq-$(date -u +%Y%m%d%H%M)"
+          echo "NOM=$NOM" >> "$GITHUB_ENV"
+          if [ -n "$FID" ]; then
+            P=$(curl -s "https://api.telegram.org/bot$TG/getFile?file_id=$FID" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);if(!j.ok){console.error(s);process.exit(1)}console.log(j.result.file_path)})')
+            curl -sfL "https://api.telegram.org/file/bot$TG/$P" -o "public/qirq/$NOM-manba.mp4"
+          elif [ -n "$FAYL" ]; then
+            node scripts/drive.mjs get "$FAYL" "public/qirq/$NOM-manba.mp4"
+          else
+            echo "::error::tg_fayl yoki fayl kerak"; exit 1
+          fi
+          ls -lh public/qirq
+
+      - name: Eng yaxshi sahnalar (Whisper + ball)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          HOOK: ${{ github.event.inputs.hook }}
+        run: node scripts/qirq.mjs "qirq/$NOM-manba.mp4" "${{ github.event.inputs.soni }}" "$NOM" --hook "$HOOK"
+
+      - name: Shorts render (Imzo bilan)
+        run: |
+          for v in $(node -e "for (const n of require('./out/qirq.json')) console.log(n.video)"); do
+            npx remotion render src/index.ts Shorts "out/$v.mp4" --props="videos/$v.json"
+          done
+          ls -lh out
+
+      - name: Drive «Export» papkasiga
+        continue-on-error: true
+        run: for f in out/qirq-*.mp4; do node scripts/drive.mjs upload "$f" | tee -a "$GITHUB_STEP_SUMMARY"; done
+
+      - name: Telegram'ga (ball bo'yicha)
+        if: ${{ github.event.inputs.telegram != '' }}
+        run: |
+          node -e '
+            const q = require("./out/qirq.json");
+            for (const [i, n] of q.entries()) {
+              const kim = n.tanlagan === "gemini" ? "Gemini" : "ovoz/gap tahlili";
+              const c = `${["🥇","🥈","🥉"][i] || "🎬"} ${i + 1}-sahna — ⭐ ${n.ball}/10\n⏱ ${n.vaqt} (${n.uzunlik} s)\n💡 ${n.sabab}` + (n.hook ? `\n🪝 ${n.hook}` : "") + `\n(tanladi: ${kim})`;
+              require("fs").writeFileSync(`out/${n.video}.txt`, c);
+            }'
+          for v in $(node -e "for (const n of require('./out/qirq.json')) console.log(n.video)"); do
+            F="out/$v.mp4"
+            if [ $(stat -c%s "$F") -lt 49000000 ]; then
+              curl -s -F chat_id="$CHAT" -F video=@"$F" -F caption="<out/$v.txt" "https://api.telegram.org/bot$TG/sendVideo" | head -c 120; echo
+            else
+              curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text@out/$v.txt" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null
+              curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=↑ Telegram uchun katta — Drive «Export» papkasida: $v.mp4" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null
+            fi
+          done
+
+      - name: Xato bo'lsa Telegram'ga
+        if: ${{ failure() && github.event.inputs.telegram != '' }}
+        run: |
+          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Qirqishda xato: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null
