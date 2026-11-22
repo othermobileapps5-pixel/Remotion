@@ -36,24 +36,26 @@ jobs:
         run: |
           mkdir -p hisobot
           # Manba: havola bo'lsa — o'zi; papka bo'lsa — ichidagi har bir ko'nikma alohida
+          # Havola: katta media'siz (1 MB dan katta fayllar olinmaydi) yuklab, ichidagi ko'nikmalarni topamiz
           if echo "$MANBA" | grep -qE '^https?://'; then
-            set -- "$MANBA"
-          elif [ -f "$MANBA/SKILL.md" ]; then
+            git clone -q --depth 1 --filter=blob:limit=1m "$MANBA" /tmp/manba || { echo "Yuklab bo'lmadi: $MANBA"; exit 1; }
+            MANBA=/tmp/manba
+          fi
+          if [ -f "$MANBA/SKILL.md" ]; then
             set -- "$MANBA"
           else
             set -- $(find "$MANBA" -name SKILL.md -exec dirname {} \; | sort)
           fi
-          [ $# -gt 0 ] || { echo "Ko'nikma topilmadi: $MANBA"; echo "natija=yo'q" >> "$GITHUB_OUTPUT"; exit 0; }
+          [ $# -gt 0 ] || { echo "Ko'nikma topilmadi: $MANBA"; echo "xavf=0" >> "$GITHUB_OUTPUT"; exit 0; }
           xavf=0; qisqa=""
           for s in "$@"; do
             nom=$(basename "$s" .git)
-            set +e
-            skillspector scan "$s" --no-llm --format markdown --output "hisobot/$nom.md"
-            kod=$?
-            skillspector scan "$s" --no-llm --format json --output "hisobot/$nom.json" >/dev/null 2>&1
-            set -e
-            tavsiya=$(python3 -c "import json,sys;r=json.load(open(sys.argv[1]))['risk_assessment'];print(r['recommendation'],'(ball',str(r['score'])+'/100)')" "hisobot/$nom.json" 2>/dev/null || echo "? ?")
-            [ "$kod" = 0 ] || xavf=1
+            kod=0
+            skillspector scan "$s" --no-llm --format json --output "hisobot/$nom.json" || kod=$?
+            skillspector scan "$s" --no-llm --format markdown --output "hisobot/$nom.md" >/dev/null 2>&1 || true
+            tavsiya=$(python3 -c "import json,sys;r=json.load(open(sys.argv[1]))['risk_assessment'];print(r['recommendation'],'(ball',str(r['score'])+'/100)')" "hisobot/$nom.json" 2>/dev/null || echo "tekshirib bo'lmadi")
+            [ "$kod" = 1 ] && xavf=1
+            [ "$kod" = 2 ] && [ "$xavf" = 0 ] && xavf=2
             qisqa="$qisqa
           $nom: $tavsiya"
             { echo "## $nom — $tavsiya"; cat "hisobot/$nom.md" 2>/dev/null; echo; } >> "$GITHUB_STEP_SUMMARY"
@@ -74,9 +76,9 @@ jobs:
           QISQA: ${{ steps.scan.outputs.qisqa }}
           XAVF: ${{ steps.scan.outputs.xavf }}
         run: |
-          [ "$XAVF" = 1 ] && b="⚠️ Xavfli topildi" || b="✅ Skill tekshiruv"
+          case "$XAVF" in 1) b="⚠️ Xavfli topildi";; 2) b="❔ Skill tekshiruv: ba'zisini tekshirib bo'lmadi";; *) b="✅ Skill tekshiruv";; esac
           curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=$b$QISQA
           ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null
       - name: Xavfli bo'lsa — qizil
-        if: steps.scan.outputs.xavf == '1'
-        run: echo "::error::SkillSpector xavf topdi — hisobotni ko'ring" && exit 1
+        if: steps.scan.outputs.xavf != '0'
+        run: echo "::error::SkillSpector xavf topdi yoki tekshira olmadi — hisobotni ko'ring" && exit 1
