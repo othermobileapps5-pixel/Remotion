@@ -3,8 +3,9 @@
   "soat": 18,
   "joy": "usa",
   "til": "en",
-  "tillar": ["en", "es"],
-  "format": "ikkalasi",
   "daqiqa": 3,
-  "yuklash": "tasdiq"
+  "yuklash": "tasdiq",
+  "jadval": [
+    { "soat": 18, "til": "en", "format": "youtube" }
+  ]
 }
