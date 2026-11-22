@@ -29,3 +29,4 @@ Egasi telefon orqali ishlaydi: javoblar **o'zbek tilida**, qisqa va aniq.
 - `claude/bot` — eski tarmoq (main'ga birlashtirilgan), unga yangi ish yozilmaydi.
 - Har sessiya o'z `claude/...` tarmog'ida ishlaydi, lekin ish tugagach **PR orqali tezda `main` ga qo'shiladi** — tarmoqlar uzoq vaqt alohida qolmasin.
 - Bot commit'lari (`Bot: ...`) «Tekshiruv» ni ishga tushirmaydi.
+- **Lemo-Opuscar uslublari** (100 ta: akvarel, ukiyo-e, ink-wash, pixel-rpg, blueprint, newsreel...): ko'nikma `.claude/skills/lemo-opuscar/`, kutubxona `sh scripts/lemo.sh` bilan `ext/` ga yuklanadi (repoga qo'shilmaydi). `STYLE.md` — yo'riqnoma, yasash Remotion'da. Lemo-Opuscar by Lemomo (LemoLab), hujjatlar CC BY-NC 4.0, kod MIT; Clawd va brendlar ishlatilmaydi.
