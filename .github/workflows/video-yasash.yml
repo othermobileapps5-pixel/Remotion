@@ -21,9 +21,22 @@ on:
       max_klip:
         description: "Eng ko'pi bilan nechta AI klip (xarajat chegarasi)"
         default: "10"
+      telegram:
+        description: "Tayyor videoni yuboriladigan Telegram chat (bot to'ldiradi; bo'sh qoldiring)"
+        required: false
+        default: ""
+      avto_yuklash:
+        description: "Tayyor bo'lgach YouTube'ga o'zi yuklansin (bot kunlik avto rejimi)"
+        type: boolean
+        default: false
+      tg_fayl:
+        description: "Imzo: Telegram'dagi video file_id (bot to'ldiradi; bo'sh qoldiring)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: video-${{ github.event.inputs.video }}
@@ -48,8 +61,38 @@ jobs:
       - name: Paketlar
         run: npm install --no-audit --no-fund
 
-      - name: Hikoya ovozi (Gemini / Azure)
+      # ffmpeg: tayyor statik nusxa (bir necha soniya, keshlanadi) — PATH'da to'g'ridan-to'g'ri «ffmpeg» bo'ladi
+      - name: ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        id: ffmpeg
+        continue-on-error: true
+
+      # Tekin mahalliy ovoz (Chatterbox / Kokoro) — faqat ssenariy shuni so'rasa o'rnatiladi
+      - name: Tekin ovoz kerakmi
+        id: lok
+        run: |
+          grep -qE '"ovozchi": "(chatterbox|kokoro)' "videos/$VIDEO.json" && echo "kerak=1" >> "$GITHUB_OUTPUT" || true
+      - uses: actions/setup-python@v5
+        if: ${{ steps.lok.outputs.kerak == '1' }}
+        with:
+          python-version: '3.11'
+      - name: Ovoz modellari keshi
+        if: ${{ steps.lok.outputs.kerak == '1' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: tts-local-v1
+      - name: Kokoro o'rnatish (Chatterbox — faqat so'ralsa)
+        if: ${{ steps.lok.outputs.kerak == '1' }}
+        run: |
+          sudo apt-get install -y -qq espeak-ng >/dev/null
+          # Chatterbox — keyinroq Hugging Face'da (GPU) ishga tushiriladi; protsessorda juda sekin
+          if [ "${{ vars.CHATTERBOX_YOQ }}" = "1" ] && grep -qE '"ovozchi": "chatterbox' "videos/$VIDEO.json"; then pip install -q --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts || echo "::warning::Chatterbox o'rnatilmadi — Kokoro ishlaydi"; fi
+          pip install -q --extra-index-url https://download.pytorch.org/whl/cpu kokoro soundfile
+
+      - name: Ovoz (Kokoro tekin; Gemini; Azure)
         env:
+          CHATTERBOX_YOQ: ${{ vars.CHATTERBOX_YOQ }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           AZURE_TTS_KEY: ${{ secrets.AZURE_TTS_KEY }}
           AZURE_TTS_REGION: ${{ secrets.AZURE_TTS_REGION }}
@@ -61,7 +104,20 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add public/ovoz "videos/$VIDEO.json"
             git commit -m "Ovoz: $VIDEO"
-            git push
+            git pull --rebase -q && git push
+          fi
+
+      - name: Musiqa (Google Lyria, ssenariyda "musiqa" bo'lsa)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          node scripts/musiqa.mjs "videos/$VIDEO.json"
+          if [ -n "$(git status --porcelain public/musiqa videos)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/musiqa "videos/$VIDEO.json"
+            git commit -m "Musiqa: $VIDEO"
+            git pull --rebase -q && git push
           fi
 
       - name: AI kliplar (Gemini / fal.ai / Runway)
@@ -71,6 +127,7 @@ jobs:
           FAL_KEY: ${{ secrets.FAL_KEY }}
           RUNWAY_KEY: ${{ secrets.RUNWAY_KEY }}
         run: |
+          command -v ffmpeg && ffmpeg -version | head -1 || echo "ffmpeg yo'q — fal.mjs Remotion ichidagisini ishlatadi"
           ASPECT=16:9; [ "$FORMAT" = shorts ] && ASPECT=9:16
           PROVIDER=$(node -e "const d=require('./videos/'+process.env.VIDEO+'.json'); console.log(d.provider || 'fal')")
           if [ "$PROVIDER" = "gemini" ]; then
@@ -78,14 +135,57 @@ jobs:
           else
             node scripts/fal.mjs "videos/$VIDEO.json" "$ASPECT" "${{ github.event.inputs.max_klip }}"
           fi
-          # Yasalgan kliplarni repoga saqlaymiz — keyingi renderda qayta pul to'lanmaydi
+
+      # Xato bo'lsa ham, yasalgan (pulli) kliplarni saqlaymiz — qayta pul to'lanmaydi
+      - name: AI kliplarni saqlash
+        if: ${{ always() && github.event.inputs.ai_kliplar == 'true' }}
+        run: |
           mkdir -p public/fal public/gemini
           if [ -n "$(git status --porcelain public/fal public/gemini videos)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add public/fal public/gemini "videos/$VIDEO.json"
             git commit -m "AI kliplar: $VIDEO"
-            git push
+            git pull --rebase -q && git push
+          fi
+
+      - name: Imzo — Telegram'dan video
+        if: ${{ github.event.inputs.tg_fayl != '' }}
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          FID: ${{ github.event.inputs.tg_fayl }}
+        run: |
+          P=$(curl -s "https://api.telegram.org/bot$TG/getFile?file_id=$FID" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);if(!j.ok){console.error(s);process.exit(1)}console.log(j.result.file_path)})')
+          mkdir -p public/tg
+          curl -sfL "https://api.telegram.org/file/bot$TG/$P" -o "public/tg/$VIDEO.mp4"
+          ls -lh public/tg
+
+      - name: Imzo — Drive'dagi manbalar (ssenariyda "drive/<fayl>")
+        env:
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        run: node scripts/drive.mjs fetch "videos/$VIDEO.json"
+
+      - name: Whisper modeli keshi
+        if: ${{ contains(github.event.inputs.video, 'imzo') }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small-v1
+
+      - name: Imzo — subtitr va zoom (Whisper, bepul)
+        run: |
+          if grep -q '"shorts/klip"' "videos/$VIDEO.json"; then
+            pip install -q faster-whisper
+            node scripts/subtitr.mjs "videos/$VIDEO.json"
+            if [ -n "$(git status --porcelain videos)" ]; then
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add "videos/$VIDEO.json"
+              git commit -m "Subtitr: $VIDEO"
+              git pull --rebase -q && git push
+            fi
           fi
       - name: Drive'dagi manbalar (ssenariyda "drive/<fayl>")
         env:
@@ -119,6 +219,12 @@ jobs:
       - name: Render
         run: |
           mkdir -p out
+          # Maxsus animatsiya: ssenariyda "komponent" bo'lsa, o'sha kompozitsiya (format o'zida belgilangan)
+          COMP=$(node -e "console.log(require('./videos/$VIDEO.json').komponent || '')")
+          if [ -n "$COMP" ]; then
+            npx remotion render src/index.ts "$COMP" "out/$VIDEO.mp4" --props="videos/$VIDEO.json"
+            ls -lh out; exit 0
+          fi
           if [ "$FORMAT" = youtube ] || [ "$FORMAT" = ikkalasi ]; then
             npx remotion render src/index.ts YouTube "out/$VIDEO-youtube.mp4" --props="videos/$VIDEO.json"
           fi
@@ -148,3 +254,50 @@ jobs:
           name: ${{ github.event.inputs.video }}-mp4
           path: out/*.mp4
           retention-days: 7
+
+      # Bot so'ragan bo'lsa — tayyor videoni Telegram'ga yuboramiz (YouTube tugmasi bilan)
+      - name: Drive «Export» papkasiga yuklash
+        continue-on-error: true
+        env:
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        run: for f in out/*.mp4; do node scripts/drive.mjs upload "$f" | tee -a "$GITHUB_STEP_SUMMARY"; done
+
+      - name: Telegram'ga yuborish
+        if: ${{ github.event.inputs.telegram != '' }}
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+        run: |
+          [ -z "$TG" ] && { echo "TELEGRAM_BOT_TOKEN yo'q"; exit 0; }
+          F=$(ls out/*.mp4 | head -1)
+          NOM=$(node -e "const d=require('./videos/$VIDEO.json');console.log((d.youtube&&d.youtube.nom)||d.title||'$VIDEO')")
+          KB='{"inline_keyboard":[[{"text":"✅ YouTube'"'"'ga yuklash","callback_data":"u:'"$VIDEO"'"}]]}'
+          if [ "${{ github.event.inputs.avto_yuklash }}" = "true" ]; then KB='{"inline_keyboard":[]}'; NOM="$NOM — 🤖 YouTube'ga o'zi yuklanmoqda"; fi
+          SIZE=$(stat -c %s "$F")
+          if [ "$SIZE" -lt 49000000 ]; then
+            curl -s -F chat_id="$CHAT" -F video=@"$F" -F supports_streaming=true -F caption="🎬 $NOM" -F reply_markup="$KB" \
+              "https://api.telegram.org/bot$TG/sendVideo" | head -c 200
+          else
+            URL="https://github.com/${{ github.repository }}/releases/download/videolar/$(basename "$F")"
+            curl -s "https://api.telegram.org/bot$TG/sendMessage" --data-urlencode chat_id="$CHAT" \
+              --data-urlencode text="🎬 $NOM (katta fayl): $URL" --data-urlencode reply_markup="$KB" | head -c 200
+          fi
+
+      # Kunlik avto rejim: tasdiqsiz YouTube'ga yuklash (alohida «YouTube yuklash» jarayoni)
+      - name: YouTube'ga avtomatik yuklash
+        if: ${{ github.event.inputs.avto_yuklash == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHAT: ${{ github.event.inputs.telegram }}
+        run: gh workflow run youtube-yuklash.yml --repo "${{ github.repository }}" --ref "${{ github.ref_name }}" -f video="$VIDEO" -f telegram="$CHAT"
+
+      - name: Telegram'ga xato xabari
+        if: ${{ failure() && github.event.inputs.telegram != '' }}
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+        run: |
+          [ -n "$TG" ] && curl -s "https://api.telegram.org/bot$TG/sendMessage" --data-urlencode chat_id="$CHAT" \
+            --data-urlencode text="⚠️ $VIDEO yig'ilmadi. Claude chatida «$VIDEO xatosini ko'r» deb yozing." > /dev/null || true

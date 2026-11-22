@@ -27,7 +27,8 @@ jobs:
 
       - name: Secret'larni tekshirish
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.BOT_GEMINI_KEY }}
+          GEMINI_FREE_KEY: ${{ secrets.BOT_GEMINI_KEY }}
           BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
           miss=""
@@ -48,7 +49,13 @@ jobs:
           ID=$(curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/getUpdates" | node -e '
             let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const r=JSON.parse(s).result||[];
             const m=r.map(u=>u.message).find(m=>m&&m.chat&&m.chat.type==="private");console.log(m?m.chat.id:"")})')
-          if [ -z "$ID" ]; then echo "::error::Botga Telegram'da /start yozing, keyin qayta ishga tushiring."; exit 1; fi
+          if [ -z "$ID" ]; then
+            # qayta o'rnatish: bot egasini allaqachon biladi — eski OWNER_CHAT_ID qoladi
+            if (cd bot && npx --yes wrangler@4 secret list 2>/dev/null | grep -q OWNER_CHAT_ID); then
+              echo "Egasi oldindan saqlangan — o'zgartirilmaydi."; exit 0
+            fi
+            echo "::error::Botga Telegram'da /start yozing, keyin qayta ishga tushiring."; exit 1
+          fi
           echo "::add-mask::$ID"
           echo "id=$ID" >> "$GITHUB_OUTPUT"
 
@@ -64,7 +71,8 @@ jobs:
       - name: Bot secret'larini qo'yish
         working-directory: bot
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.BOT_GEMINI_KEY }}
+          GEMINI_FREE_KEY: ${{ secrets.BOT_GEMINI_KEY }}
           BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -76,7 +84,9 @@ jobs:
           echo "::add-mask::$WEBHOOK_SECRET"
           node -e '
             const e=process.env, o={TELEGRAM_BOT_TOKEN:e.TELEGRAM_BOT_TOKEN, GEMINI_API_KEY:e.GEMINI_API_KEY, BOT_GITHUB_TOKEN:e.BOT_GITHUB_TOKEN,
-              OWNER_CHAT_ID:e.OWNER, WEBHOOK_SECRET:process.argv[1]};
+              WEBHOOK_SECRET:process.argv[1]};
+            if (e.GEMINI_FREE_KEY) o.GEMINI_FREE_KEY=e.GEMINI_FREE_KEY;
+            if (e.OWNER) o.OWNER_CHAT_ID=e.OWNER;
             for (const k of ["YT_CLIENT_ID","YT_CLIENT_SECRET","YT_REFRESH_TOKEN"]) if (e[k]) o[k]=e[k];
             require("fs").writeFileSync("/tmp/s.json", JSON.stringify(o));' "$WEBHOOK_SECRET"
           npx --yes wrangler@4 secret bulk /tmp/s.json
@@ -88,6 +98,17 @@ jobs:
             -d "url=${{ steps.deploy.outputs.url }}" -d "secret_token=$WEBHOOK_SECRET" \
             -d 'allowed_updates=["message","callback_query"]' -d "drop_pending_updates=true" | tee /tmp/wh.json
           grep -q '"ok":true' /tmp/wh.json
-          curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d "chat_id=${{ steps.owner.outputs.id }}" \
-            --data-urlencode "text=✅ Bot o'rnatildi! /start yozing yoki ovozli xabar yuboring." > /dev/null
+          # Telegram "Menu" tugmasidagi buyruqlar
+          curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setMyCommands" -H 'Content-Type: application/json' -d '{"commands":[
+            {"command":"trend","description":"Trendlar: /trend usa, /trend spanish, /trend usa trucking"},
+            {"command":"bugun","description":"Kunlik videoni hozir yasash"},
+            {"command":"sozlama","description":"Kunlik video sozlamalari"},
+            {"command":"tahlil","description":"Kanal statistikasi va g‘oyalar"},
+            {"command":"yangi","description":"Yangi video ssenariysi: /yangi mavzu"},
+            {"command":"start","description":"Tugmalarni ko‘rsatish"},
+            {"command":"yordam","description":"Yordam"}]}' > /dev/null
+          if [ -n "${{ steps.owner.outputs.id }}" ]; then
+            curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d "chat_id=${{ steps.owner.outputs.id }}" \
+              --data-urlencode "text=✅ Bot o'rnatildi! /start yozing yoki ovozli xabar yuboring." > /dev/null
+          fi
           echo "### Bot o'rnatildi ✓" >> "$GITHUB_STEP_SUMMARY"

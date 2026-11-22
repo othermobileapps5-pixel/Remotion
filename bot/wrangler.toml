@@ -1,0 +1,21 @@
+name = "faro-kanal-bot"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+GITHUB_REPO = "othermobileapps5-pixel/Remotion"
+GITHUB_BRANCH = "claude/bot"
+GEMINI_MODEL = "gemini-3.8-flash"
+OVOZCHI = "google:Charon"
+KUNLIK_JOY = "usa"
+KUNLIK_TIL = "uz"
+KUNLIK_DAQIQA = "3"
+
+# Cloudflare Workers AI — Gemini band bo'g'anda zaxira (bepul kunlik limit)
+[ai]
+binding = "AI"
+
+# Har soat tekshiradi; video sozlamadagi soatda (Los Anjeles vaqti) yasaladi — /sozlama
+[triggers]
+crons = ["0 * * * *"]
