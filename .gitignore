@@ -3,3 +3,5 @@ out/
 .env
 *.log
 public/drive/
+__pycache__/
+*.pyc
