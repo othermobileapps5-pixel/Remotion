@@ -392,18 +392,29 @@ const OVOZ_USLUB = {
   es: 'narrador masculino natural, seguro y enérgico, hablando español con ritmo ágil',
   ru: 'естественный, уверенный и энергичный мужской диктор, говорит по-русски в бодром темпе',
 };
+// Jadval: har biri alohida video — { soat, til, format: 'youtube' | 'shorts' }.
+// Eski sozlama (tillar × format, bitta soat) bo'lsa — undan yasaladi.
+const BAYROQ = { uz: '🇺🇿', en: '🇺🇸', es: '🇪🇸', ru: '🇷🇺' };
+const SOATLAR = [5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 21];
+function sozJadval(s) {
+  if (Array.isArray(s.jadval)) return s.jadval;
+  const f = sozFormat(s);
+  return sozTillar(s).flatMap((til) => (f === 'ikkalasi' ? ['youtube', 'shorts'] : [f]).map((format) => ({ soat: Number(s.soat), til, format })));
+}
+const qatorNom = (j) => `${BAYROQ[j.til] || ''} ${TIL_NOM[j.til] || j.til} · ${j.format === 'shorts' ? 'Shorts' : 'Uzun'} · ${j.soat}:00`;
 function sozMatn(s) {
-  return `⚙️ <b>Kunlik video sozlamalari</b>\n\nHolat: ${s.yoqiq ? '✅ yoqiq' : '⏸ o\'chiq'}\nVaqt: har kuni ${s.soat}:00 (Los Anjeles)\nTrend: ${JOY_NOM[s.joy] || s.joy}\nVideo tili: ${sozTillar(s).map((t) => TIL_NOM[t] || t).join(' + ')}\nFormat: ${FORMAT_NOM[sozFormat(s)]}${sozFormat(s) !== 'shorts' ? ' · uzuni ' + (Number(s.daqiqa) > 1 ? s.daqiqa : 3) + ' daqiqa' : ''}\nYuklash: ${s.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\n\nO'zgartirish uchun tugmani bosing:`;
+  const j = sozJadval(s).slice().sort((a, b) => a.soat - b.soat);
+  const ro = j.length ? j.map((x, i) => `${i + 1}. ${qatorNom(x)}`).join('\n') : "— bo'sh (➕ bilan qo'shing)";
+  return `⚙️ <b>Kunlik video jadvali</b> (Los Anjeles vaqti)\n\nHolat: ${s.yoqiq ? '✅ yoqiq' : '⏸ o\'chiq'}\n${ro}\n\nUzun video: ${Number(s.daqiqa) > 1 ? s.daqiqa : 3} daqiqa\nYuklash: ${s.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\n\n▶️ — hozir yasash, ❌ — o'chirish.`;
 }
 function sozTugma(s) {
   const b = (t, k, v) => ({ text: (String(s[k]) === String(v) ? '● ' : '') + t, callback_data: `s:${k}:${v}` });
+  const j = sozJadval(s).map((x, i) => ({ ...x, i })).sort((a, b) => a.soat - b.soat);
   return { inline_keyboard: [
-    [{ text: s.yoqiq ? '⏸ To\'xtatish' : '▶️ Yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }, { text: '🎬 Hozir yasash', callback_data: 's:bugun:1' }],
-    [5, 7, 9, 12, 18, 21].map((h) => b(`${h}:00`, 'soat', h)),
-    Object.entries(JOY_NOM).map(([k, t]) => b(t, 'joy', k)),
-    Object.entries(TIL_NOM).map(([k, t]) => ({ text: (sozTillar(s).includes(k) ? '✓ ' : '') + t, callback_data: `s:til:${k}` })),
-    Object.entries(FORMAT_NOM).map(([k, t]) => ({ text: (sozFormat(s) === k ? '● ' : '') + t, callback_data: `s:format:${k}` })),
-    [b('3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
+    [{ text: s.yoqiq ? '⏸ To\'xtatish' : '▶️ Yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }],
+    ...j.map((x) => [{ text: qatorNom(x), callback_data: `j:run:${x.i}` }, { text: '▶️', callback_data: `j:run:${x.i}` }, { text: '❌', callback_data: `j:del:${x.i}` }]),
+    [{ text: '➕ Video qo\'shish', callback_data: 'j:yangi' }],
+    [b('Uzun: 3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
     [b('✅ Tasdiq bilan', 'yuklash', 'tasdiq'), b('🤖 Avto yuklash', 'yuklash', 'avto')],
   ] };
 }
@@ -411,39 +422,65 @@ async function sozlama(env, chat) {
   const s = await sozOl(env);
   return say(env, chat, sozMatn(s), { reply_markup: sozTugma(s) });
 }
+const sozYangila = (env, cb) => TG(env, 'editMessageText', { chat_id: cb.message.chat.id, message_id: cb.message.message_id, text: sozMatn(sozKesh), parse_mode: 'HTML', reply_markup: sozTugma(sozKesh) });
 async function sozBos(env, cb, k, v) {
   const chat = cb.message.chat.id;
-  if (k === 'bugun') return kunlik(env, chat);
+  if (k === 'bugun') return sozlama(env, chat);
   const s = await sozOl(env);
   if (k === 'yoqiq') s.yoqiq = v === '1';
   else if (k === 'soat' || k === 'daqiqa') s[k] = Number(v);
-  else if (k === 'til') {
-    // bir nechta til: bosilgani qo'shiladi/olib tashlanadi (kamida bittasi qoladi)
-    const t = sozTillar(s);
-    s.tillar = t.includes(v) ? (t.length > 1 ? t.filter((x) => x !== v) : t) : [...t, v];
-    s.til = s.tillar[0];
-  } else if (k === 'format') { s.format = v; if (v !== 'shorts' && Number(s.daqiqa) <= 1) s.daqiqa = 3; }
   else if (['joy', 'yuklash'].includes(k)) s[k] = v;
   await sozYoz(env, s);
-  await TG(env, 'editMessageText', { chat_id: chat, message_id: cb.message.message_id, text: sozMatn(sozKesh), parse_mode: 'HTML', reply_markup: sozTugma(sozKesh) });
+  await sozYangila(env, cb);
+}
+// Jadval tugmalari: j:yangi → til → format → soat → qo'shiladi; j:run:i — hozir; j:del:i — o'chirish
+async function jadvalBos(env, cb, q) {
+  const chat = cb.message.chat.id;
+  const tahrir = (text, kb) => TG(env, 'editMessageText', { chat_id: chat, message_id: cb.message.message_id, text, parse_mode: 'HTML', reply_markup: { inline_keyboard: kb } });
+  const orqaga = [{ text: '↩️ Orqaga', callback_data: 'j:orqa' }];
+  const s = await sozOl(env);
+  const j = sozJadval(s);
+  if (q[0] === 'orqa') return sozYangila(env, cb);
+  if (q[0] === 'yangi') return tahrir('➕ Yangi video — <b>tili</b>?', [Object.keys(TIL_NOM).map((t) => ({ text: `${BAYROQ[t]} ${TIL_NOM[t]}`, callback_data: `j:t:${t}` })), orqaga]);
+  if (q[0] === 't') return tahrir(`➕ ${BAYROQ[q[1]]} ${TIL_NOM[q[1]]} — <b>format</b>?`, [[{ text: '🎬 Uzun', callback_data: `j:f:${q[1]}:youtube` }, { text: '📱 Shorts', callback_data: `j:f:${q[1]}:shorts` }], orqaga]);
+  if (q[0] === 'f') {
+    const kb = [];
+    for (let i = 0; i < SOATLAR.length; i += 4) kb.push(SOATLAR.slice(i, i + 4).map((h) => ({ text: `${h}:00`, callback_data: `j:a:${q[1]}:${q[2]}:${h}` })));
+    return tahrir(`➕ ${BAYROQ[q[1]]} ${TIL_NOM[q[1]]} · ${q[2] === 'shorts' ? 'Shorts' : 'Uzun'} — <b>soat nechada</b>? (Los Anjeles)`, [...kb, orqaga]);
+  }
+  if (q[0] === 'a') {
+    s.jadval = [...j, { soat: Number(q[3]), til: q[1], format: q[2] }];
+    await sozYoz(env, s);
+    return sozYangila(env, cb);
+  }
+  if (q[0] === 'del') {
+    s.jadval = j.filter((_, i) => i !== Number(q[1]));
+    await sozYoz(env, s);
+    return sozYangila(env, cb);
+  }
+  if (q[0] === 'run') {
+    const x = j[Number(q[1])];
+    if (!x) return sozYangila(env, cb);
+    return kunlikTil(env, chat, s, x.til, x.format, Number(s.daqiqa) > 1 ? Number(s.daqiqa) : 3);
+  }
 }
 
 // ---------- kunlik avtomatik video ----------
 // Har kuni (sozlamadagi soatda) yoki /bugun: trend → eng yaxshi g'oya → ssenariy → yig'ish → Telegram (✅ yoki avto yuklash)
-async function kunlik(env, chat) {
+async function kunlik(env, chat, soat) {
   const soz = await sozOl(env);
-  const format = sozFormat(soz);
+  if (soat === undefined) return sozlama(env, chat); // /bugun — qaysi birini yasashni tugma bilan tanlaysiz
   const daqiqa = Number(soz.daqiqa) > 1 ? Number(soz.daqiqa) : 3;
-  for (const til of sozTillar(soz)) {
-    try { await kunlikTil(env, chat, soz, til, format, daqiqa); }
-    catch (e) { await say(env, chat, `⚠️ Kunlik video (${esc(TIL_NOM[til] || til)}) xatosi: ${esc(e.message).slice(0, 300)}`); }
+  for (const x of sozJadval(soz).filter((x) => Number(x.soat) === Number(soat))) {
+    try { await kunlikTil(env, chat, soz, x.til, x.format, daqiqa); }
+    catch (e) { await say(env, chat, `⚠️ Kunlik video (${esc(qatorNom(x))}) xatosi: ${esc(e.message).slice(0, 300)}`); }
   }
 }
 
 async function kunlikTil(env, chat, soz, til, format, daqiqa) {
   // ispancha video — ispan tilidagi trend, qolganlari — sozlamadagi joy
   const joy = til === 'es' ? 'spanish' : soz.joy;
-  const uzun = format !== 'shorts';
+  const uzun = format !== 'shorts'; // 'youtube' yoki eski 'ikkalasi'
   await say(env, chat, `🗓 Kunlik video (${esc(TIL_NOM[til] || til)}): trendni ko'ryapman (${esc(joy)})…`);
   const vids = await ytTrend(env, trendArg(joy));
   if (!vids.length) return say(env, chat, `🗓 ${esc(TIL_NOM[til] || til)}: bugun trend topilmadi — ertaga yana urinaman.`);
@@ -558,6 +595,7 @@ async function onCallback(env, cb) {
   const [k, name, fmt] = cb.data.split(':');
   await TG(env, 'answerCallbackQuery', { callback_query_id: cb.id });
   if (k === 's') return sozBos(env, cb, name, fmt); // sozlama tugmalari (xabar qoladi, yangilanadi)
+  if (k === 'j') return jadvalBos(env, cb, cb.data.split(':').slice(1)); // kunlik jadval
   if (k === 'n') return newVideo(env, chat, { mavzu: cb.data.slice(2), format: 'shorts', til: 'uz' }); // trend g'oyasi (tugmalar qoladi)
   await TG(env, 'editMessageReplyMarkup', { chat_id: chat, message_id: cb.message.message_id, reply_markup: { inline_keyboard: [] } });
   if (k === 'x') return say(env, chat, '❌ Bekor qilindi.');
@@ -625,8 +663,8 @@ export default {
     ctx.waitUntil((async () => {
       const s = await sozOl(env);
       const soat = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', hourCycle: 'h23' }).format(new Date(event.scheduledTime || Date.now())));
-      if (!s.yoqiq || soat !== Number(s.soat)) return;
-      await kunlik(env, chat);
+      if (!s.yoqiq) return;
+      await kunlik(env, chat, soat);
     })().catch((e) => say(env, chat, `⚠️ Kunlik video xatosi: ${esc(e.message).slice(0, 400)}`)));
   },
 };
