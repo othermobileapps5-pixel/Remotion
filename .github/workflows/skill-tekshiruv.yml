@@ -56,8 +56,15 @@ jobs:
             tavsiya=$(python3 -c "import json,sys;r=json.load(open(sys.argv[1]))['risk_assessment'];print(r['recommendation'],'(ball',str(r['score'])+'/100)')" "hisobot/$nom.json" 2>/dev/null || echo "tekshirib bo'lmadi")
             [ "$kod" = 1 ] && xavf=1
             [ "$kod" = 2 ] && [ "$xavf" = 0 ] && xavf=2
+            sabab=$(python3 -c "
+          import json,sys
+          d=json.load(open(sys.argv[1]))
+          for i in d.get('issues',[])[:5]:
+              l=i.get('location') or {}
+              print('  -',i.get('severity'),i.get('category'),'|',l.get('file',''))" "hisobot/$nom.json" 2>/dev/null || true)
             qisqa="$qisqa
-          $nom: $tavsiya"
+          $nom: $tavsiya
+          $sabab"
             { echo "## $nom — $tavsiya"; cat "hisobot/$nom.md" 2>/dev/null; echo; } >> "$GITHUB_STEP_SUMMARY"
           done
           echo "$qisqa"
