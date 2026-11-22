@@ -252,10 +252,10 @@ async function ytStats(env) {
 }
 
 // ---------- amallar ----------
-async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYuklash }) {
+async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYuklash, qoshimcha = '' }) {
   await say(env, chat, `✍️ Ssenariy yozyapman: <b>${esc(mavzu)}</b> (${format}${soniya ? ', ~' + Math.round(soniya / 60) + ' daq' : ''})…`);
   const s = await gemini(env, [{ text: `Mavzu: ${mavzu}\nFormat: ${format}\nTil: ${til}${soniya ? `\nDavomiylik: ${soniya} soniya` : ''}` }], { json: true, system: SSENARIY });
-  const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}`;
+  const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}${qoshimcha}`;
   const data = { ...s, ovozchi: KOKORO_TIL[til] || env.OVOZCHI || 'google:Charon', ...(OVOZ_USLUB[til] ? { ovozUslubi: OVOZ_USLUB[til] } : {}), bot: { format, mavzu, til } };
   await saveScript(env, name, data);
   if (avto) {
@@ -359,6 +359,10 @@ let sozKesh = null, sozVaqt = 0;
 function sozStandart(env) {
   return { yoqiq: true, soat: 7, joy: env.KUNLIK_JOY || 'usa', til: env.KUNLIK_TIL || 'uz', daqiqa: Number(env.KUNLIK_DAQIQA || 3), yuklash: 'tasdiq' };
 }
+// eski sozlamalar bilan mos: tillar bo'lmasa — til; format bo'lmasa — daqiqadan
+function sozTillar(s) { return Array.isArray(s.tillar) && s.tillar.length ? s.tillar : [s.til || 'uz']; }
+function sozFormat(s) { return s.format || (Number(s.daqiqa) <= 1 ? 'shorts' : 'youtube'); }
+const FORMAT_NOM = { shorts: 'Shorts (~45 s)', youtube: 'Uzun', ikkalasi: 'Uzun + Shorts' };
 async function sozOl(env) {
   if (sozKesh && Date.now() - sozVaqt < 30000) return sozKesh;
   const r = await GH(env, `/contents/${SOZ_FAYL}?ref=${env.GITHUB_BRANCH}`);
@@ -389,7 +393,7 @@ const OVOZ_USLUB = {
   ru: 'естественный, уверенный и энергичный мужской диктор, говорит по-русски в бодром темпе',
 };
 function sozMatn(s) {
-  return `⚙️ <b>Kunlik video sozlamalari</b>\n\nHolat: ${s.yoqiq ? '✅ yoqiq' : '⏸ o\'chiq'}\nVaqt: har kuni ${s.soat}:00 (Los Anjeles)\nTrend: ${JOY_NOM[s.joy] || s.joy}\nVideo tili: ${TIL_NOM[s.til] || s.til}\nUzunlik: ${s.daqiqa <= 1 ? 'Shorts (~45 s)' : s.daqiqa + ' daqiqa'}\nYuklash: ${s.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\n\nO'zgartirish uchun tugmani bosing:`;
+  return `⚙️ <b>Kunlik video sozlamalari</b>\n\nHolat: ${s.yoqiq ? '✅ yoqiq' : '⏸ o\'chiq'}\nVaqt: har kuni ${s.soat}:00 (Los Anjeles)\nTrend: ${JOY_NOM[s.joy] || s.joy}\nVideo tili: ${sozTillar(s).map((t) => TIL_NOM[t] || t).join(' + ')}\nFormat: ${FORMAT_NOM[sozFormat(s)]}${sozFormat(s) !== 'shorts' ? ' · uzuni ' + (Number(s.daqiqa) > 1 ? s.daqiqa : 3) + ' daqiqa' : ''}\nYuklash: ${s.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\n\nO'zgartirish uchun tugmani bosing:`;
 }
 function sozTugma(s) {
   const b = (t, k, v) => ({ text: (String(s[k]) === String(v) ? '● ' : '') + t, callback_data: `s:${k}:${v}` });
@@ -397,8 +401,9 @@ function sozTugma(s) {
     [{ text: s.yoqiq ? '⏸ To\'xtatish' : '▶️ Yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }, { text: '🎬 Hozir yasash', callback_data: 's:bugun:1' }],
     [5, 7, 9, 12, 18, 21].map((h) => b(`${h}:00`, 'soat', h)),
     Object.entries(JOY_NOM).map(([k, t]) => b(t, 'joy', k)),
-    Object.entries(TIL_NOM).map(([k, t]) => b(t, 'til', k)),
-    [b('Shorts', 'daqiqa', 1), b('3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
+    Object.entries(TIL_NOM).map(([k, t]) => ({ text: (sozTillar(s).includes(k) ? '✓ ' : '') + t, callback_data: `s:til:${k}` })),
+    Object.entries(FORMAT_NOM).map(([k, t]) => ({ text: (sozFormat(s) === k ? '● ' : '') + t, callback_data: `s:format:${k}` })),
+    [b('3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
     [b('✅ Tasdiq bilan', 'yuklash', 'tasdiq'), b('🤖 Avto yuklash', 'yuklash', 'avto')],
   ] };
 }
@@ -412,7 +417,13 @@ async function sozBos(env, cb, k, v) {
   const s = await sozOl(env);
   if (k === 'yoqiq') s.yoqiq = v === '1';
   else if (k === 'soat' || k === 'daqiqa') s[k] = Number(v);
-  else if (['joy', 'til', 'yuklash'].includes(k)) s[k] = v;
+  else if (k === 'til') {
+    // bir nechta til: bosilgani qo'shiladi/olib tashlanadi (kamida bittasi qoladi)
+    const t = sozTillar(s);
+    s.tillar = t.includes(v) ? (t.length > 1 ? t.filter((x) => x !== v) : t) : [...t, v];
+    s.til = s.tillar[0];
+  } else if (k === 'format') { s.format = v; if (v !== 'shorts' && Number(s.daqiqa) <= 1) s.daqiqa = 3; }
+  else if (['joy', 'yuklash'].includes(k)) s[k] = v;
   await sozYoz(env, s);
   await TG(env, 'editMessageText', { chat_id: chat, message_id: cb.message.message_id, text: sozMatn(sozKesh), parse_mode: 'HTML', reply_markup: sozTugma(sozKesh) });
 }
@@ -421,19 +432,30 @@ async function sozBos(env, cb, k, v) {
 // Har kuni (sozlamadagi soatda) yoki /bugun: trend → eng yaxshi g'oya → ssenariy → yig'ish → Telegram (✅ yoki avto yuklash)
 async function kunlik(env, chat) {
   const soz = await sozOl(env);
-  const joy = soz.joy, til = soz.til;
-  const soniya = Math.round(Number(soz.daqiqa || 3) * 60);
-  await say(env, chat, `🗓 Kunlik video: trendni ko'ryapman (${esc(joy)})…`);
-  const a = trendArg(joy);
-  const vids = await ytTrend(env, a);
-  if (!vids.length) return say(env, chat, '🗓 Bugun trend topilmadi — ertaga yana urinaman.');
+  const format = sozFormat(soz);
+  const daqiqa = Number(soz.daqiqa) > 1 ? Number(soz.daqiqa) : 3;
+  for (const til of sozTillar(soz)) {
+    try { await kunlikTil(env, chat, soz, til, format, daqiqa); }
+    catch (e) { await say(env, chat, `⚠️ Kunlik video (${esc(TIL_NOM[til] || til)}) xatosi: ${esc(e.message).slice(0, 300)}`); }
+  }
+}
+
+async function kunlikTil(env, chat, soz, til, format, daqiqa) {
+  // ispancha video — ispan tilidagi trend, qolganlari — sozlamadagi joy
+  const joy = til === 'es' ? 'spanish' : soz.joy;
+  const uzun = format !== 'shorts';
+  await say(env, chat, `🗓 Kunlik video (${esc(TIL_NOM[til] || til)}): trendni ko'ryapman (${esc(joy)})…`);
+  const vids = await ytTrend(env, trendArg(joy));
+  if (!vids.length) return say(env, chat, `🗓 ${esc(TIL_NOM[til] || til)}: bugun trend topilmadi — ertaga yana urinaman.`);
   const r = await gemini(env, [{ text: JSON.stringify(vids.slice(0, 20).map(({ id, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
     json: true,
-    system: `Sen YouTube strategisan. Egasi o'zbek, AQShda tirakchi; kanalida kinetik matn + ovozli videolar (rasm/klip yo'q). Trend ro'yxatidan ilhomlanib BITTA eng yaxshi ${Math.round(soniya / 60)} daqiqalik video mavzusini tanla: trendga yaqin, foydali, haqiqatga asoslangan, boshqalarning videosini ko'chirmaydigan, siyosat/sog'liq/moliya maslahati bo'lmagan.
+    system: `Sen YouTube strategisan. Egasi o'zbek, AQShda tirakchi; kanalida kinetik matn + ovozli videolar (rasm/klip yo'q). Trend ro'yxatidan ilhomlanib BITTA eng yaxshi ${uzun ? daqiqa + ' daqiqalik' : 'Shorts'} video mavzusini tanla: trendga yaqin, foydali, haqiqatga asoslangan, boshqalarning videosini ko'chirmaydigan, siyosat/sog'liq/moliya maslahati bo'lmagan.
 FAQAT JSON: {"mavzu": "aniq mavzu, 5-10 so'z, ${til === 'uz' ? "o'zbekcha" : til}", "sabab": "nega aynan shu (1 qator, o'zbekcha)"}`,
   });
-  await say(env, chat, `🎯 Tanlangan mavzu: <b>${esc(r.mavzu)}</b>\n<i>${esc(r.sabab || '')}</i>`);
-  return newVideo(env, chat, { mavzu: r.mavzu, format: soniya <= 60 ? 'shorts' : 'youtube', til, soniya: soniya <= 60 ? 0 : soniya, avto: true, avtoYuklash: soz.yuklash === 'avto' });
+  await say(env, chat, `🎯 ${esc(TIL_NOM[til] || til)} mavzu: <b>${esc(r.mavzu)}</b>\n<i>${esc(r.sabab || '')}</i>`);
+  const umumiy = { mavzu: r.mavzu, til, avto: true, avtoYuklash: soz.yuklash === 'avto' };
+  if (uzun) await newVideo(env, chat, { ...umumiy, format: 'youtube', soniya: daqiqa * 60, qoshimcha: `-${til}` });
+  if (format !== 'youtube') await newVideo(env, chat, { ...umumiy, format: 'shorts', soniya: 0, qoshimcha: `-${til}-s` });
 }
 
 async function voiceToText(env, fileId) {
