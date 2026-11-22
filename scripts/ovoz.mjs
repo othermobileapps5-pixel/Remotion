@@ -1,4 +1,7 @@
-// Sahnalar uchun ovoz. Asosiy: Google Gemini TTS ("ovozchi": "google:Charon" — GEMINI_API_KEY).
+// Sahnalar uchun ovoz.
+//   • Tekin, mahalliy (limitsiz): "ovozchi": "chatterbox" (MIT, eng sifatli; ixtiyoriy "chatterbox:public/ovoz-namuna.wav" — ovoz nusxasi)
+//     yoki "kokoro:am_michael" (Apache 2.0, tez). Chatterbox ishlamasa yoki juda sekin bo'lsa — Kokoro o'zi ishlaydi. scripts/tts_local.py
+//   • Google Gemini TTS ("ovozchi": "google:Charon" — GEMINI_API_KEY, pullik).
 // Zaxira (vaqtincha o'chiq, faqat "ovozchi": "madina"/"sardor" bo'lsa): Microsoft Azure TTS (AZURE_TTS_KEY, AZURE_TTS_REGION).
 // Ishlatish: GEMINI_API_KEY=... node scripts/ovoz.mjs videos/<nom>.json
 // Sahnadagi "ovoz": "matn" → public/ovoz/<nom>-<n>.mp3, sahnaga "ovozFayl" yoziladi.
@@ -6,6 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 
 const [, , file] = process.argv;
 const KEY = process.env.AZURE_TTS_KEY;
@@ -30,6 +34,7 @@ const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 1
 
 const voiceOf = (s) => {
   const raw = s.ovozchi || data.ovozchi || 'google:Charon';
+  if (/^(chatterbox|kokoro)/i.test(raw)) return raw.replace(/^(\w+)/, (m) => m.toLowerCase());
   if (/^google/i.test(raw)) return `google:${raw.split(':')[1] || 'Charon'}`;
   const v = raw.toLowerCase();
   return VOICES[v] || v; // to'liq Azure nomi ham bo'ladi
@@ -38,6 +43,7 @@ const rateOf = (s) => s.ovozTezligi || data.ovozTezligi || '0%';
 const styleOf = (s) => s.ovozUslubi || data.ovozUslubi || '';
 const keyOf = (s) => hash(`${s.ovoz}|${voiceOf(s)}|${rateOf(s)}|${styleOf(s)}`);
 const isGoogle = (s) => voiceOf(s).startsWith('google:');
+const isLocal = (s) => /^(chatterbox|kokoro)/.test(voiceOf(s));
 
 const todo = data.scenes.map((s, i) => ({ s, i })).filter(({ s }) => s.ovoz && s.ovoz.trim() && !(s.ovozFayl && s.ovozKalit === keyOf(s)));
 if (!todo.length) {
@@ -125,7 +131,44 @@ const ssml = (s) =>
   '</prosody></voice></speak>';
 
 fs.mkdirSync('public/ovoz', { recursive: true });
+// ---------- Tekin mahalliy ovoz: Chatterbox → (xato/sekin bo'lsa) Kokoro ----------
+const localTodo = todo.filter(({ s }) => isLocal(s));
+if (localTodo.length) {
+  const lang = (data.bot && data.bot.til) || data.til || 'en';
+  fs.mkdirSync('public/ovoz', { recursive: true });
+  const runLocal = (engine, voice, items) => {
+    const jobs = items.map(({ s, i }) => ({ text: s.ovoz.trim(), out: path.join('public', `ovoz/${name}-${i + 1}.wav`) }));
+    fs.writeFileSync('/tmp/tts-jobs.json', JSON.stringify(jobs));
+    console.log(`▶ ${engine} (${lang}): ${items.length} ta sahna…`);
+    execFileSync('python3', ['scripts/tts_local.py', engine, lang, voice || '', '/tmp/tts-jobs.json', '/tmp/tts-res.json'], {
+      stdio: 'inherit',
+      timeout: Number(process.env.CHATTERBOX_TIMEOUT_MIN || 45) * 60000,
+    });
+    return JSON.parse(fs.readFileSync('/tmp/tts-res.json', 'utf8'));
+  };
+  const first = voiceOf(localTodo[0].s);
+  const [engine, voice] = first.split(':');
+  let res;
+  try {
+    res = runLocal(engine, voice, localTodo);
+  } catch (e) {
+    if (engine !== 'chatterbox') throw e;
+    console.log(`  Chatterbox ishlamadi (${String(e.message).split('\n')[0].slice(0, 120)}) — Kokoro bilan davom etamiz`);
+    res = runLocal('kokoro', '', localTodo);
+  }
+  res.forEach((r, k) => {
+    const { s } = localTodo[k];
+    s.ovozFayl = r.out.replace(/^public\//, '');
+    s.ovozKalit = keyOf(s);
+    const need = Math.ceil((r.sec + PAD) * 10) / 10;
+    if (!s.duration || s.duration < need) s.duration = need;
+  });
+  fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
+  console.log(`  ✓ ${res.length} ta ovoz tayyor`);
+}
+
 for (const { s, i } of todo) {
+  if (isLocal(s)) continue;
   console.log(`▶ ${i + 1}-sahna ovozi (${voiceOf(s)}): "${s.ovoz.slice(0, 50)}"…`);
   if (isGoogle(s)) {
     if (!GKEY) continue;

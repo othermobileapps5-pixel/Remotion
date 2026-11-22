@@ -67,7 +67,28 @@ jobs:
         id: ffmpeg
         continue-on-error: true
 
-      - name: Ovoz (Google Gemini TTS; Azure — zaxira)
+      # Tekin mahalliy ovoz (Chatterbox / Kokoro) — faqat ssenariy shuni so'rasa o'rnatiladi
+      - name: Tekin ovoz kerakmi
+        id: lok
+        run: grep -qE '"ovozchi": "(chatterbox|kokoro)' "videos/$VIDEO.json" && echo "kerak=1" >> "$GITHUB_OUTPUT" || true
+      - uses: actions/setup-python@v5
+        if: ${{ steps.lok.outputs.kerak == '1' }}
+        with:
+          python-version: '3.11'
+      - name: Ovoz modellari keshi
+        if: ${{ steps.lok.outputs.kerak == '1' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: tts-local-v1
+      - name: Chatterbox va Kokoro o'rnatish
+        if: ${{ steps.lok.outputs.kerak == '1' }}
+        run: |
+          sudo apt-get install -y -qq espeak-ng >/dev/null
+          pip install -q --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts || echo "::warning::Chatterbox o'rnatilmadi — Kokoro ishlaydi"
+          pip install -q --extra-index-url https://download.pytorch.org/whl/cpu kokoro soundfile
+
+      - name: Ovoz (Chatterbox/Kokoro tekin; Gemini; Azure)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           AZURE_TTS_KEY: ${{ secrets.AZURE_TTS_KEY }}
