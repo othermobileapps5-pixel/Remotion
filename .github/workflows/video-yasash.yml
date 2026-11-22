@@ -82,11 +82,12 @@ jobs:
         with:
           path: ~/.cache/huggingface
           key: tts-local-v1
-      - name: Chatterbox va Kokoro o'rnatish
+      - name: Kokoro o'rnatish (Chatterbox — faqat so'ralsa)
         if: ${{ steps.lok.outputs.kerak == '1' }}
         run: |
           sudo apt-get install -y -qq espeak-ng >/dev/null
-          pip install -q --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts || echo "::warning::Chatterbox o'rnatilmadi — Kokoro ishlaydi"
+          # Chatterbox — keyinroq Hugging Face'da (GPU) ishga tushiriladi; protsessorda juda sekin
+          if grep -qE '"ovozchi": "chatterbox' "videos/$VIDEO.json"; then pip install -q --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts || echo "::warning::Chatterbox o'rnatilmadi — Kokoro ishlaydi"; fi
           pip install -q --extra-index-url https://download.pytorch.org/whl/cpu kokoro soundfile
 
       - name: Ovoz (Chatterbox/Kokoro tekin; Gemini; Azure)

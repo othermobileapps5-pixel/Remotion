@@ -203,7 +203,7 @@ async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYukla
   await say(env, chat, `✍️ Ssenariy yozyapman: <b>${esc(mavzu)}</b> (${format}${soniya ? ', ~' + Math.round(soniya / 60) + ' daq' : ''})…`);
   const s = await gemini(env, [{ text: `Mavzu: ${mavzu}\nFormat: ${format}\nTil: ${til}${soniya ? `\nDavomiylik: ${soniya} soniya` : ''}` }], { json: true, system: SSENARIY });
   const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}`;
-  const data = { ...s, ovozchi: env.OVOZCHI || 'google:Charon', ...(OVOZ_USLUB[til] ? { ovozUslubi: OVOZ_USLUB[til] } : {}), bot: { format, mavzu, til } };
+  const data = { ...s, ovozchi: KOKORO_TIL[til] || env.OVOZCHI || 'google:Charon', // inglizcha/ispancha — tekin Kokoro; boshqasi — Gemini ...(OVOZ_USLUB[til] ? { ovozUslubi: OVOZ_USLUB[til] } : {}), bot: { format, mavzu, til } };
   await saveScript(env, name, data);
   if (avto) {
     // kunlik rejim: tasdiqsiz darrov yig'iladi (AI klipsiz, faqat ovoz — bir necha sent)
@@ -328,6 +328,7 @@ async function sozYoz(env, s) {
 }
 const JOY_NOM = { usa: '🇺🇸 USA', spanish: '🇪🇸 Spanish', uz: '🇺🇿 UZ', ru: '🇷🇺 RU' };
 const TIL_NOM = { uz: "O'zbek", en: 'English', es: 'Español', ru: 'Русский' };
+const KOKORO_TIL = { en: 'kokoro:am_michael', es: 'kokoro:em_alex' };
 const OVOZ_USLUB = {
   en: 'natural, confident and energetic male narrator speaking English at a brisk pace',
   es: 'narrador masculino natural, seguro y enérgico, hablando español con ritmo ágil',
