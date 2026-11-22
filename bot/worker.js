@@ -262,7 +262,7 @@ async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYukla
     // kunlik rejim: tasdiqsiz darrov yig'iladi (AI klipsiz, faqat ovoz — bir necha sent)
     await dispatch(env, 'video-yasash.yml', { video: name, format, ai_kliplar: 'false', max_klip: '0', telegram: String(chat), avto_yuklash: avtoYuklash ? 'true' : 'false' });
     const total = (s.scenes || []).reduce((a, x) => a + (x.duration || 0), 0);
-    return say(env, chat, `🗓 <b>Bugungi video:</b> ${esc(s.title)}\n~${Math.round(total / 60 * 10) / 10} daq · ${s.scenes?.length} sahna\nYouTube nomi: <i>${esc(s.youtube?.nom)}</i>\n\n⏳ Yig'ilmoqda — tayyor bo'lgach shu yerga keladi${avtoYuklash ? ' va YouTube\'ga o\'zi yuklanadi.' : ', ✅ bossangiz YouTube\'ga yuklanadi.'}`);
+    return say(env, chat, `🤖 <b>Tomy'ning bugungi videosi:</b> ${esc(s.title)}\n~${Math.round(total / 60 * 10) / 10} daq · ${s.scenes?.length} sahna\nYouTube nomi: <i>${esc(s.youtube?.nom)}</i>\n\n⏳ Yig'ilmoqda — tayyor bo'lgach shu yerga keladi${avtoYuklash ? ' va YouTube\'ga o\'zi yuklanadi.' : ', ✅ bossangiz YouTube\'ga yuklanadi.'}`);
   }
   const total = (s.scenes || []).reduce((a, x) => a + (x.duration || 0), 0);
   const lines = (s.scenes || []).map((x, i) => `${i + 1}. ${esc((x.text || '').replace(/\n/g, ' '))}`).join('\n');
@@ -412,7 +412,7 @@ function sozMatn(s) {
   const j = w.jadval.slice().sort((a, b) => a.soat - b.soat);
   const ro = j.length ? j.map((x, i) => `${i + 1}. ${qatorNom(x)}`).join('\n') : "— bo'sh (➕ bilan qo'shing)";
   const holat = s.qoralama ? '✏️ <b>Saqlanmagan o\'zgarish bor</b> — 💾 Saqlash bosing' : '✅ Saqlangan';
-  return `⚙️ <b>Kunlik video sozlamasi</b> (Los Anjeles vaqti)\n\nAgent: ${s.yoqiq ? '▶️ ishlayapti' : '⏸ to\'xtatilgan'}\n${holat}\n\n${ro}\n\nUzun video: ${w.daqiqa} daqiqa\nYuklash: ${w.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\n\n▶️ — hozir yasash, ❌ — o'chirish, 📂 — rejimlar.`;
+  return `🤖 <b>Tomy — kunlik video sozlamasi</b> (Los Anjeles vaqti)\n\nTomy: ${s.yoqiq ? '▶️ ishlayapti' : '⏸ dam olyapti'}\n${holat}\n\n${ro}\n\nUzun video: ${w.daqiqa} daqiqa\nYuklash: ${w.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\n\n▶️ — hozir yasash, ❌ — o'chirish, 📂 — rejimlar.`;
 }
 function sozTugma(s) {
   const w = ishOl(s);
@@ -424,7 +424,7 @@ function sozTugma(s) {
     [{ text: '➕ Video qo\'shish', callback_data: 'j:yangi' }],
     [b('Uzun: 3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
     [b('✅ Tasdiq bilan', 'yuklash', 'tasdiq'), b('🤖 Avto yuklash', 'yuklash', 'avto')],
-    [{ text: '📂 Rejimlar', callback_data: 'j:rejim' }, { text: s.yoqiq ? '⏸ Agentni to\'xtatish' : '▶️ Agentni yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }],
+    [{ text: '📂 Rejimlar', callback_data: 'j:rejim' }, { text: s.yoqiq ? '⏸ Tomy\'ni to\'xtatish' : '▶️ Tomy\'ni yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }],
   ] };
 }
 async function sozlama(env, chat) {
@@ -465,7 +465,7 @@ async function jadvalBos(env, cb, q) {
   if (q[0] === 'saqla') {
     if (s.qoralama) { s.jadval = s.qoralama.jadval; s.daqiqa = s.qoralama.daqiqa; s.yuklash = s.qoralama.yuklash; delete s.qoralama; }
     await yoz();
-    return say(env, chat, `💾 Saqlandi. Agent shu jadval bilan ishlaydi:\n${s.jadval.length ? s.jadval.slice().sort((a, b) => a.soat - b.soat).map(qatorNom).join('\n') : "— bo'sh (hech narsa yasalmaydi)"}`);
+    return say(env, chat, `💾 Saqlandi. Tomy shu jadval bilan ishlaydi:\n${s.jadval.length ? s.jadval.slice().sort((a, b) => a.soat - b.soat).map(qatorNom).join('\n') : "— bo'sh (hech narsa yasalmaydi)"}`);
   }
   if (q[0] === 'bekor') { delete s.qoralama; return yoz(); }
   if (q[0] === 'rejim') {
@@ -502,7 +502,7 @@ async function kunlik(env, chat, soat) {
   const daqiqa = Number(soz.daqiqa) > 1 ? Number(soz.daqiqa) : 3;
   for (const x of sozJadval(soz).filter((x) => Number(x.soat) === Number(soat))) {
     try { await kunlikTil(env, chat, soz, x.til, x.format, daqiqa); }
-    catch (e) { await say(env, chat, `⚠️ Kunlik video (${esc(qatorNom(x))}) xatosi: ${esc(e.message).slice(0, 300)}`); }
+    catch (e) { await say(env, chat, `⚠️ Tomy xatosi (${esc(qatorNom(x))}): ${esc(e.message).slice(0, 300)}`); }
   }
 }
 
@@ -510,15 +510,15 @@ async function kunlikTil(env, chat, soz, til, format, daqiqa) {
   // ispancha video — ispan tilidagi trend, qolganlari — sozlamadagi joy
   const joy = til === 'es' ? 'spanish' : soz.joy;
   const uzun = format !== 'shorts'; // 'youtube' yoki eski 'ikkalasi'
-  await say(env, chat, `🗓 Kunlik video (${esc(TIL_NOM[til] || til)}): trendni ko'ryapman (${esc(joy)})…`);
+  await say(env, chat, `🤖 Tomy (${esc(TIL_NOM[til] || til)}): trendni ko'ryapman (${esc(joy)})…`);
   const vids = await ytTrend(env, trendArg(joy));
-  if (!vids.length) return say(env, chat, `🗓 ${esc(TIL_NOM[til] || til)}: bugun trend topilmadi — ertaga yana urinaman.`);
+  if (!vids.length) return say(env, chat, `🤖 Tomy (${esc(TIL_NOM[til] || til)}): bugun trend topilmadi — ertaga yana urinaman.`);
   const r = await gemini(env, [{ text: JSON.stringify(vids.slice(0, 20).map(({ id, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
     json: true,
     system: `Sen YouTube strategisan. Egasi o'zbek, AQShda tirakchi; kanalida kinetik matn + ovozli videolar (rasm/klip yo'q). Trend ro'yxatidan ilhomlanib BITTA eng yaxshi ${uzun ? daqiqa + ' daqiqalik' : 'Shorts'} video mavzusini tanla: trendga yaqin, foydali, haqiqatga asoslangan, boshqalarning videosini ko'chirmaydigan, siyosat/sog'liq/moliya maslahati bo'lmagan.
 FAQAT JSON: {"mavzu": "aniq mavzu, 5-10 so'z, ${til === 'uz' ? "o'zbekcha" : til}", "sabab": "nega aynan shu (1 qator, o'zbekcha)"}`,
   });
-  await say(env, chat, `🎯 ${esc(TIL_NOM[til] || til)} mavzu: <b>${esc(r.mavzu)}</b>\n<i>${esc(r.sabab || '')}</i>`);
+  await say(env, chat, `🤖 Tomy tanladi (${esc(TIL_NOM[til] || til)}): <b>${esc(r.mavzu)}</b>\n<i>${esc(r.sabab || '')}</i>`);
   const umumiy = { mavzu: r.mavzu, til, avto: true, avtoYuklash: soz.yuklash === 'avto' };
   if (uzun) await newVideo(env, chat, { ...umumiy, format: 'youtube', soniya: daqiqa * 60, qoshimcha: `-${til}` });
   if (format !== 'youtube') await newVideo(env, chat, { ...umumiy, format: 'shorts', soniya: 0, qoshimcha: `-${til}-s` });
@@ -545,7 +545,7 @@ async function onMessage(env, msg) {
   }
   if (!text && !msg.video && !msg.document) return;
   // pastki doimiy tugmalar
-  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '⚙️ Sozlama': '/sozlama', '❓ Yordam': '/yordam' };
+  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '🤖 Tomy': '/tomy', '⚙️ Sozlama': '/tomy', '❓ Yordam': '/yordam' };
   if (TUGMA[text]) text = TUGMA[text];
   const vid = msg.video || (msg.document && /^video\//.test(msg.document.mime_type || '') ? msg.document : null);
   // Albom videolari eslab qolinadi; izohsiz albom videosi hech narsa qilmaydi (faqat buyruq bilan)
@@ -593,9 +593,9 @@ async function onMessage(env, msg) {
   if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
     await say(env, chat, 'Tugmalar pastda 👇', {
-      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '⚙️ Sozlama' }], [{ text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
+      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '🤖 Tomy' }], [{ text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
     });
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /sozlama — kunlik video: vaqt, trend, til, uzunlik, yuklash rejimi\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib\n• Video yuboring + izoh «Montaj» — eng yaxshi lahzalardan bitta Shorts\n• 2–10 ta videoni albom qilib yuboring + izoh «Ula» — bitta videoga ulayman (Ula shorts / Ula youtube)`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /tomy (yoki /sozlama) — Tomy, kunlik video agenti: jadval, til, Uzun/Shorts, soat, rejimlar\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib\n• Video yuboring + izoh «Montaj» — eng yaxshi lahzalardan bitta Shorts\n• 2–10 ta videoni albom qilib yuboring + izoh «Ula» — bitta videoga ulayman (Ula shorts / Ula youtube)`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
   if (text.startsWith('/bugun')) return kunlik(env, chat);
@@ -609,7 +609,7 @@ async function onMessage(env, msg) {
     return say(env, chat, "🔎 Referensni Gemini ko'ryapti (1–3 daqiqa): hook, tuzilma, temp va bizga moslash g'oyalari. Natija shu yerga keladi.");
   }
   if (text.startsWith('/referens')) return say(env, chat, 'Havolani ham yozing: /referens https://youtu.be/…');
-  if (text.startsWith('/sozlama')) return sozlama(env, chat);
+  if (text.startsWith('/sozlama') || /^\/?tomy\b/i.test(text)) return sozlama(env, chat);
   if (text.startsWith('/trend')) return trend(env, chat, text.replace(/^\/trend\S*/, ''));
   if (text.startsWith('/yangi')) return newVideo(env, chat, { mavzu: text.replace('/yangi', '').trim() || 'kanal mavzusida qiziqarli fakt', format: 'shorts', til: 'uz' });
   const n = await gemini(env, [{ text }], { json: true, system: NIYAT });
@@ -694,6 +694,6 @@ export default {
       const soat = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', hourCycle: 'h23' }).format(new Date(event.scheduledTime || Date.now())));
       if (!s.yoqiq) return;
       await kunlik(env, chat, soat);
-    })().catch((e) => say(env, chat, `⚠️ Kunlik video xatosi: ${esc(e.message).slice(0, 400)}`)));
+    })().catch((e) => say(env, chat, `⚠️ Tomy xatosi: ${esc(e.message).slice(0, 400)}`)));
   },
 };
