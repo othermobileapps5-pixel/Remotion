@@ -1,0 +1,73 @@
+{
+  "title": "Avengers: Doomsday",
+  "theme": {
+    "bg": "#0b1020",
+    "accent": "#ffcc33",
+    "text": "#ffffff"
+  },
+  "scenes": [
+    {
+      "type": "title",
+      "text": "Avengers: Doomsday",
+      "subtitle": "Tahlili",
+      "duration": 4,
+      "ovoz": "Avengers: Doomsday - bu qanday film?"
+    },
+    {
+      "type": "text",
+      "text": "Marvel kinematografiya",
+      "duration": 3,
+      "ovoz": "Bu Marvel kinematografiya koinotining bir qismi"
+    },
+    {
+      "type": "text",
+      "text": "Qahramonlar",
+      "duration": 3,
+      "ovoz": "Film qahramonlari kimlar?"
+    },
+    {
+      "type": "text",
+      "text": "Dunyo tugashi",
+      "duration": 3,
+      "ovoz": "Film dunyo tugashiga qanday bog'liq?"
+    },
+    {
+      "type": "text",
+      "text": "Muxlislar fikri",
+      "duration": 3,
+      "ovoz": "Muxlislar film haqida nima deyishadi?"
+    },
+    {
+      "type": "text",
+      "text": "Tahlil",
+      "duration": 4,
+      "ovoz": "Film tahlili qanday?"
+    },
+    {
+      "type": "text",
+      "text": "Obuna bo'ling",
+      "duration": 4,
+      "ovoz": "Obuna bo'ling va yangi videolarni ko'ring"
+    },
+    {
+      "type": "text",
+      "text": "Maslahat emas",
+      "duration": 2,
+      "ovoz": "Maslahat emas, faqat ta'lim maqsadida"
+    }
+  ],
+  "youtube": {
+    "nom": "Avengers: Doomsday Tahlili",
+    "tavsif": "Avengers: Doomsday filmi haqida tahlil",
+    "teglar": [
+      "Avengers",
+      "Doomsday",
+      "Marvel"
+    ]
+  },
+  "ovozchi": "google:Charon",
+  "bot": {
+    "format": "shorts",
+    "mavzu": "Avengers: Doomsday tahlili"
+  }
+}

@@ -1,12 +1,22 @@
 import React from 'react';
-import { AbsoluteFill, OffthreadVideo, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { Audio } from '@remotion/media';
 import type { CustomScene, Theme } from '../../types';
 import { resolveSrc } from '../../util';
 import { fontFamily } from '../../fonts';
-import { Sfx } from '../apollo13/kit';
 
 // Tayyor kesilgan Shorts: hook sarlavha + kinetik subtitr + 2–3 zoom + oxirida «Obuna bo'ling»
 const YELLOW = '#FFE600';
+
+// SFX: soniya bo'yicha (public/audio/shorts/*.wav)
+const Sfx: React.FC<{ sec: number; src: string; volume?: number }> = ({ sec, src, volume = 0.5 }) => {
+  const { fps } = useVideoConfig();
+  return (
+    <Sequence from={Math.max(0, Math.round(sec * fps))} layout="none">
+      <Audio src={staticFile(`audio/shorts/${src}.wav`)} volume={volume} />
+    </Sequence>
+  );
+};
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 
 const OBUNA: Record<string, [string, string]> = {
@@ -139,12 +149,12 @@ export const Klip: React.FC<{ theme: Theme; scene: CustomScene }> = ({ scene }) 
       ) : null}
 
       {/* SFX */}
-      {scene.hook ? <Sfx at={0} src="whoosh" volume={0.35} /> : null}
+      {scene.hook ? <Sfx sec={0} src="whoosh" volume={0.35} /> : null}
       {(scene.zoomlar || []).map((z, i) => (
-        <Sfx key={i} at={Math.max(0, (z.t - 0.1) / dur)} src="whoosh" volume={0.2} />
+        <Sfx key={i} sec={Math.max(0, z.t - 0.1)} src="whoosh" volume={0.2} />
       ))}
-      <Sfx at={ctaStart / dur} src="pulse" volume={0.4} />
-      <Sfx at={tapT / dur} src="switch" volume={0.6} />
+      <Sfx sec={ctaStart} src="pulse" volume={0.4} />
+      <Sfx sec={tapT} src="switch" volume={0.6} />
     </AbsoluteFill>
   );
 };

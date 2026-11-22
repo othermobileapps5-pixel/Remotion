@@ -1,0 +1,73 @@
+{
+  "title": "30 soniyaliq video",
+  "theme": {
+    "bg": "#0b1020",
+    "accent": "#ffcc33",
+    "text": "#ffffff"
+  },
+  "scenes": [
+    {
+      "type": "title",
+      "text": "30 soniya\nvideo",
+      "subtitle": "Qanday yaratamiz?",
+      "duration": 4,
+      "ovoz": "30 soniyaliq video qanday yaratamiz?",
+      "ovozFayl": "ovoz/bot-202611210317-1.wav",
+      "ovozKalit": "a437bbd0af"
+    },
+    {
+      "type": "text",
+      "text": "1. Mavzu tanlang",
+      "duration": 5,
+      "ovoz": "Avvalo, video mavzusini tanlaymiz.",
+      "ovozFayl": "ovoz/bot-202611210317-2.wav",
+      "ovozKalit": "a323421ece"
+    },
+    {
+      "type": "text",
+      "text": "2. Ssenariy",
+      "duration": 5,
+      "ovoz": "Keyin, ssenariy yozamiz.",
+      "ovozFayl": "ovoz/bot-202611210317-3.wav",
+      "ovozKalit": "d779280e1d"
+    },
+    {
+      "type": "text",
+      "text": "3. Tasvir",
+      "duration": 5,
+      "ovoz": "Tasvirlar tayyorlaymiz.",
+      "ovozFayl": "ovoz/bot-202611210317-4.wav",
+      "ovozKalit": "746881bd2c"
+    },
+    {
+      "type": "text",
+      "text": "4. Montaj",
+      "duration": 5,
+      "ovoz": "Montaj qilamiz.",
+      "ovozFayl": "ovoz/bot-202611210317-5.wav",
+      "ovozKalit": "19c2b611ec"
+    },
+    {
+      "type": "text",
+      "text": "5. Obuna",
+      "duration": 5,
+      "ovoz": "Obuna bo'ling va ko'proq bilib olasiz.",
+      "ovozFayl": "ovoz/bot-202611210317-6.wav",
+      "ovozKalit": "94affaf6aa"
+    }
+  ],
+  "youtube": {
+    "nom": "30 soniya video",
+    "tavsif": "30 soniya video yaratish bo'yicha qisqa ko'rsatma",
+    "teglar": [
+      "video",
+      "montaj",
+      "yaratish"
+    ]
+  },
+  "ovozchi": "google:Charon",
+  "bot": {
+    "format": "shorts",
+    "mavzu": "30 s moution video yarat"
+  }
+}
