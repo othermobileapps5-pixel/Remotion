@@ -6,7 +6,7 @@
 //   node scripts/uzun-imzo.mjs <video (public/ ichida)> <chiqish.mp4> [--hook "matn"] [--til en]
 import fs from 'node:fs';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 const args = process.argv.slice(2);
 const opt = (k) => {
@@ -66,7 +66,8 @@ for (const w of wins) {
 
 // --- 5. Butun video bo'ylab SFX: sahna kesimlari (ffmpeg scene) + urg'u joylari (ovoz) ---
 console.log('▶ Sahna kesimlari va urg\'u joylari…');
-const sc = execFileSync('ffmpeg', ['-hide_banner', '-nostats', '-threads', '0', '-i', src, '-an', '-vf', "scale=320:-2,select='gt(scene,0.4)',showinfo", '-f', 'null', '-'], { stdio: ['ignore', 'ignore', 'pipe'], maxBuffer: 256 * 1024 * 1024 }).toString();
+const scRes = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-threads', '0', '-i', src, '-an', '-vf', "scale=320:-2,select='gt(scene,0.4)',showinfo", '-f', 'null', '-'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
+const sc = scRes.stderr || '';
 const cuts = [...sc.matchAll(/pts_time:([\d.]+)/g)].map((m) => +Number(m[1]).toFixed(2));
 fs.writeFileSync('out/uzun/cuts.json', JSON.stringify(cuts));
 fs.writeFileSync('out/uzun/wins.json', JSON.stringify(wins.map(({ start, len }) => ({ start, len }))));
