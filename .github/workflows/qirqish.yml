@@ -1,4 +1,5 @@
 # Qirqish (bot yoki qo'lda): videodan eng yaxshi 2–3 sahna — ball (1–10) bilan, har biri Imzo'li Shorts.
+# Montaj (montaj: true): eng yaxshi 2–4 lahza vaqt tartibida silliq o'tishlar bilan BITTA Imzo'li Shorts'ga ulanadi.
 # Manba: Telegram'dagi video (bot file_id beradi, 20 MB gacha) yoki Drive «Claude → Raw» dagi fayl.
 # Kesilgan videolar repoga, relizga yuklanmaydi (repo ochiq) — faqat Telegram'ga va Drive «Export» ga.
 name: Qirqish
@@ -13,10 +14,14 @@ on:
         description: "Yoki Drive'dagi video nomi (Claude → Raw), masalan intervyu.mp4"
         default: ""
       soni:
-        description: "Nechta sahna (2 yoki 3)"
+        description: "Nechta sahna (2 yoki 3; montajda 4 gacha)"
         type: choice
-        options: ["3", "2"]
+        options: ["3", "2", "4"]
         default: "3"
+      montaj:
+        description: "Montaj: lahzalarni bitta videoga ulash"
+        type: boolean
+        default: false
       hook:
         description: "Hamma sahnaga bir xil hook (ixtiyoriy; bo'sh — har biriga o'zi tanlaydi)"
         default: ""
@@ -77,7 +82,8 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           HOOK: ${{ github.event.inputs.hook }}
-        run: node scripts/qirq.mjs "qirq/$NOM-manba.mp4" "${{ github.event.inputs.soni }}" "$NOM" --hook "$HOOK"
+          MONTAJ: ${{ github.event.inputs.montaj }}
+        run: node scripts/qirq.mjs "qirq/$NOM-manba.mp4" "${{ github.event.inputs.soni }}" "$NOM" --hook "$HOOK" $([ "$MONTAJ" = true ] && echo --montaj)
 
       - name: Shorts render (Imzo bilan)
         run: |
@@ -97,7 +103,9 @@ jobs:
             const q = require("./out/qirq.json");
             for (const [i, n] of q.entries()) {
               const kim = n.tanlagan === "gemini" ? "Gemini" : "ovoz/gap tahlili";
-              const c = `${["🥇","🥈","🥉"][i] || "🎬"} ${i + 1}-sahna — ⭐ ${n.ball}/10\n⏱ ${n.vaqt} (${n.uzunlik} s)\n💡 ${n.sabab}` + (n.hook ? `\n🪝 ${n.hook}` : "") + `\n(tanladi: ${kim})`;
+              const c = n.montaj
+                ? `🎬 Montaj — ${n.qismlar.length} lahza, ${n.uzunlik} s · ⭐ ${n.ball}/10\n` + n.qismlar.map((x, j) => `${j + 1}) ${x.vaqt} — ⭐ ${x.ball} · ${x.sabab}`).join("\n") + (n.hook ? `\n🪝 ${n.hook}` : "") + `\n(tanladi: ${kim})`
+                : `${["🥇","🥈","🥉"][i] || "🎬"} ${i + 1}-sahna — ⭐ ${n.ball}/10\n⏱ ${n.vaqt} (${n.uzunlik} s)\n💡 ${n.sabab}` + (n.hook ? `\n🪝 ${n.hook}` : "") + `\n(tanladi: ${kim})`;
               require("fs").writeFileSync(`out/${n.video}.txt`, c);
             }'
           for v in $(node -e "for (const n of require('./out/qirq.json')) console.log(n.video)"); do

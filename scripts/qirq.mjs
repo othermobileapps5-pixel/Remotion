@@ -4,7 +4,9 @@
 //     bo'lmasa yoki xato bo'lsa — mahalliy hisob: ovoz kuchi, gap zichligi, keskin joylar, uzunlik.
 //   • Har sahna ffmpeg bilan kesiladi → public/qirq/<nom>-<k>.mp4 va videos/<nom>-<k>.json (shorts/klip: hook, subtitr, zoom).
 //     Subtitr Whisper natijasidan olinadi — qayta hisoblanmaydi.
-// Ishlatish: node scripts/qirq.mjs <public ichidagi video> <soni 2|3> <nom> [--til uz] [--hook "matn"]
+//   • --montaj: eng yaxshi 2–4 lahza (8–22 s) vaqt tartibida silliq o'tishlar bilan BITTA Shorts'ga ulanadi
+//     → public/qirq/<nom>-montaj.mp4 va videos/<nom>-montaj.json.
+// Ishlatish: node scripts/qirq.mjs <public ichidagi video> <soni> <nom> [--montaj] [--til uz] [--hook "matn"]
 // Natija ro'yxati: out/qirq.json (workflow Telegram'ga ball bilan yuboradi).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -21,12 +23,15 @@ if (!src || !nom) {
   console.error('Foydalanish: node scripts/qirq.mjs <public ichidagi video> <soni> <nom> [--til uz] [--hook "matn"]');
   process.exit(1);
 }
-const SONI = Math.max(1, Math.min(3, Number(soniArg) || 3));
+const MONTAJ = args.includes('--montaj');
+const SONI = Math.max(1, Math.min(MONTAJ ? 4 : 3, Number(soniArg) || 3));
 const TIL = opt('til');
 const HOOK = opt('hook');
 const KEY = process.env.GEMINI_API_KEY;
-const MIN = 20; // sahna uzunligi, soniya
-const MAX = 58;
+const MIN = MONTAJ ? 8 : 20; // sahna (montajda — lahza) uzunligi, soniya
+const MAX = MONTAJ ? 22 : 58;
+const XFADE = 0.4; // montajda lahzalar orasidagi silliq o'tish, soniya
+const [FIT_A, FIT_B] = MONTAJ ? [11, 18] : [28, 46]; // eng qulay uzunlik
 const PAD_BOSH = 0.15;
 const PAD_OXIR = 0.35;
 
@@ -109,7 +114,7 @@ function mahalliyBall(s, e) {
   const nutq = ws.reduce((a, w) => a + (w.e - w.s), 0) / len; // gapirilgan ulush
   const first = gaplar.find((g) => g.s >= s - 0.01);
   const hook = first && /[?!]/.test(first.text) ? 1 : 0;
-  const lenFit = len >= 28 && len <= 46 ? 1 : 1 - Math.min(1, Math.abs(len - 37) / 30);
+  const lenFit = len >= FIT_A && len <= FIT_B ? 1 : 1 - Math.min(1, Math.abs(len - (FIT_A + FIT_B) / 2) / (MAX - MIN));
   const raw =
     2.2 * Math.min(1.6, energy) + 1.6 * Math.min(1.5, density) + 0.8 * Math.min(2, peaks) + 2.0 * Math.min(1, nutq) + 1.2 * hook + 1.5 * lenFit;
   return Math.max(1, Math.min(10, Math.round(raw * 10) / 10)); // taxminan 2…10
@@ -150,7 +155,9 @@ async function geminiTanlov() {
   let matn = qatorlar.join('\n');
   if (matn.length > 120000) matn = matn.slice(0, 120000);
   const prompt = `Below is a video transcript split into numbered sentences with start-end seconds.
-Pick the ${SONI} BEST moments to cut into standalone vertical Shorts (TikTok/Reels/YouTube Shorts).
+${MONTAJ
+  ? `Pick the ${SONI} BEST moments to join (in time order) into ONE highlight vertical Short (TikTok/Reels/YouTube Shorts), total under 60 seconds.`
+  : `Pick the ${SONI} BEST moments to cut into standalone vertical Shorts (TikTok/Reels/YouTube Shorts).`}
 Rules:
 - Each clip = a continuous range of sentences [bosh..oxir], ${MIN}-${MAX} seconds long, clips must not overlap.
 - Prefer: a strong first line (hook), a complete thought with a payoff, emotion, surprise, humor, a useful tip.
@@ -222,7 +229,7 @@ const sabab = (c) => {
   if (ws / len > avgDensity * 1.1) bits.push("gap zich, to'xtalish kam");
   const first = gaplar.find((g) => g.s >= c.s - 0.01);
   if (first && /[?!]/.test(first.text)) bits.push('kuchli boshlanish');
-  if (len >= 28 && len <= 46) bits.push('Shorts uchun qulay uzunlik');
+  if (len >= FIT_A && len <= FIT_B) bits.push('Shorts uchun qulay uzunlik');
   return bits.join(', ') || 'eng jonli qism';
 };
 const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
@@ -230,6 +237,93 @@ const fmt = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(
 fs.mkdirSync('public/qirq', { recursive: true });
 fs.mkdirSync('out', { recursive: true });
 fs.mkdirSync('videos', { recursive: true });
+
+// ---------- 5a. Montaj: lahzalar vaqt tartibida bitta Shorts'ga ----------
+if (MONTAJ) {
+  let qism = [...tanlov].sort((a, b) => b.ball - a.ball);
+  const jami = (q) => q.reduce((a, c) => a + (c.e - c.s) + PAD_BOSH + PAD_OXIR, 0) - XFADE * (q.length - 1);
+  while (qism.length > 1 && jami(qism) > 59) qism.pop(); // 60 s dan oshmasin — eng past ball tushadi
+  qism.sort((a, b) => a.s - b.s);
+  const bo = [];
+  for (const c of qism) {
+    const x = { ...c, s: Math.max(0, c.s - PAD_BOSH), e: Math.min(meta.duration, c.e + PAD_OXIR) };
+    const old = bo[bo.length - 1];
+    // tutash lahzalar (orasi < 1 s) — orasiga o'tish qo'ymay bitta qilamiz
+    if (old && x.s - old.e < 1) {
+      old.e = x.e;
+      old.ball = Math.max(old.ball, x.ball);
+      old.sabab = old.sabab || x.sabab;
+      old.hook = old.hook || x.hook;
+    } else bo.push(x);
+  }
+  const n = bo.length;
+  const tmp = bo.map((_, k) => path.join(os.tmpdir(), `qirq-${process.pid}-${k}.mp4`));
+  bo.forEach((c, k) => {
+    console.log(`▶ ${k + 1}-lahza: ${fmt(c.s)}–${fmt(c.e)} (${(c.e - c.s).toFixed(1)} s), ball ${c.ball}`);
+    run('ffmpeg', ['-loglevel', 'error', '-y', '-ss', c.s.toFixed(2), '-i', file, '-t', (c.e - c.s).toFixed(2), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-ar', '48000', '-ac', '2', tmp[k]], { stdio: 'inherit' });
+  });
+  const dur = tmp.map((f) => probe(f).duration);
+  // Montajdagi boshlanish vaqtlari: har o'tishda XFADE soniya ustma-ust
+  const T = [];
+  dur.forEach((d, k) => T.push(k ? T[k - 1] + dur[k - 1] - XFADE : 0));
+  const total = T[n - 1] + dur[n - 1];
+  const rel = `qirq/${nom}-montaj.mp4`;
+  if (n === 1) {
+    fs.copyFileSync(tmp[0], path.join('public', rel));
+  } else {
+    const inp = tmp.flatMap((f) => ['-i', f]);
+    let fv = '';
+    let fa = '';
+    let v = '[0:v]';
+    let a = '[0:a]';
+    for (let k = 1; k < n; k++) {
+      const ov = k === n - 1 ? '[v]' : `[v${k}]`;
+      const oa = k === n - 1 ? '[a]' : `[a${k}]`;
+      fv += `${v}[${k}:v]xfade=transition=fade:duration=${XFADE}:offset=${(T[k]).toFixed(3)}${ov};`;
+      fa += `${a}[${k}:a]acrossfade=d=${XFADE}${oa};`;
+      v = ov;
+      a = oa;
+    }
+    run('ffmpeg', ['-loglevel', 'error', '-y', ...inp, '-filter_complex', (fv + fa).replace(/;$/, ''), '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', path.join('public', rel)], { stdio: 'inherit' });
+  }
+  tmp.forEach((f) => fs.rmSync(f, { force: true }));
+
+  // Subtitr: har lahza so'zlari montaj vaqtiga suriladi (o'tish joyida takrorlanmasin)
+  const subtitr = [];
+  bo.forEach((c, k) => {
+    const lo = c.s + (k > 0 ? XFADE / 2 : 0);
+    const hi = c.e - (k < n - 1 ? XFADE / 2 : 0);
+    for (const w of words) if (w.s >= lo && w.e <= hi) subtitr.push({ w: w.w, s: +(T[k] + w.s - c.s).toFixed(2), e: +(T[k] + w.e - c.s).toFixed(2) });
+  });
+  // Zoom: har lahzaning eng keskin joyi (jami 3 tagacha, oralig'i ≥ 4 s)
+  const zoomlar = [];
+  bo.forEach((c, k) => {
+    let best = null;
+    for (let t = c.s + 1.5; t < c.e - 1.5; t += 0.5) {
+      const tm = T[k] + t - c.s;
+      if (tm < 1.5 || tm > total - 2.8) continue;
+      const v2 = rmsAt(t) / (rmsAt(t - 2) + rmsAt(t - 1.5) + 1e-6);
+      if (!best || v2 > best.v) best = { t: tm, v: v2 };
+    }
+    if (best && zoomlar.length < 3 && zoomlar.every((o) => Math.abs(o.t - best.t) >= 4)) zoomlar.push({ t: +best.t.toFixed(1), x: 0.5, y: 0.45 });
+  });
+
+  const eng = [...bo].sort((a, b) => b.ball - a.ball)[0];
+  const ball = +(bo.reduce((a2, c) => a2 + c.ball, 0) / n).toFixed(1);
+  const qismlar = bo.map((c) => ({ vaqt: `${fmt(c.s)}–${fmt(c.e)}`, ball: c.ball, sabab: sabab(c) }));
+  const data = {
+    title: `Montaj ${nom}`,
+    transition: 0,
+    scenes: [{ type: 'custom', name: 'shorts/klip', src: rel, hook: HOOK || eng.hook || '', til, subtitr, zoomlar, duration: +total.toFixed(2), vertikal: meta.height > meta.width }],
+    qirq: { manba: src, montaj: true, ball, qismlar, tanlagan: bo.some((c) => c.gemini) ? 'gemini' : 'mahalliy' },
+  };
+  fs.writeFileSync(`videos/${nom}-montaj.json`, JSON.stringify(data, null, 2) + '\n');
+  const out = [{ video: `${nom}-montaj`, json: `videos/${nom}-montaj.json`, montaj: true, ball, qismlar, uzunlik: Math.round(total), hook: data.scenes[0].hook, tanlagan: data.qirq.tanlagan }];
+  fs.writeFileSync('out/qirq.json', JSON.stringify(out, null, 2) + '\n');
+  console.log(`✓ Montaj: ${n} lahza, ${total.toFixed(1)} s, o'rtacha ball ${ball}`);
+  process.exit(0);
+}
+
 const natija = [];
 for (let k = 0; k < tanlov.length; k++) {
   const c = tanlov[k];

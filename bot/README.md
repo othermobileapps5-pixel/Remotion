@@ -7,3 +7,4 @@
 - Video: bot `videos/bot-*.json` yozadi → «▶️ Yasash» → «Video yasash» (telegram input) → MP4 Telegram'ga → «✅ YouTube'ga» → «YouTube yuklash».
 - Pul sarflanadigan va YouTube'ga chiqadigan har ish faqat tugma bosilganda.
 - Qirqish: video + izoh «Qirq» (yoki «Qirq 2», «Qirq: hook») → «Qirqish» workflow → eng yaxshi 2–3 sahna, ball bilan, Shorts qilib Telegram'ga.
+- Montaj: video + izoh «Montaj» (yoki «Montaj 4») → eng yaxshi lahzalar silliq o'tishlar bilan bitta Shorts'ga ulanadi.
