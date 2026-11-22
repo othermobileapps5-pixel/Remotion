@@ -54,7 +54,26 @@ for (const w of wins) {
     zoomlar = (r.zoomlar || []).filter((z) => z.t >= 1 && z.t <= w.len - 2.2).slice(0, 1);
   }
   if (!zoomlar.length && w.kind !== 'oxir') zoomlar = [{ t: +(w.len * 0.45).toFixed(1), x: 0.5, y: 0.45 }];
-  const props = { src: srcRel, start: w.start, len: w.len, kind: w.kind, width: W, height: H, fps, hook: w.kind === 'bosh' ? hook : '', til: til || 'en', subtitr: words, zoomlar };
+
+  // Rang ajratish (boshida): kadr ~1.6 s to'xtaydi, fon oq-qora, qahramon rangli (rembg, bepul)
+  let rang;
+  if (w.kind === 'bosh' && process.env.RANG !== '0') {
+    const tf = zoomlar[0] && zoomlar[0].t >= 1 && zoomlar[0].t <= w.len - 2.6 ? zoomlar[0].t : Math.min(1.5, Math.max(0.5, w.len - 2.6));
+    const fr = `uzun/fr-${w.kind}.png`;
+    const cut = `uzun/cut-${w.kind}.png`;
+    try {
+      run('ffmpeg', ['-loglevel', 'error', '-y', '-ss', String(w.start + tf), '-i', src, '-frames:v', '1', '-vf', `scale=${W}:${H}`, path.join('public', fr)]);
+      const r = run('python3', ['scripts/cutout.py', path.join('public', fr), path.join('public', cut)]).trim();
+      console.log(`  rang ajratish: ${r}`);
+      if (r.startsWith('OK')) {
+        rang = { t: tf, len: 1.6, frame: fr, cut };
+        zoomlar = []; // to'xtagan kadr bilan zoom to'qnashmasin
+      }
+    } catch (e) {
+      console.log(`  rang ajratish o'tkazib yuborildi: ${e.message.split('\n')[0]}`);
+    }
+  }
+  const props = { src: srcRel, start: w.start, len: w.len, kind: w.kind, width: W, height: H, fps, hook: w.kind === 'bosh' ? hook : '', til: til || 'en', subtitr: words, zoomlar, rang };
   const pf = `out/uzun/${w.kind}.json`;
   fs.writeFileSync(pf, JSON.stringify(props, null, 2));
   console.log(`▶ ${w.kind}: ${w.start.toFixed(1)}–${(w.start + w.len).toFixed(1)} s, ${words.length} so'z, zoom ${zoomlar.length}`);

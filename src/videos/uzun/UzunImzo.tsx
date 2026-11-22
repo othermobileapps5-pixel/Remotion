@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Img, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Audio } from '@remotion/media';
 import { resolveSrc } from '../../util';
 import { fontFamily } from '../../fonts';
@@ -19,6 +19,7 @@ export type UzunProps = {
   obuna?: string;
   subtitr?: { w: string; s: number; e: number }[]; // oyna ichidagi vaqtlar
   zoomlar?: { t: number; x: number; y: number }[]; // oyna ichidagi vaqtlar
+  rang?: { t: number; len: number; frame: string; cut: string }; // rang ajratish: to'xtagan kadr + ajratilgan qahramon
 };
 
 export const UZUN_DEFAULT: UzunProps = { src: 'test/shorts-sinov.mp4', start: 0, len: 8, kind: 'bosh', width: 1920, height: 1080, fps: 30, hook: 'Hook' };
@@ -120,6 +121,22 @@ export const UzunImzo: React.FC<UzunProps> = (p) => {
         <OffthreadVideo src={resolveSrc(p.src)} startFrom={Math.round(p.start * fps)} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </AbsoluteFill>
 
+      {/* Rang ajratish: kadr to'xtaydi, fon oq-qora, qahramon rangli va biroz «ko'tariladi» */}
+      {p.rang && t >= p.rang.t && t < p.rang.t + p.rang.len ? (() => {
+        const r = p.rang!;
+        const k = interpolate(t, [r.t, r.t + 0.15, r.t + r.len - 0.2, r.t + r.len], [0, 1, 1, 0], clamp);
+        const lift = spring({ frame: frame - Math.round(r.t * fps), fps, config: { damping: 12, mass: 0.5 } });
+        return (
+          <AbsoluteFill style={{ opacity: k }}>
+            <Img src={resolveSrc(r.frame)} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'grayscale(1) brightness(0.8) contrast(1.1)' }} />
+            <Img
+              src={resolveSrc(r.cut)}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${1 + 0.03 * lift})`, filter: `saturate(1.25) drop-shadow(0 0 ${14 * u}px rgba(255,255,255,0.55))` }}
+            />
+          </AbsoluteFill>
+        );
+      })() : null}
+
       {/* Boshi: hook sarlavha */}
       {p.kind === 'bosh' && p.hook && hookOut < 1 ? (
         <div style={{ position: 'absolute', top: height * (vertical ? 0.12 : 0.08), left: 0, right: 0, display: 'flex', justifyContent: 'center', opacity: 1 - hookOut, transform: `translateY(${-hookOut * 60 * u}px)` }}>
@@ -160,6 +177,7 @@ export const UzunImzo: React.FC<UzunProps> = (p) => {
       ) : null}
 
       {p.kind === 'bosh' && p.hook ? <Sfx sec={0} src="whoosh" volume={0.35} /> : null}
+      {p.rang ? <Sfx sec={p.rang.t} src="pop" volume={0.45} /> : null}
       {(p.zoomlar || []).map((z, i) => (
         <Sfx key={i} sec={Math.max(0, z.t - 0.1)} src="whoosh" volume={0.2} />
       ))}
