@@ -52,7 +52,7 @@ jobs:
             kod=$?
             skillspector scan "$s" --no-llm --format json --output "hisobot/$nom.json" >/dev/null 2>&1
             set -e
-            tavsiya=$(python3 -c "import json,sys;d=json.load(open(sys.argv[1]));print(d.get('recommendation','?'),d.get('risk_score','?'))" "hisobot/$nom.json" 2>/dev/null || echo "? ?")
+            tavsiya=$(python3 -c "import json,sys;r=json.load(open(sys.argv[1]))['risk_assessment'];print(r['recommendation'],'(ball',str(r['score'])+'/100)')" "hisobot/$nom.json" 2>/dev/null || echo "? ?")
             [ "$kod" = 0 ] || xavf=1
             qisqa="$qisqa
           $nom: $tavsiya"
