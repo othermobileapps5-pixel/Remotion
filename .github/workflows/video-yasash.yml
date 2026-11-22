@@ -87,11 +87,12 @@ jobs:
         run: |
           sudo apt-get install -y -qq espeak-ng >/dev/null
           # Chatterbox — keyinroq Hugging Face'da (GPU) ishga tushiriladi; protsessorda juda sekin
-          if grep -qE '"ovozchi": "chatterbox' "videos/$VIDEO.json"; then pip install -q --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts || echo "::warning::Chatterbox o'rnatilmadi — Kokoro ishlaydi"; fi
+          if [ "${{ vars.CHATTERBOX_YOQ }}" = "1" ] && grep -qE '"ovozchi": "chatterbox' "videos/$VIDEO.json"; then pip install -q --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts || echo "::warning::Chatterbox o'rnatilmadi — Kokoro ishlaydi"; fi
           pip install -q --extra-index-url https://download.pytorch.org/whl/cpu kokoro soundfile
 
-      - name: Ovoz (Chatterbox/Kokoro tekin; Gemini; Azure)
+      - name: Ovoz (Kokoro tekin; Gemini; Azure)
         env:
+          CHATTERBOX_YOQ: ${{ vars.CHATTERBOX_YOQ }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           AZURE_TTS_KEY: ${{ secrets.AZURE_TTS_KEY }}
           AZURE_TTS_REGION: ${{ secrets.AZURE_TTS_REGION }}

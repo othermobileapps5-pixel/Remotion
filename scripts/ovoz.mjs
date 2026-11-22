@@ -147,7 +147,13 @@ if (localTodo.length) {
     return JSON.parse(fs.readFileSync('/tmp/tts-res.json', 'utf8'));
   };
   const first = voiceOf(localTodo[0].s);
-  const [engine, voice] = first.split(':');
+  let [engine, voice] = first.split(':');
+  // Chatterbox vaqtincha o'chiq (keyin Hugging Face'da GPU bilan) — o'rniga Kokoro. Yoqish: CHATTERBOX_YOQ=1
+  if (engine === 'chatterbox' && process.env.CHATTERBOX_YOQ !== '1') {
+    console.log("  Chatterbox o'chiq — Kokoro ishlatiladi");
+    engine = 'kokoro';
+    voice = '';
+  }
   let res;
   try {
     res = runLocal(engine, voice, localTodo);
