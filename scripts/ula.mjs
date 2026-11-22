@@ -42,27 +42,39 @@ const metas = files.map(probe);
 const tik = metas.filter((m) => m.height > m.width).length;
 const format = formatArg === 'shorts' || formatArg === 'youtube' ? formatArg : tik * 2 >= metas.length ? 'shorts' : 'youtube';
 const [W, H] = format === 'shorts' ? [1080, 1920] : [1920, 1080];
-console.log(`▶ ${files.length} ta video → ${format} (${W}×${H})`);
+// Uzun natija (3 daqiqadan ko'p): tezroq kodlash va o'tishsiz ulash (qayta kodlanmaydi) — keyin faqat 3 oyna imzolanadi
+const UZUN = metas.reduce((a, m) => a + m.duration, 0) > 180;
+const PRESET = UZUN ? 'superfast' : 'veryfast';
+console.log(`▶ ${files.length} ta video → ${format} (${W}×${H}), ${PRESET}`);
 
 // 1. Har videoni bir xil o'lcham, 30 fps, 48 kHz stereo ga keltiramiz
 const tmp = files.map((_, k) => path.join(os.tmpdir(), `ula-${process.pid}-${k}.mp4`));
 files.forEach((f, k) => {
   const m = metas[k];
   console.log(`  ${k + 1}) ${srcs[k]} — ${m.duration.toFixed(1)} s, ${m.width}×${m.height}${m.audio ? '' : ' (ovozsiz)'}`);
-  const vf = `[0:v]split[a][b];[a]scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},boxblur=30:5,eq=brightness=-0.12[bg];[b]scale=${W}:${H}:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,fps=30,format=yuv420p,setsar=1[v]`;
+  // xira fon kichik o'lchamda hisoblanadi (8 barobar tez), keyin kattalashtiriladi
+  const w8 = W / 8;
+  const h8 = H / 8;
+  const vf = `[0:v]split[a][b];[a]scale=${w8}:${h8}:force_original_aspect_ratio=increase,crop=${w8}:${h8},boxblur=6:2,scale=${W}:${H},eq=brightness=-0.12[bg];[b]scale=${W}:${H}:force_original_aspect_ratio=decrease[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2,fps=30,format=yuv420p,setsar=1[v]`;
   const a = m.audio
     ? ['-i', f, '-filter_complex', `${vf};[0:a]aresample=48000,aformat=channel_layouts=stereo[au]`, '-map', '[v]', '-map', '[au]']
     : ['-i', f, '-f', 'lavfi', '-t', m.duration.toFixed(3), '-i', 'anullsrc=r=48000:cl=stereo', '-filter_complex', vf, '-map', '[v]', '-map', '1:a'];
-  run('ffmpeg', ['-loglevel', 'error', '-y', ...a, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '19', '-c:a', 'aac', '-b:a', '160k', '-shortest', tmp[k]], { stdio: 'inherit' });
+  run('ffmpeg', ['-loglevel', 'error', '-y', ...a, '-c:v', 'libx264', '-preset', PRESET, '-crf', '19', '-c:a', 'aac', '-b:a', '160k', '-shortest', tmp[k]], { stdio: 'inherit' });
 });
 
-// 2. Silliq o'tishlar bilan ulash
+// 2. Ulash: qisqada — silliq o'tishlar bilan; uzunda — o'tishsiz, qayta kodlamasdan (bir xil formatdagi bo'laklar)
 const dur = tmp.map((f) => probe(f).duration);
 const T = [];
-dur.forEach((d, k) => T.push(k ? T[k - 1] + dur[k - 1] - XFADE : 0));
+dur.forEach((d, k) => T.push(k ? T[k - 1] + dur[k - 1] - (UZUN ? 0 : XFADE) : 0));
 const total = T[T.length - 1] + dur[dur.length - 1];
 fs.mkdirSync('public/ulash', { recursive: true });
 const rel = `ulash/${nom}.mp4`;
+if (UZUN) {
+  const list = path.join(os.tmpdir(), `ula-${process.pid}.txt`);
+  fs.writeFileSync(list, tmp.map((f) => `file '${f}'`).join('\n') + '\n');
+  run('ffmpeg', ['-loglevel', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', '-movflags', '+faststart', path.join('public', rel)], { stdio: 'inherit' });
+  fs.rmSync(list, { force: true });
+} else {
 let fv = '';
 let fa = '';
 let v = '[0:v]';
@@ -75,7 +87,8 @@ for (let k = 1; k < tmp.length; k++) {
   v = ov;
   au = oa;
 }
-run('ffmpeg', ['-loglevel', 'error', '-y', ...tmp.flatMap((f) => ['-i', f]), '-filter_complex', (fv + fa).replace(/;$/, ''), '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', path.join('public', rel)], { stdio: 'inherit' });
+run('ffmpeg', ['-loglevel', 'error', '-y', ...tmp.flatMap((f) => ['-i', f]), '-filter_complex', (fv + fa).replace(/;$/, ''), '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', PRESET, '-crf', '20', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', path.join('public', rel)], { stdio: 'inherit' });
+}
 tmp.forEach((f) => fs.rmSync(f, { force: true }));
 
 // 3. Imzo ssenariysi (subtitr va zoom — scripts/subtitr.mjs Whisper bilan to'ldiradi)
