@@ -145,25 +145,59 @@ amal — quyidagilardan BITTASI:
 - suhbat: boshqa hamma narsa; "javob" ga qisqa, foydali o'zbekcha javob yoz.
 hook — foydalanuvchi aytgan sarlavha matni (o'zi to'qib chiqarma). fayllar — xabardagi .mp4/.mov fayl nomlari.`;
 
+// yt-script ko'nikmasidagi 21 hook formulasi (.claude/skills/yt-script/hooks.json, MIT)
+const HOOKLAR = `the-statistic: A number the viewer did not know, stated flat, then the consequence.\nsomeone-elses-result: A named person's outcome, then the mechanism.\nthe-mistake: Name the error the viewer is probably making right now.\ncontrarian-flip: State the accepted advice, then reject it.\nthe-reveal: Promise a specific thing will be shown, then show it.\nthe-superlative: The single best/worst/fastest of a category.\nthe-clock: Bound the payoff in time.\ni-tried-it: First-person experiment with a stated cost.\nthe-question: Ask the exact question the viewer typed into search.\nthe-before-after: Two states, one cut between them.\nthe-teardown: Take a real thing apart in public.\nthe-stack: Two named tools combined into one outcome.\nthe-warning: A cost the viewer is about to pay.\nthe-list: A counted set, with the count in the first line.\nthe-receipt: Show the artifact first, explain second.\nthe-insider: Information from inside a system.\nthe-impossible: State something that sounds untrue, then prove it.\nthe-comparison: Two named options, one winner.\nthe-origin: Where a result actually came from.\nthe-deadline: Something is changing on a date.\nthe-direct-address: Name the exact viewer in the first six words.`;
+// Rasm uslublari (Lemo-Opuscar uslublaridan ilhomlangan + kinematografik)
+const RASM_USLUBLAR = [
+  'cinematic photorealistic, warm film grain, shallow depth of field',
+  'dramatic digital painting, dark teal and orange',
+  'soft watercolor illustration, paper texture, gentle washes',
+  'ukiyo-e woodblock print, flat colors, bold outlines',
+  'Chinese ink-wash painting, misty, monochrome with one accent color',
+  'thick impasto oil painting, visible brush strokes',
+  'layered papercut art, soft shadows between paper layers',
+  '16-bit pixel art RPG scene, crisp pixels, limited palette',
+  'technical blueprint drawing, white lines on deep blue',
+  'vintage 1940s newsreel photo, black and white, film scratches',
+  'satellite briefing imagery, top-down view, map overlays, muted colors',
+];
+
 const SSENARIY = `Sen qisqa YouTube video ssenariy muallifisan. Ekranda yozuv YO'Q video uchun ssenariy yoz: har sahna — faqat rasm + ovoz.
 Qoidalar:
 - Faqat haqiqatga mos ma'lumot. Aniq raqam yoki statistikani bilmasang — umuman ishlatma. To'qib chiqarma.
 - Moliya, sog'liq mavzularida maslahat berma, faqat umumiy ta'lim; oxirida "Maslahat emas" kabi eslatma qo'y.
-- 1-sahna kuchli hook (savol yoki hayratli fakt). Oxirgi sahna — chaqiriq (obuna/saqlash).
+- HOOK (birinchi 15 soniya — videoning taqdiri): quyidagi 21 formuladan mavzuga eng mosini tanla va "hook_formula" ga uning id sini yoz.
+  1-sahna: sarlavha va'dasini birinchi gapda tasdiqla, tomoshabin yopolmaydigan savol och, natija borligini ko'rsat. Bitta g'oya.
+  Aniq narsa kattadan kuchli ("7 oyda 400 dan 200 000 ga" > "katta o'sish"). HECH QACHON o'zingni tanishtirish, "boshlashdan oldin", obuna so'rash bilan boshlama.
+  Formulalar:
+${HOOKLAR}
+- 2-sahna (burilish): video nima qilishini bitta gapda ayt va darhol boshla.
+- Tana: har sahnada bitta fikr. Va'da qilingan natijani aniq yetkaz va yetkazayotganingni ayt.
+- Oxirgi sahna — BITTA chaqiriq (obuna YOKI saqlash YOKI izoh), uchtasi emas.
+- Shorts qo'shimcha: birinchi gap to'liq fikr bo'lsin (oldingi kontekstsiz tushunilsin), o'rtada burilish (da'vo, keyin uni isbotlovchi yoki murakkablashtiruvchi narsa), oxiri aniq gap bilan tugasin; oxirgi gap birinchi gapga qaytib bog'lansin (aylanma — loop).
 - Shorts: 6-9 sahna, jami 35-50 soniya. YouTube: 10-16 sahna, 70-120 soniya.
 - Agar "Davomiylik" berilsa — aynan shunga mosla (har sahna ~6-8 soniya; masalan 180 soniya ≈ 24-28 sahna), mavzuni chuqurroq, bo'limlarga bo'lib yorit.
 - Har sahnada "ovoz" — o'qiladigan gap (sahna matnidan uzunroq bo'lishi mumkin, 1-2 gap). "text" — ekrandagi qisqa matn (5-9 so'z, \\n bilan 2 qator).
 - duration: ovoz uzunligiga mos (o'zbekcha ~2.3 so'z/soniya) + 0.8.
 - HAR sahnada (birinchi va oxirgisi ham) "rasm": INGLIZCHA rasm tavsifi (15-30 so'z): aniq obraz, joy, yorug'lik, kadr (close-up / wide shot); sahna mazmuniga mos, haqiqiy odamlar, brendlar va logolar bo'lmasin, rasmda yozuv bo'lmasin.
-- "rasmUslub": butun video uchun bitta INGLIZCHA uslub (masalan "cinematic photorealistic, warm film grain" yoki "dramatic digital painting, dark teal and orange") — rasmlar bir-biriga mos chiqadi.
+- "rasmUslub": butun video uchun bitta INGLIZCHA uslub — mavzuga mosini shu ro'yxatdan tanla (yoki yaqin variant): ${RASM_USLUBLAR.join(' | ')}. Rasmlar bir-biriga mos chiqadi.
+- Uzun (youtube) videoda boblar: bo'lim boshlanadigan sahnaga "bob": "3-5 so'zli bob nomi (bo'lim va'dasi, video tilida)" qo'sh. 1-sahnada bob bo'lishi SHART; kamida 3 ta bob; har bob kamida 10 soniya (bir necha sahna). Shorts'da bob yo'q.
 FAQAT JSON qaytar:
 {"title": "...", "theme": {"bg": "#0b1020", "accent": "#ffcc33", "text": "#ffffff"},
  "rasmUslub": "...",
  "scenes": [{"type": "title", "text": "...", "subtitle": "...", "duration": 4, "ovoz": "..."}, {"type": "text", "text": "...", "duration": 5, "ovoz": "...", "rasm": "..."}],
- "youtube": {"nom": "YouTube sarlavha (60 belgigacha)", "tavsif": "2-4 qator tavsif", "teglar": ["...", "..."]},
+ "hook_formula": "the-question",
+ "youtube": {"nom": "...", "sorovlar": ["...", "...", "..."], "tavsif": "...", "teglar": ["...", "..."]},
  "muqova": {"matn": "2-4 SO'Z", "urgu": "SO'Z", "belgi": "", "rasm_prompt": "..."}}
+YouTube nomi va muqova — BITTA juftlik (yt-package):
+- "nom": video tilida, 60 belgigacha (iloji bo'lsa mavzu birinchi 40 belgida — telefonda shuncha ko'rinadi). Sifat o'rniga raqam, nom yoki sana. KATTA HARFLI so'z ko'pi bilan 2 ta. "amazing, insane, ultimate, best, secret, epic" kabi bo'sh so'zlar yo'q.
+- Muqova matni nomni TAKRORLAMAYDI — boshqa so'zlar, bir xil va'da.
+SEO (yt-seo):
+- "sorovlar": odamlar YouTube qidiruvida aynan yozadigan 3 ta so'rov (video tilida).
+- "tavsif": birinchi 2 qator — tomoshabin nima olishini o'sha so'rovlardagi so'zlar bilan ayt (faqat shu 2 qator "...more" dan oldin ko'rinadi); keyin 2-3 qator batafsil: nima yoritiladi, kim uchun. Nom va birinchi 2 qatorda so'rov so'zlari bo'lsin.
+- "teglar": 15 tagacha — yozilish variantlari, nomlar, qisqartmalar; mavzuga aloqasiz teg yo'q.
 Muqova (YouTube thumbnail) qoidalari — ko'p bosiladigan bo'lsin:
-- "matn": 2-4 so'z, KATTA HARFDA, video tilida; sarlavhani takrorlama — qiziqish uyg'ot ("NOBODY KNEW THIS", "HE LIED", "NUNCA TE LO DIJERON").
+- "matn": 2-3 so'z (ko'pi bilan 3 — kichik o'lchamda 4-so'z o'qilmaydi), KATTA HARFDA, video tilida; sarlavhani takrorlama — qiziqish uyg'ot ("NOBODY KNEW THIS", "HE LIED", "NUNCA TE LO DIJERON").
 - "urgu": matndagi eng kuchli bitta so'z (rangli quti ichida chiqadi).
 - "belgi": ixtiyoriy qisqa stiker: "?", "!", raqam ("$5000", "24H", "1912") yoki "".
 - "rasm_prompt": INGLIZCHA, bitta kuchli markaziy obraz (odam yuzi hayratda, portlash, qadimiy shahar...), dramatik yorug'lik; matn so'rama.
@@ -316,9 +350,62 @@ async function ytStats(env) {
 }
 
 // ---------- amallar ----------
+// ---------- Nom + muqova tekshiruvi (yt-package: title.py qoidalari) ----------
+const BOSH_SOZ = new Set(['amazing', 'incredible', 'insane', 'crazy', 'huge', 'massive', 'ultimate', 'best', 'powerful', 'secret', 'revolutionary', 'mindblowing', 'epic', 'perfect', 'complete', 'everything',
+  'increíble', 'increible', 'impactante', 'épico', 'epico', 'secreto', 'ajoyib', "zo'r", 'hayratlanarli']);
+const TOXTA_SOZ = new Set(['the', 'a', 'an', 'of', 'for', 'to', 'in', 'on', 'and', 'or', 'is', 'are', 'with', 'your', 'you', 'my', 'i', 'this', 'that', 'it', 'how', 'what', 'why',
+  'el', 'la', 'los', 'las', 'de', 'del', 'y', 'en', 'un', 'una', 'que', 'por', 'para', 'con', 'es']);
+const sozlar = (t) => (String(t || '').toLowerCase().match(/[\p{L}\p{N}']+/gu) || []);
+function paketTekshir(s) {
+  const y = s.youtube || {};
+  const nom = String(y.nom || '').trim();
+  const xato = [];
+  if (!nom) xato.push("YouTube nomi yo'q");
+  if (nom.length > 60) xato.push(`nom ${nom.length} belgi — 60 dan oshmasin (kompyuter qidiruvida kesiladi)`);
+  const katta = nom.split(/\s+/).filter((w) => w.length > 2 && w === w.toUpperCase() && /\p{L}/u.test(w));
+  if (katta.length > 2) xato.push(`nomda ${katta.length} ta KATTA HARFLI so'z — ko'pi bilan 2 ta`);
+  const bosh = sozlar(nom).filter((w) => BOSH_SOZ.has(w));
+  if (bosh.length) xato.push(`nomda bo'sh so'z: ${bosh.join(', ')} — raqam, nom yoki sana bilan almashtir`);
+  const mq = s.muqova?.matn;
+  if (mq) {
+    const mw = sozlar(mq);
+    if (mw.length > 3) xato.push(`muqova matni ${mw.length} so'z — ko'pi bilan 3 ta`);
+    const nw = new Set(sozlar(nom).filter((w) => !TOXTA_SOZ.has(w)));
+    const takror = mw.filter((w) => !TOXTA_SOZ.has(w) && nw.has(w));
+    if (takror.length && takror.length >= Math.ceil(mw.length / 2)) xato.push(`muqova matni nomni takrorlayapti (${takror.join(', ')}) — boshqa so'zlar, bir xil va'da`);
+  }
+  // yt-seo so'rov testi: so'rov so'zlari nomda yoki tavsifning birinchi 2 qatorida bo'lsin
+  const old = sozlar(nom + ' ' + String(y.tavsif || '').split('\n').slice(0, 2).join(' '));
+  for (const q of (y.sorovlar || []).slice(0, 3)) {
+    const yoq = sozlar(q).filter((w) => !TOXTA_SOZ.has(w) && w.length > 2 && !old.includes(w));
+    if (yoq.length > 1) xato.push(`«${q}» so'rovidagi so'zlar (${yoq.join(', ')}) nomda yoki tavsifning 2 qatorida yo'q`);
+  }
+  return xato;
+}
+async function paketTuzat(env, s) {
+  const xato = paketTekshir(s);
+  if (!xato.length) return s;
+  try {
+    const r = await gemini(env, [{ text: JSON.stringify({ title: s.title, youtube: s.youtube, muqova: s.muqova, kamchiliklar: xato }) }], {
+      json: true,
+      system: `YouTube nomi, tavsif, teglar va muqova matnini "kamchiliklar" bo'yicha tuzat. Til o'zgarmasin, ma'no o'zgarmasin, to'qima raqam qo'shma.
+Qoidalar: nom 60 belgigacha, KATTA HARFLI so'z ko'pi bilan 2 ta, bo'sh sifatlar yo'q; muqova matni 2-3 so'z, nomni takrorlamaydi; so'rov so'zlari nomda yoki tavsifning birinchi 2 qatorida.
+FAQAT JSON: {"youtube": {...}, "muqova": {...}}`,
+    });
+    if (r.youtube?.nom) s.youtube = { ...s.youtube, ...r.youtube };
+    if (r.muqova?.matn && s.muqova) s.muqova = { ...s.muqova, ...r.muqova };
+  } catch (e) {
+    console.log('paket tuzatish:', e.message);
+  }
+  if (s.youtube?.nom?.length > 100) s.youtube.nom = s.youtube.nom.slice(0, 100);
+  return s;
+}
+
 async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYuklash, qoshimcha = '', googleAI = false }) {
   await say(env, chat, `✍️ Ssenariy yozyapman: <b>${esc(mavzu)}</b> (${format}${soniya ? ', ~' + Math.round(soniya / 60) + ' daq' : ''})…`);
-  const s = await gemini(env, [{ text: `Mavzu: ${mavzu}\nFormat: ${format}\nTil: ${til}${soniya ? `\nDavomiylik: ${soniya} soniya` : ''}` }], { json: true, system: SSENARIY });
+  let s = await gemini(env, [{ text: `Mavzu: ${mavzu}\nFormat: ${format}\nTil: ${til}${soniya ? `\nDavomiylik: ${soniya} soniya` : ''}` }], { json: true, system: SSENARIY });
+  s = await paketTuzat(env, s); // yt-package / yt-seo qoidalari bo'yicha bir marta tuzatish
+  if (format === 'shorts') for (const x of s.scenes || []) delete x.bob;
   const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}${qoshimcha}`;
   const data = { ...s, ovozchi: KOKORO_TIL[til] || env.OVOZCHI || 'google:Charon', ...(OVOZ_USLUB[til] ? { ovozUslubi: OVOZ_USLUB[til] } : {}), bot: { format, mavzu, til } };
   await saveScript(env, name, data);
@@ -393,8 +480,23 @@ async function ytTrend(env, { joy, mavzu, ispan }) {
   if (!ids.length) return [];
   const v = await api(`videos?part=snippet,statistics,contentDetails&id=${ids.join(',')}`);
   return (v.items || [])
-    .map((x) => ({ nom: x.snippet.title, kanal: x.snippet.channelTitle, sana: x.snippet.publishedAt.slice(0, 10), uzunlik: x.contentDetails.duration, korish: Number(x.statistics.viewCount || 0), id: x.id }))
+    .map((x) => ({ nom: x.snippet.title, kanal: x.snippet.channelTitle, kanalId: x.snippet.channelId, sana: x.snippet.publishedAt.slice(0, 10), uzunlik: x.contentDetails.duration, korish: Number(x.statistics.viewCount || 0), id: x.id }))
     .sort((a, b) => b.korish - a.korish);
+}
+
+// yt-viral: video kanalining o'z o'rtachasidan necha barobar ko'p ko'rilgan (kanal ko'rishlari / videolar soni).
+// Katta kanal emas, g'oya kuchli videolar ajralib chiqadi. channels.list — 1 birlik (50 tagacha kanal).
+async function karraQosh(env, vids) {
+  const ids = [...new Set(vids.map((v) => v.kanalId).filter(Boolean))].slice(0, 50);
+  if (!ids.length) return vids;
+  const t = await ytToken(env);
+  const r = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${ids.join(',')}`, { headers: { Authorization: `Bearer ${t}` } }).then((x) => x.json()).catch(() => ({}));
+  const ortacha = {};
+  for (const c of r.items || []) {
+    const n = Number(c.statistics?.videoCount || 0);
+    if (n >= 4) ortacha[c.id] = Number(c.statistics.viewCount || 0) / n;
+  }
+  return vids.map((v) => (ortacha[v.kanalId] ? { ...v, karra: Math.round((v.korish / ortacha[v.kanalId]) * 10) / 10 } : v));
 }
 
 const kq = (n) => (n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(n));
@@ -412,13 +514,14 @@ async function trend(env, chat, arg) {
   const joyNom = a.ispan ? 'ispan tilidagi (MX, ES, CO, AR)' : a.joy.join(', ');
   const mNom = a.nom || a.mavzu || 'umumiy';
   await say(env, chat, `📈 Trendlarni yig'yapman: <b>${esc(mNom)}</b> · ${esc(joyNom)}…`);
-  const vids = await ytTrend(env, a);
+  const vids = await karraQosh(env, await ytTrend(env, a)).catch(() => ytTrend(env, a));
   if (!vids.length) return say(env, chat, 'Hech narsa topilmadi. Boshqa mavzu yoki mamlakat bilan urinib ko\'ring.');
-  const top = vids.slice(0, 10).map((v, i) => `${i + 1}. <a href="https://youtu.be/${v.id}">${esc(v.nom.slice(0, 70))}</a> — ${kq(v.korish)} · ${sek(v.uzunlik) <= 60 ? 'shorts' : Math.round(sek(v.uzunlik) / 60) + ' daq'}`).join('\n');
-  await say(env, chat, `🔥 <b>Top videolar</b> (${esc(joyNom)}${a.mavzu ? ', «' + esc(mNom) + '»' : ''}):\n${top}`, { link_preview_options: { is_disabled: true } });
-  const r = await gemini(env, [{ text: JSON.stringify(vids.map(({ id, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
+  const top = vids.slice(0, 10).map((v, i) => `${i + 1}. <a href="https://youtu.be/${v.id}">${esc(v.nom.slice(0, 70))}</a> — ${kq(v.korish)}${v.karra ? ` · ×${v.karra}` : ''} · ${sek(v.uzunlik) <= 60 ? 'shorts' : Math.round(sek(v.uzunlik) / 60) + ' daq'}`).join('\n');
+  await say(env, chat, `🔥 <b>Top videolar</b> (${esc(joyNom)}${a.mavzu ? ', «' + esc(mNom) + '»' : ''}):\n${top}${vids.some((v) => v.karra) ? "\n<i>×N — kanalining o'rtacha ko'rishidan necha barobar ko'p (katta kanal emas, kuchli g'oya belgisi)</i>" : ''}`, { link_preview_options: { is_disabled: true } });
+  const r = await gemini(env, [{ text: JSON.stringify(vids.map(({ id, kanalId, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
     json: true,
     system: `Sen YouTube strategisan. Egasi o'zbek, AQShda tirakchi, Shorts va qisqa videolar yasaydi (kinetik matn + ovoz, rasm/klip kam). Berilgan trend videolar ro'yxatini tahlil qil.
+"karra" — video o'z kanalining o'rtacha ko'rishidan necha barobar ko'p (yt-viral): karrasi yuqorilar — kuchli G'OYA, faqat ko'rish ko'pi — ko'pincha katta kanal. Xulosada karrasi yuqori videolarning umumiy formulasini ayt (nom shakli; bu nomga baho, mashhurlik sababi haqida da'vo emas).
 FAQAT JSON: {"xulosa": "o'zbekcha 4-6 qator: nima ishlayapti (mavzu, nom uslubi, uzunlik, format), raqamlar faqat berilgandan", "goyalar": ["g'oya 1", "g'oya 2", "g'oya 3", "g'oya 4"]}
 G'oyalar: egasi o'zi yasay oladigan, trendga mos, aniq mavzu (har biri 4-8 so'z, o'zbekcha). Boshqalarning videosini ko'chirma, o'z burchagidan ber.`,
   });
@@ -590,12 +693,15 @@ async function kunlikTil(env, chat, soz, til, format, daqiqa) {
   const joy = til === 'es' ? 'spanish' : soz.joy;
   const uzun = format !== 'shorts'; // 'youtube' yoki eski 'ikkalasi'
   await say(env, chat, `🤖 Tomy (${esc(TIL_NOM[til] || til)}): trendni ko'ryapman (${esc(joy)})…`);
-  const vids = await ytTrend(env, trendArg(joy));
+  const vids = await karraQosh(env, await ytTrend(env, trendArg(joy))).catch(() => ytTrend(env, trendArg(joy)));
   if (!vids.length) return say(env, chat, `🤖 Tomy (${esc(TIL_NOM[til] || til)}): bugun trend topilmadi — ertaga yana urinaman.`);
-  const r = await gemini(env, [{ text: JSON.stringify(vids.slice(0, 20).map(({ id, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
+  const r = await gemini(env, [{ text: JSON.stringify(vids.slice(0, 20).map(({ id, kanalId, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
     json: true,
     system: `Sen YouTube strategisan. Egasi o'zbek, AQShda tirakchi; kanalida kinetik matn + ovozli videolar (rasm/klip yo'q). Trend ro'yxatidan ilhomlanib BITTA eng yaxshi ${uzun ? daqiqa + ' daqiqalik' : 'Shorts'} video mavzusini tanla: trendga yaqin, foydali, haqiqatga asoslangan, boshqalarning videosini ko'chirmaydigan, siyosat/sog'liq/moliya maslahati bo'lmagan.
-FAQAT JSON: {"mavzu": "aniq mavzu, 5-10 so'z, ${til === 'uz' ? "o'zbekcha" : til}", "sabab": "nega aynan shu (1 qator, o'zbekcha)"}`,
+"karra" — video o'z kanalining o'rtacha ko'rishidan necha barobar ko'p ko'rilgan (yt-viral): katta kanal emas, KUCHLI G'OYA belgisi. Karrasi yuqori videolarga ko'proq e'tibor ber (karra yo'q bo'lsa — ko'rishga qara).
+Ilhom olgan videoning NOMI qaysi hook formulasiga o'xshashini ayt (bu nomga baho, videoning nega mashhur bo'lgani haqida da'vo emas). Formulalar:
+${HOOKLAR}
+FAQAT JSON: {"mavzu": "aniq mavzu, 5-10 so'z, ${til === 'uz' ? "o'zbekcha" : til}", "sabab": "nega aynan shu (1 qator, o'zbekcha; karra va formula nomi bilan)", "formula": "formula id"}`,
   });
   await say(env, chat, `🤖 Tomy tanladi (${esc(TIL_NOM[til] || til)}): <b>${esc(r.mavzu)}</b>\n<i>${esc(r.sabab || '')}</i>`);
   const umumiy = { mavzu: r.mavzu, til, avto: true, avtoYuklash: soz.yuklash === 'avto', googleAI: !!soz.googleAI };

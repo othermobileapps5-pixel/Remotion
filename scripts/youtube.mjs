@@ -16,10 +16,31 @@ if (!tok.access_token) { console.error('YouTube ruxsati xato:', JSON.stringify(t
 
 const y = d.youtube || {};
 const isShort = (d.bot && d.bot.format) === 'shorts';
+
+// Boblar (yt-chapters): sahnalardagi "bob" dan, ovozdan keyingi haqiqiy uzunliklar bo'yicha.
+// YouTube qoidalari: birinchisi 0:00, kamida 3 ta, har biri kamida 10 s — buzilsa boblar qo'shilmaydi.
+function boblar() {
+  if (isShort) return '';
+  const tr = d.transition ?? 0.5;
+  const dur = (d.scenes || []).map((s) => Number(s.duration) || 0);
+  const t0 = [];
+  dur.forEach((x, k) => t0.push(k ? t0[k - 1] + dur[k - 1] - Math.min(tr, dur[k - 1], x) : 0));
+  const jami = t0.length ? t0[t0.length - 1] + dur[dur.length - 1] : 0;
+  const b = (d.scenes || []).map((s, k) => (s.bob ? { t: k ? t0[k] : 0, nom: String(s.bob).trim() } : null)).filter(Boolean);
+  if (!b.length || b[0].t !== 0 || b.length < 3) return '';
+  for (let i = 0; i < b.length; i++) if ((i + 1 < b.length ? b[i + 1].t : jami) - b[i].t < 10) return '';
+  const vaqt = (x) => { const s = Math.floor(x); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+  return b.map((x) => `${vaqt(x.t)} ${x.nom}`).join('\n');
+}
+// Tavsif tartibi (yt-seo): birinchi 2 qator → boblar → qolgani
+const tavsifQator = String(y.tavsif || '').split('\n');
+const bob = boblar();
+const tavsif = bob ? [...tavsifQator.slice(0, 2), '', bob, '', ...tavsifQator.slice(2)].join('\n').replace(/\n{3,}/g, '\n\n') : String(y.tavsif || '');
+if (bob) console.error(`boblar:\n${bob}`);
 const meta = {
   snippet: {
     title: (y.nom || d.title || 'Video').slice(0, 100),
-    description: `${y.tavsif || ''}${isShort ? '\n\n#shorts' : ''}`.trim(),
+    description: `${tavsif}${isShort ? '\n\n#shorts' : ''}`.trim(),
     tags: (y.teglar || []).slice(0, 15),
     categoryId: '22',
   },
