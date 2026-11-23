@@ -18,7 +18,7 @@ const m = d.muqova || {};
 const sarlavha = y.nom || d.title || nom;
 const matn = (m.matn || sarlavha.split(/\s+/).slice(0, 4).join(' ')).toUpperCase();
 const urgu = (m.urgu || matn.split(/\s+/).sort((a, b) => b.length - a.length)[0] || '').toUpperCase();
-const prompt = `${m.rasm_prompt || `${sarlavha}, dramatic key visual`}. YouTube thumbnail background, one bold central subject, cinematic lighting, high contrast, vivid saturated colors, shallow depth of field, ultra detailed, 16:9, absolutely no text, no letters, no logos, no watermark.`;
+const prompt = `${m.rasm_prompt || `${sarlavha}, dramatic key visual`}. YouTube thumbnail background, one bold central subject, cinematic lighting, high contrast, vivid saturated colors, shallow depth of field, ultra detailed, 16:9, absolutely no text, no letters, no logos, no brands, no trademarks, no watermark.`;
 
 const rel = `muqova/${nom}.jpg`;
 const abs = path.join('public', rel);
