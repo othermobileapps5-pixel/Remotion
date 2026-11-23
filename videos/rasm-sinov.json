@@ -8,22 +8,28 @@
   },
   "scenes": [
     {
-      "type": "title",
-      "text": "Apollo 13",
+      "type": "image",
       "duration": 3,
-      "rasm": "Saturn V rocket launching at dawn, huge plume of smoke and fire, wide shot"
+      "rasm": "Saturn V rocket launching at dawn, huge plume of smoke and fire, wide shot",
+      "src": "rasm/rasm-sinov/1.jpg",
+      "zoom": "in",
+      "matn": "Apollo 13"
     },
     {
-      "type": "text",
-      "text": "Houston, we have a problem",
+      "type": "image",
       "duration": 3,
-      "rasm": "astronaut inside a cramped 1970s spacecraft cabin, worried face lit by red warning lights, close-up"
+      "rasm": "astronaut inside a cramped 1970s spacecraft cabin, worried face lit by red warning lights, close-up",
+      "src": "rasm/rasm-sinov/2.jpg",
+      "zoom": "out",
+      "matn": "Houston, we have a problem"
     },
     {
-      "type": "text",
-      "text": "They made it home",
+      "type": "image",
       "duration": 3,
-      "rasm": "space capsule with three orange and white parachutes descending over the blue Pacific ocean, wide shot"
+      "rasm": "space capsule with three orange and white parachutes descending over the blue Pacific ocean, wide shot",
+      "src": "rasm/rasm-sinov/3.jpg",
+      "zoom": "in",
+      "matn": "They made it home"
     }
   ],
   "youtube": {
