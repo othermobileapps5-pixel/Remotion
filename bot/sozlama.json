@@ -6,6 +6,22 @@
   "daqiqa": 3,
   "yuklash": "tasdiq",
   "jadval": [
-    { "soat": 18, "til": "en", "format": "youtube" }
-  ]
+    {
+      "soat": 18,
+      "til": "en",
+      "format": "youtube"
+    }
+  ],
+  "qoralama": {
+    "googleAI": true,
+    "jadval": [
+      {
+        "soat": 18,
+        "til": "en",
+        "format": "youtube"
+      }
+    ],
+    "daqiqa": 3,
+    "yuklash": "tasdiq"
+  }
 }
