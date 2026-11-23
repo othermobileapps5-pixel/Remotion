@@ -13,86 +13,122 @@
     {
       "type": "custom",
       "name": "lola/beat",
-      "duration": 7.0,
+      "duration": 7,
       "ovoz": "Lola never passed a mirror without stopping. Not a shop window. Not a puddle. Not once.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-1.wav",
+      "ovozKalit": "1002ea283c",
+      "ovozSek": 5.72
     },
     {
       "type": "custom",
       "name": "lola/beat",
       "duration": 2.8,
       "ovoz": "Hello, gorgeous!",
-      "ovozchi": "kokoro:af_bella"
+      "ovozchi": "kokoro:af_bella",
+      "ovozFayl": "ovoz/lola-film-2.wav",
+      "ovozKalit": "425fd54597",
+      "ovozSek": 1.75
     },
     {
       "type": "custom",
       "name": "lola/beat",
-      "duration": 8.0,
+      "duration": 8,
       "ovoz": "Her phone held twelve thousand selfies. And today needed the perfect one: the city's biggest fashion party.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-3.wav",
+      "ovozKalit": "cebb3542fb",
+      "ovozSek": 6.9
     },
     {
       "type": "custom",
       "name": "lola/beat",
       "duration": 6.5,
       "ovoz": "She walked the street like a runway, eyes on one screen only: her own.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-4.wav",
+      "ovozKalit": "7c0beff3fc",
+      "ovozSek": 4.4
     },
     {
       "type": "custom",
       "name": "lola/beat",
       "duration": 8.5,
       "ovoz": "Then an old man slipped. Oranges rolled into the mud... and everyone kept walking.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-5.wav",
+      "ovozKalit": "5480be3e9e",
+      "ovozSek": 5.35
     },
     {
       "type": "custom",
       "name": "lola/beat",
       "duration": 3.8,
       "ovoz": "Lola looked at her white dress.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-6.wav",
+      "ovozKalit": "70818f9a16",
+      "ovozSek": 2.08
     },
     {
       "type": "custom",
       "name": "lola/beat",
       "duration": 3.8,
       "ovoz": "Then she knelt right into the mud.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-7.wav",
+      "ovozKalit": "65c6429d13",
+      "ovozSek": 2.12
     },
     {
       "type": "custom",
       "name": "lola/beat",
-      "duration": 3.0,
+      "duration": 3,
       "ovoz": "Here, let me help you!",
-      "ovozchi": "kokoro:af_bella"
+      "ovozchi": "kokoro:af_bella",
+      "ovozFayl": "ovoz/lola-film-8.wav",
+      "ovozKalit": "4708b8ce2f",
+      "ovozSek": 2
     },
     {
       "type": "custom",
       "name": "lola/beat",
-      "duration": 3.0,
+      "duration": 3,
       "ovoz": "Bless you, child.",
-      "ovozchi": "kokoro:am_onyx"
+      "ovozchi": "kokoro:am_onyx",
+      "ovozFayl": "ovoz/lola-film-9.wav",
+      "ovozKalit": "a98555961b",
+      "ovozSek": 1.65
     },
     {
       "type": "custom",
       "name": "lola/beat",
-      "duration": 7.0,
+      "duration": 7,
       "ovoz": "At the party, everyone stared. For the first time, Lola didn't want a single photo.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-10.wav",
+      "ovozKalit": "d77a985ae4",
+      "ovozSek": 5.28
     },
     {
       "type": "custom",
       "name": "lola/beat",
-      "duration": 7.0,
+      "duration": 7,
       "ovoz": "But a stranger had filmed her in the rain. By morning, a million people had seen it.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-11.wav",
+      "ovozKalit": "4c4aeb73ed",
+      "ovozSek": 5.05
     },
     {
       "type": "custom",
       "name": "lola/beat",
       "duration": 6.5,
       "ovoz": "Her best picture ever was the one she never took.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/lola-film-12.wav",
+      "ovozKalit": "68f1944e36",
+      "ovozSek": 3.33
     }
   ]
 }
