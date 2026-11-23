@@ -612,6 +612,13 @@ async function voiceToText(env, fileId) {
   return gemini(env, [{ inline_data: { mime_type: 'audio/ogg', data: btoa(bin) } }, { text: "Bu ovozli xabarni so'zma-so'z matnga aylantir (o'zbek, rus yoki ingliz). Faqat matnni qaytar." }]);
 }
 
+// drive.google.com/file/d/<ID>/..., ...open?id=<ID>, ...uc?id=<ID> → gd_<ID>.mp4
+function driveHavola(text) {
+  return String(text || '')
+    .replace(/https?:\/\/drive\.google\.com\/file\/(?:u\/\d+\/)?d\/([A-Za-z0-9_-]{10,})[^\s:]*/g, 'gd_$1.mp4')
+    .replace(/https?:\/\/drive\.google\.com\/(?:open|uc)\?(?:[^\s]*&)?id=([A-Za-z0-9_-]{10,})[^\s:]*/g, 'gd_$1.mp4');
+}
+
 async function onMessage(env, msg) {
   const chat = msg.chat.id;
   TG(env, 'sendChatAction', { chat_id: chat, action: 'typing' }).catch(() => {});
@@ -628,6 +635,11 @@ async function onMessage(env, msg) {
   // pastki doimiy tugmalar
   const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '🤖 AI trend USA': '/aitrend usa', '🤖 AI trend Spanish': '/aitrend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '🤖 Tomy': '/tomy', '⚙️ Sozlama': '/tomy', '❓ Yordam': '/yordam' };
   if (TUGMA[text]) text = TUGMA[text];
+  // Drive havolasi = fayl nomi bilan teng: havola "gd_<ID>.mp4" ga aylanadi (scripts/drive.mjs ID bo'yicha oladi)
+  text = driveHavola(text);
+  if (/^\s*gd_[\w-]+\.mp4\s*$/.test(text) && !vid0) {
+    return say(env, chat, "🔗 Drive havolasini oldim. Nima qilay? Buyruq bilan yuboring:\n• <code>Qirq havola</code> — eng yaxshi 2–3 sahna\n• <code>Montaj havola</code> — eng yaxshi lahzalardan bitta Shorts\n• <code>Imzo havola: hook</code> — hook, subtitr, zoom\n• <code>Imzo uzun havola: hook</code> — uzun video\n• <code>Ula havola1 havola2</code> — videolarni ulash\n\nHavola o'rniga Raw'dagi fayl nomi ham bo'ladi: <code>Qirq fayl.mp4</code>");
+  }
   const vid = vid0;
   // Albom videolari eslab qolinadi; izohsiz albom videosi hech narsa qilmaydi (faqat buyruq bilan)
   if (vid && msg.media_group_id) await albomSaqla(env, chat, msg, vid);
@@ -657,9 +669,9 @@ async function onMessage(env, msg) {
     const f = rest.match(/(\S+\.(?:mp4|mov|m4v|webm))/i);
     if (f) return qirq(env, chat, { driveFayl: f[1], soni, hook, montaj });
     if (/https?:\/\//.test(rest)) {
-      return say(env, chat, "🔗 Havoladan videoni yuklab bo'lmaydi — YouTube GitHub serverlarini bloklaydi.\nVideo faylning o'zini shu yerga yuboring (20 MB gacha), izohiga <code>Qirq</code> yozing; kattasini Drive'dagi <b>Claude → Raw</b> ga tashlab <code>Qirq fayl.mp4</code> deb yozing.");
+      return say(env, chat, "🔗 Havoladan videoni yuklab bo'lmaydi — YouTube GitHub serverlarini bloklaydi.\nVideo faylning o'zini shu yerga yuboring (20 MB gacha), izohiga <code>Qirq</code> yozing; kattasini Drive'ga tashlab <code>Qirq fayl.mp4</code> (Raw'dagi nomi) yoki <code>Qirq</code> + Drive havolasini yozing.");
     }
-    return say(env, chat, "✂️ <b>Qirqish</b> — videodan eng yaxshi 2–3 sahnani topib, ball bilan Shorts qilib beraman.\n\n• Videoni yuboring, izohiga: <code>Qirq</code> (yoki <code>Qirq 2</code> — 2 ta sahna)\n• 20 MB dan katta — Drive'dagi Claude → Raw'ga tashlang: <code>Qirq fayl.mp4</code>\n• Hamma sahnaga bitta sarlavha: <code>Qirq: hook matni</code>\n• Eng yaxshi lahzalardan bitta video: <code>Montaj</code> (yoki <code>Montaj 4</code>)\n• Bir nechta videoni bittaga: albom + izoh <code>Ula</code>");
+    return say(env, chat, "✂️ <b>Qirqish</b> — videodan eng yaxshi 2–3 sahnani topib, ball bilan Shorts qilib beraman.\n\n• Videoni yuboring, izohiga: <code>Qirq</code> (yoki <code>Qirq 2</code> — 2 ta sahna)\n• 20 MB dan katta — Drive'ga tashlang: <code>Qirq fayl.mp4</code> (Raw'dagi nomi) yoki <code>Qirq</code> + Drive havolasi\n• Hamma sahnaga bitta sarlavha: <code>Qirq: hook matni</code>\n• Eng yaxshi lahzalardan bitta video: <code>Montaj</code> (yoki <code>Montaj 4</code>)\n• Bir nechta videoni bittaga: albom + izoh <code>Ula</code>");
   }
   // Imzo
   if (/^\s*imzo\b/i.test(text) || (vid && !text)) {
@@ -669,7 +681,7 @@ async function onMessage(env, msg) {
     const r2 = rest.replace(/^uzun\b[\s:,-]*/i, '');
     const m = r2.match(/^(\S+\.(?:mp4|mov|m4v|webm))\s*[:,-]?\s*(.*)$/i);
     if (m) return uzun ? imzoUzun(env, chat, { driveFayl: m[1], hook: m[2].trim() }) : imzo(env, chat, { driveFayl: m[1], hook: m[2].trim() });
-    return say(env, chat, "✍️ <b>Imzo</b> — tayyor Shorts'ga hook, subtitr, zoom va «Obuna bo'ling» qo'shaman (bepul).\n\n• Videoni shu yerga yuboring, izohiga: <code>Imzo: hook matni</code>\n• 20 MB dan katta bo'lsa — Drive'dagi Claude → Raw'ga tashlang va yozing: <code>Imzo fayl.mp4: hook matni</code>\n• Uzun video (10–20 daqiqa) — Raw'ga tashlang: <code>Imzo uzun fayl.mp4: hook matni | sher</code> (faqat boshi, o'rtasi, oxiri yasaladi — tez; «| sher» — qahramon rangli, fon oq-qora)");
+    return say(env, chat, "✍️ <b>Imzo</b> — tayyor Shorts'ga hook, subtitr, zoom va «Obuna bo'ling» qo'shaman (bepul).\n\n• Videoni shu yerga yuboring, izohiga: <code>Imzo: hook matni</code>\n• 20 MB dan katta bo'lsa — Drive'ga tashlang: <code>Imzo fayl.mp4: hook matni</code> (Raw'dagi nomi) yoki fayl nomi o'rniga Drive havolasi\n• Uzun video (10–20 daqiqa) — Raw'ga tashlang: <code>Imzo uzun fayl.mp4: hook matni | sher</code> (faqat boshi, o'rtasi, oxiri yasaladi — tez; «| sher» — qahramon rangli, fon oq-qora)");
   }
   if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
@@ -683,7 +695,7 @@ async function onMessage(env, msg) {
   // YouTube havola yoki /referens <havola> — referens tahlili (yt-dlp, GitHub'da; video hech qayerga joylanmaydi)
   const havola = (text.match(/https?:\/\/(?:www\.|m\.)?(?:youtube\.com|youtu\.be)\/\S+/) || [])[0];
   if (havola && /(qirq|\bkes|montaj)/i.test(text)) {
-    return say(env, chat, "🔗 Havoladan videoni yuklab bo'lmaydi — YouTube GitHub serverlarini bloklaydi.\nVideo faylning o'zini shu yerga yuboring (20 MB gacha), izohiga <code>Qirq</code> yozing; kattasini Drive'dagi <b>Claude → Raw</b> ga tashlab <code>Qirq fayl.mp4</code> deb yozing.");
+    return say(env, chat, "🔗 Havoladan videoni yuklab bo'lmaydi — YouTube GitHub serverlarini bloklaydi.\nVideo faylning o'zini shu yerga yuboring (20 MB gacha), izohiga <code>Qirq</code> yozing; kattasini Drive'ga tashlab <code>Qirq fayl.mp4</code> (Raw'dagi nomi) yoki <code>Qirq</code> + Drive havolasini yozing.");
   }
   if (havola && (text.startsWith('/referens') || text.trim() === havola)) {
     await dispatch(env, 'referens.yml', { url: havola, telegram: String(chat) });
