@@ -114,7 +114,13 @@ Qoidalar:
 FAQAT JSON qaytar:
 {"title": "...", "theme": {"bg": "#0b1020", "accent": "#ffcc33", "text": "#ffffff"},
  "scenes": [{"type": "title", "text": "...", "subtitle": "...", "duration": 4, "ovoz": "..."}, {"type": "text", "text": "...", "duration": 5, "ovoz": "..."}],
- "youtube": {"nom": "YouTube sarlavha (60 belgigacha)", "tavsif": "2-4 qator tavsif", "teglar": ["...", "..."]}}`;
+ "youtube": {"nom": "YouTube sarlavha (60 belgigacha)", "tavsif": "2-4 qator tavsif", "teglar": ["...", "..."]},
+ "muqova": {"matn": "2-4 SO'Z", "urgu": "SO'Z", "belgi": "", "rasm_prompt": "..."}}
+Muqova (YouTube thumbnail) qoidalari — ko'p bosiladigan bo'lsin:
+- "matn": 2-4 so'z, KATTA HARFDA, video tilida; sarlavhani takrorlama — qiziqish uyg'ot ("NOBODY KNEW THIS", "HE LIED", "NUNCA TE LO DIJERON").
+- "urgu": matndagi eng kuchli bitta so'z (rangli quti ichida chiqadi).
+- "belgi": ixtiyoriy qisqa stiker: "?", "!", raqam ("$5000", "24H", "1912") yoki "".
+- "rasm_prompt": INGLIZCHA, bitta kuchli markaziy obraz (odam yuzi hayratda, portlash, qadimiy shahar...), dramatik yorug'lik; matn so'rama.`;
 
 // ---------- GitHub ----------
 const GH = (env, path, init = {}) =>
@@ -132,6 +138,17 @@ async function saveScript(env, name, data) {
   if (r.status === 403 || r.status === 404) throw new Error(`GitHub tokeniga ruxsat yetmayapti (${r.status}). BOT_GITHUB_TOKEN: Remotion repo tanlangan, Contents va Actions — Read and write bo'lsin.`);
   if (r.status === 401) throw new Error("GitHub tokeni eskirgan yoki xato (401). Yangi BOT_GITHUB_TOKEN qo'ying.");
   if (!r.ok) throw new Error(`GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
+}
+async function muqovaRasm(env, name, s) {
+  if (!env.AI) return;
+  const prompt = `${s.muqova.rasm_prompt || s.youtube?.nom || s.title}. YouTube thumbnail background, one bold central subject, cinematic dramatic lighting, high contrast, vivid saturated colors, ultra detailed, absolutely no text, no letters, no logos.`;
+  const r = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt: prompt.slice(0, 2000), steps: 8 });
+  if (!r?.image) throw new Error('FLUX rasm qaytarmadi');
+  const res = await GH(env, `/contents/public/muqova/${name}.jpg`, {
+    method: 'PUT',
+    body: JSON.stringify({ message: `Bot: ${name} muqova rasmi`, content: r.image, branch: env.GITHUB_BRANCH }),
+  });
+  if (!res.ok) throw new Error(`GitHub ${res.status}`);
 }
 async function loadScript(env, name) {
   const r = await GH(env, `/contents/videos/${name}.json?ref=${env.GITHUB_BRANCH}`);
@@ -252,15 +269,18 @@ async function ytStats(env) {
 }
 
 // ---------- amallar ----------
-async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYuklash, qoshimcha = '' }) {
+async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYuklash, qoshimcha = '', googleAI = false }) {
   await say(env, chat, `✍️ Ssenariy yozyapman: <b>${esc(mavzu)}</b> (${format}${soniya ? ', ~' + Math.round(soniya / 60) + ' daq' : ''})…`);
   const s = await gemini(env, [{ text: `Mavzu: ${mavzu}\nFormat: ${format}\nTil: ${til}${soniya ? `\nDavomiylik: ${soniya} soniya` : ''}` }], { json: true, system: SSENARIY });
   const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}${qoshimcha}`;
   const data = { ...s, ovozchi: KOKORO_TIL[til] || env.OVOZCHI || 'google:Charon', ...(OVOZ_USLUB[til] ? { ovozUslubi: OVOZ_USLUB[til] } : {}), bot: { format, mavzu, til } };
   await saveScript(env, name, data);
+  // Muqova rasmi (uzun video): Google o'chiq bo'lsa — tekin Cloudflare FLUX shu yerda chiziladi;
+  // Google yoqiq bo'lsa — workflow'da Gemini chizadi (scripts/muqova.mjs). Xato bo'lsa video baribir yasaladi.
+  if (format !== 'shorts' && !googleAI && s.muqova) await muqovaRasm(env, name, s).catch((e) => console.log('muqova:', e.message));
   if (avto) {
     // kunlik rejim: tasdiqsiz darrov yig'iladi (AI klipsiz, faqat ovoz — bir necha sent)
-    await dispatch(env, 'video-yasash.yml', { video: name, format, ai_kliplar: 'false', max_klip: '0', telegram: String(chat), avto_yuklash: avtoYuklash ? 'true' : 'false' });
+    await dispatch(env, 'video-yasash.yml', { video: name, format, ai_kliplar: 'false', max_klip: '0', telegram: String(chat), google_ai: String(!!googleAI), avto_yuklash: avtoYuklash ? 'true' : 'false' });
     const total = (s.scenes || []).reduce((a, x) => a + (x.duration || 0), 0);
     return say(env, chat, `🤖 <b>Tomy'ning bugungi videosi:</b> ${esc(s.title)}\n~${Math.round(total / 60 * 10) / 10} daq · ${s.scenes?.length} sahna\nYouTube nomi: <i>${esc(s.youtube?.nom)}</i>\n\n⏳ Yig'ilmoqda — tayyor bo'lgach shu yerga keladi${avtoYuklash ? ' va YouTube\'ga o\'zi yuklanadi.' : ', ✅ bossangiz YouTube\'ga yuklanadi.'}`);
   }
@@ -412,7 +432,7 @@ function sozMatn(s) {
   const j = w.jadval.slice().sort((a, b) => a.soat - b.soat);
   const ro = j.length ? j.map((x, i) => `${i + 1}. ${qatorNom(x)}`).join('\n') : "— bo'sh (➕ bilan qo'shing)";
   const holat = s.qoralama ? '✏️ <b>Saqlanmagan o\'zgarish bor</b> — 💾 Saqlash bosing' : '✅ Saqlangan';
-  return `🤖 <b>Tomy — kunlik video sozlamasi</b> (Los Anjeles vaqti)\n\nTomy: ${s.yoqiq ? '▶️ ishlayapti' : '⏸ dam olyapti'}\n${holat}\n\n${ro}\n\nUzun video: ${w.daqiqa} daqiqa\nYuklash: ${w.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\n\n▶️ — hozir yasash, ❌ — o'chirish, 📂 — rejimlar.`;
+  return `🤖 <b>Tomy — kunlik video sozlamasi</b> (Los Anjeles vaqti)\n\nTomy: ${s.yoqiq ? '▶️ ishlayapti' : '⏸ dam olyapti'}\n${holat}\n\n${ro}\n\nUzun video: ${w.daqiqa} daqiqa\nYuklash: ${w.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\nMuqova rasmi: ${s.googleAI ? '🎨 Google Gemini (pullik, ~bir necha sent)' : '🆓 Cloudflare FLUX (tekin)'}\n\n▶️ — hozir yasash, ❌ — o'chirish, 📂 — rejimlar.`;
 }
 function sozTugma(s) {
   const w = ishOl(s);
@@ -424,6 +444,7 @@ function sozTugma(s) {
     [{ text: '➕ Video qo\'shish', callback_data: 'j:yangi' }],
     [b('Uzun: 3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
     [b('✅ Tasdiq bilan', 'yuklash', 'tasdiq'), b('🤖 Avto yuklash', 'yuklash', 'avto')],
+    [{ text: s.googleAI ? '🎨 Google AI: yoqiq' : '🆓 Google AI: o\'chiq', callback_data: `s:googleAI:${s.googleAI ? 0 : 1}` }],
     [{ text: '📂 Rejimlar', callback_data: 'j:rejim' }, { text: s.yoqiq ? '⏸ Tomy\'ni to\'xtatish' : '▶️ Tomy\'ni yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }],
   ] };
 }
@@ -437,6 +458,7 @@ async function sozBos(env, cb, k, v) {
   if (k === 'bugun') return sozlama(env, chat);
   const s = await sozOl(env);
   if (k === 'yoqiq') s.yoqiq = v === '1'; // yoqish/to'xtatish — darrov
+  else if (k === 'googleAI') s.googleAI = v === '1'; // pullik rasm — darrov
   else if (k === 'daqiqa' || k === 'yuklash') s.qoralama = { ...ishOl(s), [k]: k === 'daqiqa' ? Number(v) : v };
   else if (k === 'soat') s.soat = Number(v);
   else if (k === 'joy') s.joy = v;
@@ -519,7 +541,7 @@ async function kunlikTil(env, chat, soz, til, format, daqiqa) {
 FAQAT JSON: {"mavzu": "aniq mavzu, 5-10 so'z, ${til === 'uz' ? "o'zbekcha" : til}", "sabab": "nega aynan shu (1 qator, o'zbekcha)"}`,
   });
   await say(env, chat, `🤖 Tomy tanladi (${esc(TIL_NOM[til] || til)}): <b>${esc(r.mavzu)}</b>\n<i>${esc(r.sabab || '')}</i>`);
-  const umumiy = { mavzu: r.mavzu, til, avto: true, avtoYuklash: soz.yuklash === 'avto' };
+  const umumiy = { mavzu: r.mavzu, til, avto: true, avtoYuklash: soz.yuklash === 'avto', googleAI: !!soz.googleAI };
   if (uzun) await newVideo(env, chat, { ...umumiy, format: 'youtube', soniya: daqiqa * 60, qoshimcha: `-${til}` });
   if (format !== 'youtube') await newVideo(env, chat, { ...umumiy, format: 'shorts', soniya: 0, qoshimcha: `-${til}-s` });
 }
@@ -629,13 +651,14 @@ async function onCallback(env, cb) {
   await TG(env, 'editMessageReplyMarkup', { chat_id: chat, message_id: cb.message.message_id, reply_markup: { inline_keyboard: [] } });
   if (k === 'x') return say(env, chat, '❌ Bekor qilindi.');
   if (k === 'y') {
-    await dispatch(env, 'video-yasash.yml', { video: name, format: fmt || 'shorts', ai_kliplar: 'false', max_klip: '0', telegram: String(chat) });
+    const sz = await sozOl(env);
+    await dispatch(env, 'video-yasash.yml', { video: name, format: fmt || 'shorts', ai_kliplar: 'false', max_klip: '0', telegram: String(chat), google_ai: String(!!sz.googleAI) });
     return say(env, chat, `⏳ Video yig'ilmoqda (${name}). Odatda 5–8 daqiqa — tayyor bo'lgach shu yerga yuboraman.`);
   }
   if (k === 'u') {
     if (!env.YT_REFRESH_TOKEN) return say(env, chat, "YouTube hali ulanmagan — videoni yuqoridan saqlab, YouTube ilovasida joylang.");
-    await dispatch(env, 'youtube-yuklash.yml', { video: name, telegram: String(chat) });
-    return say(env, chat, '⬆️ YouTube\'ga yuklayapman…');
+    await dispatch(env, 'youtube-yuklash.yml', { video: name, telegram: String(chat), muqova: fmt === '1' || fmt === '2' ? fmt : '' });
+    return say(env, chat, `⬆️ YouTube'ga yuklayapman…${fmt === '1' || fmt === '2' ? ` (muqova ${fmt})` : ''}`);
   }
 }
 

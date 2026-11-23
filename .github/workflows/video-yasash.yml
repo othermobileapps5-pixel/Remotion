@@ -33,6 +33,10 @@ on:
         description: "Imzo: Telegram'dagi video file_id (bot to'ldiradi; bo'sh qoldiring)"
         required: false
         default: ""
+      google_ai:
+        description: "Muqova rasmini Gemini chizsin (pullik, bir necha sent). O'chiq — tekin Cloudflare FLUX"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -206,12 +210,31 @@ jobs:
           fi
           ls -lh out
 
+      # YouTube muqovasi: 2 dizayn (scripts/muqova.mjs). Rasm bir marta yasalib repoda qoladi — qayta pul sarflanmaydi.
+      - name: Muqova (thumbnail)
+        if: ${{ github.event.inputs.format != 'shorts' }}
+        continue-on-error: true
+        env:
+          GOOGLE_AI: ${{ github.event.inputs.google_ai == 'true' && '1' || '0' }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          node scripts/muqova.mjs "videos/$VIDEO.json" out 2>&1 | tee muqova.log
+          grep -h "Muqova rasmi" muqova.log >> "$GITHUB_STEP_SUMMARY" || true
+          if [ -f "public/muqova/$VIDEO.jpg" ] && [ -n "$(git status --porcelain public/muqova)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/muqova && git commit -qm "Muqova rasmi: $VIDEO" && (git pull --rebase -q && git push -q || true)
+          fi
+
       - name: «videolar» relizga yuklash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view videolar >/dev/null 2>&1 || gh release create videolar --title "Videolar" --notes "Tayyor videolar (MP4)" --prerelease
           gh release upload videolar out/*.mp4 --clobber
+          ls out/*-muqova-*.jpg >/dev/null 2>&1 && gh release upload videolar out/*-muqova-*.jpg --clobber
           echo "### Tayyor" >> "$GITHUB_STEP_SUMMARY"
           for f in out/*.mp4; do echo "- https://github.com/${{ github.repository }}/releases/download/videolar/$(basename "$f")" >> "$GITHUB_STEP_SUMMARY"; done
 
@@ -241,6 +264,14 @@ jobs:
           F=$(ls out/*.mp4 | head -1)
           NOM=$(node -e "const d=require('./videos/$VIDEO.json');console.log((d.youtube&&d.youtube.nom)||d.title||'$VIDEO')")
           KB='{"inline_keyboard":[[{"text":"✅ YouTube'"'"'ga yuklash","callback_data":"u:'"$VIDEO"'"}]]}'
+          # Muqova bo'lsa: ikkala variantni rasm qilib yuboramiz, tugmalar — qaysi muqova bilan yuklash
+          if [ -f "out/$VIDEO-muqova-1.jpg" ] && [ -f "out/$VIDEO-muqova-2.jpg" ]; then
+            curl -s -F chat_id="$CHAT" \
+              -F media='[{"type":"photo","media":"attach://m1","caption":"🖼 Muqova 1"},{"type":"photo","media":"attach://m2","caption":"🖼 Muqova 2"}]' \
+              -F m1=@"out/$VIDEO-muqova-1.jpg" -F m2=@"out/$VIDEO-muqova-2.jpg" \
+              "https://api.telegram.org/bot$TG/sendMediaGroup" | head -c 200; echo
+            KB='{"inline_keyboard":[[{"text":"✅ Muqova 1 bilan yuklash","callback_data":"u:'"$VIDEO"':1"},{"text":"✅ Muqova 2 bilan","callback_data":"u:'"$VIDEO"':2"}]]}'
+          fi
           if [ "${{ github.event.inputs.avto_yuklash }}" = "true" ]; then KB='{"inline_keyboard":[]}'; NOM="$NOM — 🤖 YouTube'ga o'zi yuklanmoqda"; fi
           SIZE=$(stat -c %s "$F")
           if [ "$SIZE" -lt 49000000 ]; then
@@ -258,7 +289,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHAT: ${{ github.event.inputs.telegram }}
-        run: gh workflow run youtube-yuklash.yml --repo "${{ github.repository }}" --ref "${{ github.ref_name }}" -f video="$VIDEO" -f telegram="$CHAT"
+        run: |
+          M=""; [ -f "out/$VIDEO-muqova-1.jpg" ] && M=1
+          gh workflow run youtube-yuklash.yml --repo "${{ github.repository }}" --ref "${{ github.ref_name }}" -f video="$VIDEO" -f telegram="$CHAT" -f muqova="$M"
 
       - name: Telegram'ga xato xabari
         if: ${{ failure() && github.event.inputs.telegram != '' }}
