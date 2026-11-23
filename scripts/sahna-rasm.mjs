@@ -50,7 +50,7 @@ for (const [i, sc] of (d.scenes || []).entries()) {
   const abs = path.join('public', rel);
   if (!fs.existsSync(abs)) {
     try {
-      fs.writeFileSync(abs, await yasash(`${sc.rasm}. Style: ${uslub}. No text, no letters, no logos, no watermark.`));
+      fs.writeFileSync(abs, await yasash(`${sc.rasm}. Style: ${uslub}. No text, no letters, no logos, no brands, no trademarks, no watermark.`));
       yangi++;
     } catch (err) {
       console.error(`! ${i + 1}-sahna: ${err.message}`);
