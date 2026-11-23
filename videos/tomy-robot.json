@@ -13,121 +13,155 @@
     {
       "type": "custom",
       "name": "tomy/beat",
-      "duration": 5.5,
+      "duration": 5.8,
       "ovoz": "Once upon a time, in a sleepy green valley, lived a little robot named Tomy.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/tomy-robot-1.wav",
+      "ovozKalit": "32ebeea67b"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
-      "duration": 4.0,
+      "duration": 4,
       "ovoz": "Beep boop! Systems on! Good morning, world!",
-      "ovozchi": "kokoro:am_puck"
+      "ovozchi": "kokoro:am_puck",
+      "ovozFayl": "ovoz/tomy-robot-2.wav",
+      "ovozKalit": "def2ecf6f8"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
-      "duration": 4.2,
+      "duration": 4.4,
       "ovoz": "Tomy loved mornings. So off he rolled, to explore.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/tomy-robot-3.wav",
+      "ovozKalit": "a36c2c24ae"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 4.2,
       "ovoz": "He waved to the birds. He waved to the clouds.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/tomy-robot-4.wav",
+      "ovozKalit": "d26ff598d7"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
-      "duration": 5.5,
+      "duration": 5.9,
       "ovoz": "But the sun grew hot. Very hot. And there, all alone, stood a tiny flower.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/tomy-robot-5.wav",
+      "ovozKalit": "80d41c8202"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 3.8,
       "ovoz": "Oh no! Little flower, you look so thirsty!",
-      "ovozchi": "kokoro:am_puck"
+      "ovozchi": "kokoro:am_puck",
+      "ovozFayl": "ovoz/tomy-robot-6.wav",
+      "ovozKalit": "9cc9a07588"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 2.8,
       "ovoz": "Water... please...",
-      "ovozchi": "kokoro:af_sky"
+      "ovozchi": "kokoro:af_sky",
+      "ovozFayl": "ovoz/tomy-robot-7.wav",
+      "ovozKalit": "6007c4fc2d"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 4.4,
       "ovoz": "Don't worry! I have just the thing, right here in my head!",
-      "ovozchi": "kokoro:am_puck"
+      "ovozchi": "kokoro:am_puck",
+      "ovozFayl": "ovoz/tomy-robot-8.wav",
+      "ovozKalit": "9859eb02cf"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 3.2,
       "ovoz": "An umbrella? Nope!",
-      "ovozchi": "kokoro:am_puck"
+      "ovozchi": "kokoro:am_puck",
+      "ovozFayl": "ovoz/tomy-robot-9.wav",
+      "ovozKalit": "708e0de372"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 3.4,
       "ovoz": "A rubber duck?! Definitely nope!",
-      "ovozchi": "kokoro:am_puck"
+      "ovozchi": "kokoro:am_puck",
+      "ovozFayl": "ovoz/tomy-robot-10.wav",
+      "ovozKalit": "dc4e29172d"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 3.6,
       "ovoz": "Aha! A watering can!",
-      "ovozchi": "kokoro:am_puck"
+      "ovozchi": "kokoro:am_puck",
+      "ovozFayl": "ovoz/tomy-robot-11.wav",
+      "ovozKalit": "721059a492"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 4.2,
       "ovoz": "Tomy poured every drop, slowly and carefully.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/tomy-robot-12.wav",
+      "ovozKalit": "fe6753289f"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 4.2,
       "ovoz": "And then... something magical happened.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/tomy-robot-13.wav",
+      "ovozKalit": "cdf7b194de"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 3.8,
       "ovoz": "Wow! Thank you, Tomy! I feel brand new!",
-      "ovozchi": "kokoro:af_sky"
+      "ovozchi": "kokoro:af_sky",
+      "ovozFayl": "ovoz/tomy-robot-14.wav",
+      "ovozKalit": "190ce554b2"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
-      "duration": 2.8,
+      "duration": 3.1,
       "ovoz": "Will you come back tomorrow?",
-      "ovozchi": "kokoro:af_sky"
+      "ovozchi": "kokoro:af_sky",
+      "ovozFayl": "ovoz/tomy-robot-15.wav",
+      "ovozKalit": "570e5b9aa3"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
       "duration": 3.8,
       "ovoz": "Every single day! That's what friends are for!",
-      "ovozchi": "kokoro:am_puck"
+      "ovozchi": "kokoro:am_puck",
+      "ovozFayl": "ovoz/tomy-robot-16.wav",
+      "ovozKalit": "833680d1f4"
     },
     {
       "type": "custom",
       "name": "tomy/beat",
-      "duration": 7.0,
+      "duration": 7,
       "ovoz": "And so, they became best friends. Because a little kindness makes everything grow.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/tomy-robot-17.wav",
+      "ovozKalit": "6e6e8e279c"
     }
   ]
 }
