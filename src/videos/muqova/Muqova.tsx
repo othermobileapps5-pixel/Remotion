@@ -4,7 +4,7 @@ import React from 'react';
 import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { loadFont } from '@remotion/google-fonts/Anton';
 
-const { fontFamily } = loadFont('normal', { weights: ['400'], subsets: ['latin', 'latin-ext', 'cyrillic'] });
+const { fontFamily } = loadFont('normal', { weights: ['400'], subsets: ['latin', 'latin-ext'] });
 
 export type MuqovaProps = {
   matn: string; // 2–4 so'z, masalan "HECH KIM BILMAYDI"
