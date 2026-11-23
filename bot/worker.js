@@ -12,7 +12,35 @@ const TG = (env, method, body) =>
     body: JSON.stringify(body),
   }).then((r) => r.json());
 
-const say = (env, chat, text, extra = {}) => TG(env, 'sendMessage', { chat_id: chat, text, parse_mode: 'HTML', disable_web_page_preview: true, ...extra });
+const say = async (env, chat, text, extra = {}) => {
+  const r = await TG(env, 'sendMessage', { chat_id: chat, text, parse_mode: 'HTML', disable_web_page_preview: true, ...extra });
+  await tarixQosh(env, chat, 'bot', String(text).replace(/<[^>]+>/g, '')).catch(() => {});
+  return r;
+};
+
+// ---------- Suhbat xotirasi: oxirgi 10 ta xabar (Workers KV «ALBOM», bo'lmasa — shu nusxa xotirasi) ----------
+// «ha», «yana bitta», «inglizchasini ham» kabi davomli gaplarni tushunish uchun Gemini'ga beriladi.
+const TARIX = new Map();
+const TARIX_SONI = 10;
+async function kvOl(env, key) {
+  if (TARIX.has(key)) return TARIX.get(key);
+  const v = env.ALBOM ? await env.ALBOM.get(key, 'json').catch(() => null) : null;
+  if (v) TARIX.set(key, v);
+  return v;
+}
+async function kvYoz(env, key, v, ttl = 7 * 86400) {
+  TARIX.set(key, v);
+  if (env.ALBOM) await env.ALBOM.put(key, JSON.stringify(v), { expirationTtl: ttl }).catch(() => {});
+}
+async function tarixQosh(env, chat, kim, matn) {
+  if (!chat || !matn) return;
+  const t = (await kvOl(env, `tarix/${chat}`)) || [];
+  t.push({ k: kim, t: String(matn).slice(0, 400) });
+  await kvYoz(env, `tarix/${chat}`, t.slice(-TARIX_SONI));
+}
+// Oxirgi yasalgan ssenariy (yasash, YouTube'ga yuklash, muqova uchun)
+const oxirgiOl = (env, chat) => kvOl(env, `oxirgi/${chat}`);
+const oxirgiYoz = (env, chat, v) => kvYoz(env, `oxirgi/${chat}`, v, 30 * 86400);
 const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
 // ---------- Gemini ----------
@@ -94,13 +122,28 @@ async function cfAI(env, parts, { json, system }) {
 }
 
 const NIYAT = `Sen YouTube kanal yordamchisi botining dispetcherisan. Foydalanuvchi o'zbek, AQShda tirakchi (CDL), YouTube kanal yuritadi.
-Uning xabarini o'qib, FAQAT JSON qaytar:
-{"amal": "yangi_video" | "tahlil" | "trend" | "suhbat", "mavzu": "...", "joy": "usa" | "uz" | "ru" | "spanish" | "", "format": "shorts" | "youtube", "til": "uz" | "en" | "ru", "javob": "..."}
-- yangi_video: video/ssenariy/reklama/qisqa video yasash so'ralsa. mavzu — aniq mavzu. format: aytilmasa "shorts".
-- tahlil: O'Z kanali statistikasi, qaysi videosi yaxshi so'ralsa.
-- trend: YouTube'da nima trendda, nima ko'p ko'rilyapti, mashhur videolar so'ralsa. joy — mamlakat yoki til (Amerika→usa, ispancha→spanish), mavzu — aytilgan bo'lsa (masalan "trucking"), aks holda "".
+Unga oldingi suhbat (oxirgi xabarlar), oxirgi yasalgan video va xabarga video biriktirilganmi — beriladi. Davomli gaplarni («ha», «yasa», «yana bitta», «inglizchasini ham», «uni yukla») shu kontekst bo'yicha tushun.
+FAQAT JSON qaytar:
+{"amal": "...", "mavzu": "", "joy": "", "format": "", "til": "", "soni": 0, "hook": "", "fayllar": [], "url": "", "muqova": 0, "javob": ""}
+amal — quyidagilardan BITTASI:
+- yangi_video: video/ssenariy/reklama yasash so'ralsa. mavzu — aniq mavzu (oldingi videoga o'xshash «yana bitta» bo'lsa — o'sha mavzuga yaqin yangi mavzu). format: "shorts" | "youtube" (aytilmasa "shorts"). til: "uz" | "en" | "es" | "ru" (aytilmasa "uz").
+- yasash: oxirgi yozilgan ssenariydan videoni yig'ish («ha», «yasa», «boshla» — bot oxirgi ssenariyni taklif qilgan bo'lsa).
+- yuklash: oxirgi videoni YouTube'ga yuklash. muqova: 1 yoki 2 (aytilgan bo'lsa), aks holda 0.
+- muqova: muqova (thumbnail) haqida so'ralsa — ko'rsatish/tanlash.
+- tahlil: O'Z kanali statistikasi, qaysi videosi yaxshi.
+- trend: YouTube'da nima trendda. joy: "usa" | "spanish" | "uz" | "ru" | "" (Amerika→usa, ispancha→spanish). mavzu — aytilgan bo'lsa.
+- aitrend: AI bilan yasalgan videolar trendi. joy: "usa" | "spanish".
+- tomy: kunlik video agenti Tomy, jadval, sozlama, kunlik video vaqti.
+- bugun: kunlik videoni hozir yasash.
+- referens: YouTube videoni tahlil qilish (url — havola).
+- qirq: videodan eng yaxshi sahnalarni kesish (soni: 2 yoki 3). Video biriktirilgan yoki fayllar (Drive nomi .mp4) bo'lishi kerak.
+- montaj: eng yaxshi lahzalardan bitta video (soni: 2–4).
+- ula: bir nechta videoni bittaga ulash. format: "shorts" | "youtube" | "".
+- imzo: videoga hook, subtitr, zoom, «Obuna bo'ling» qo'yish. hook — sarlavha (aytilgan bo'lsa).
+- imzo_uzun: uzun videoga (Drive'dagi fayl) imzo.
+- yordam: bot nima qila olishi so'ralsa.
 - suhbat: boshqa hamma narsa; "javob" ga qisqa, foydali o'zbekcha javob yoz.
-til — video tili (aytilmasa "uz").`;
+hook — foydalanuvchi aytgan sarlavha matni (o'zi to'qib chiqarma). fayllar — xabardagi .mp4/.mov fayl nomlari.`;
 
 const SSENARIY = `Sen qisqa YouTube video ssenariy muallifisan. Ekranda yozuv YO'Q video uchun ssenariy yoz: har sahna — faqat rasm + ovoz.
 Qoidalar:
@@ -279,6 +322,7 @@ async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYukla
   const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}${qoshimcha}`;
   const data = { ...s, ovozchi: KOKORO_TIL[til] || env.OVOZCHI || 'google:Charon', ...(OVOZ_USLUB[til] ? { ovozUslubi: OVOZ_USLUB[til] } : {}), bot: { format, mavzu, til } };
   await saveScript(env, name, data);
+  await oxirgiYoz(env, chat, { name, format, mavzu, til, muqova: format !== 'shorts' && !!s.muqova }).catch(() => {});
   // Muqova rasmi (uzun video): Google o'chiq bo'lsa — tekin Cloudflare FLUX shu yerda chiziladi;
   // Google yoqiq bo'lsa — workflow'da Gemini chizadi (scripts/muqova.mjs). Xato bo'lsa video baribir yasaladi.
   if (format !== 'shorts' && !googleAI && s.muqova) await muqovaRasm(env, name, s).catch((e) => console.log('muqova:', e.message));
@@ -579,10 +623,12 @@ async function onMessage(env, msg) {
     await say(env, chat, `🎙 <i>${esc(text)}</i>` + (zaxira ? "\n<i>(Gemini band edi — zaxira model eshitdi, xato bo'lsa matn bilan yozing)</i>" : ''));
   }
   if (!text && !msg.video && !msg.document) return;
+  const vid0 = msg.video || (msg.document && /^video\//.test(msg.document.mime_type || '') ? msg.document : null);
+  await tarixQosh(env, chat, 'men', (vid0 ? '[video] ' : '') + text).catch(() => {});
   // pastki doimiy tugmalar
   const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '🤖 AI trend USA': '/aitrend usa', '🤖 AI trend Spanish': '/aitrend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '🤖 Tomy': '/tomy', '⚙️ Sozlama': '/tomy', '❓ Yordam': '/yordam' };
   if (TUGMA[text]) text = TUGMA[text];
-  const vid = msg.video || (msg.document && /^video\//.test(msg.document.mime_type || '') ? msg.document : null);
+  const vid = vid0;
   // Albom videolari eslab qolinadi; izohsiz albom videosi hech narsa qilmaydi (faqat buyruq bilan)
   if (vid && msg.media_group_id) await albomSaqla(env, chat, msg, vid);
   // Ulash
@@ -648,11 +694,105 @@ async function onMessage(env, msg) {
   if (/^\/aitrend/.test(text)) return trend(env, chat, /spanish|es\b|ispan/i.test(text) ? AI_TREND.spanish : AI_TREND.usa);
   if (text.startsWith('/trend')) return trend(env, chat, text.replace(/^\/trend\S*/, ''));
   if (text.startsWith('/yangi')) return newVideo(env, chat, { mavzu: text.replace('/yangi', '').trim() || 'kanal mavzusida qiziqarli fakt', format: 'shorts', til: 'uz' });
-  const n = await gemini(env, [{ text }], { json: true, system: NIYAT });
-  if (n.amal === 'yangi_video') return newVideo(env, chat, { mavzu: n.mavzu || text, format: n.format === 'youtube' ? 'youtube' : 'shorts', til: n.til || 'uz' });
-  if (n.amal === 'tahlil') return analysis(env, chat);
-  if (n.amal === 'trend') return trend(env, chat, `${n.joy || ''} ${n.mavzu || ''}`);
-  return say(env, chat, esc(n.javob || 'Tushunmadim, qaytadan yozing.'));
+  // Erkin gap (va izohli video): Gemini niyatni oldingi suhbat bilan birga aniqlaydi
+  return niyat(env, chat, msg, text, vid);
+}
+
+const VIDEO_AMAL = new Set(['qirq', 'montaj', 'imzo', 'ula']);
+async function niyat(env, chat, msg, text, vid) {
+  const tarix = ((await kvOl(env, `tarix/${chat}`)) || []).slice(0, -1); // oxirgisi — shu xabarning o'zi
+  const oxirgi = await oxirgiOl(env, chat);
+  const kontekst = [
+    tarix.length ? `Oldingi suhbat:\n${tarix.map((x) => `${x.k === 'men' ? 'Foydalanuvchi' : 'Bot'}: ${x.t}`).join('\n')}` : '',
+    oxirgi ? `Oxirgi yozilgan ssenariy: ${oxirgi.name} (${oxirgi.format}, mavzu: ${oxirgi.mavzu || '—'})` : 'Oxirgi yozilgan ssenariy: yo\'q',
+    `Xabarga video biriktirilgan: ${vid ? (msg.media_group_id ? 'ha (albom)' : 'ha') : "yo'q"}`,
+    `Yangi xabar: ${text || '(izohsiz)'}`,
+  ].filter(Boolean).join('\n\n');
+  const n = await gemini(env, [{ text: kontekst }], { json: true, system: NIYAT });
+  const amal = String(n.amal || 'suhbat');
+  const fayllar = (Array.isArray(n.fayllar) ? n.fayllar : []).map(String).filter((f) => /\.(mp4|mov|m4v|webm)$/i.test(f));
+  const soni = Number(n.soni) || 3;
+  const hook = String(n.hook || '');
+
+  // Video biriktirilgan, lekin niyat video bilan bog'liq emas yoki aniq emas — so'raymiz
+  if (vid && !VIDEO_AMAL.has(amal)) return videoSora(env, chat, msg, vid, hook);
+
+  switch (amal) {
+    case 'yangi_video':
+      return newVideo(env, chat, { mavzu: n.mavzu || text, format: n.format === 'youtube' ? 'youtube' : 'shorts', til: ['uz', 'en', 'es', 'ru'].includes(n.til) ? n.til : 'uz' });
+    case 'yasash': {
+      if (!oxirgi) return say(env, chat, "Hali ssenariy yozilmagan. Mavzuni yozing, masalan: «tirakchilar uchun 5 ta maslahat — shorts».");
+      const sz = await sozOl(env);
+      await dispatch(env, 'video-yasash.yml', { video: oxirgi.name, format: oxirgi.format || 'shorts', ai_kliplar: 'false', max_klip: '0', telegram: String(chat), google_ai: String(!!sz.googleAI) });
+      return say(env, chat, `⏳ Video yig'ilmoqda (${esc(oxirgi.name)}). Odatda 5–8 daqiqa — tayyor bo'lgach shu yerga yuboraman.`);
+    }
+    case 'yuklash': {
+      if (!oxirgi) return say(env, chat, "Qaysi video? Hali bot orqali video yasalmagan.");
+      if (!env.YT_REFRESH_TOKEN) return say(env, chat, "YouTube hali ulanmagan — videoni Telegram'dan saqlab, YouTube ilovasida joylang.");
+      const m = Number(n.muqova) === 1 || Number(n.muqova) === 2 ? String(n.muqova) : '';
+      await dispatch(env, 'youtube-yuklash.yml', { video: oxirgi.name, telegram: String(chat), muqova: oxirgi.format !== 'shorts' ? m : '' });
+      return say(env, chat, `⬆️ YouTube'ga yuklayapman: ${esc(oxirgi.name)}${m ? ` (muqova ${m})` : ''}…`);
+    }
+    case 'muqova': {
+      if (!oxirgi || oxirgi.format === 'shorts') return say(env, chat, "🖼 Muqova faqat uzun (YouTube) videolar uchun yasaladi — video bilan birga 2 xil dizaynda keladi, yuklashda «Muqova 1/2» ni tanlaysiz. Shorts'ga muqova qo'yilmaydi.");
+      return say(env, chat, `🖼 <b>${esc(oxirgi.name)}</b> uchun muqova video bilan birga keladi (2 dizayn). Qaysi biri bilan yuklay?`, {
+        reply_markup: { inline_keyboard: [[{ text: '✅ Muqova 1 bilan', callback_data: `u:${oxirgi.name}:1` }, { text: '✅ Muqova 2 bilan', callback_data: `u:${oxirgi.name}:2` }]] },
+      });
+    }
+    case 'tahlil':
+      return analysis(env, chat);
+    case 'trend':
+      return trend(env, chat, `${n.joy || ''} ${n.mavzu || ''}`);
+    case 'aitrend':
+      return trend(env, chat, /spanish|es/i.test(String(n.joy)) ? AI_TREND.spanish : AI_TREND.usa);
+    case 'tomy':
+      return sozlama(env, chat);
+    case 'bugun':
+      return kunlik(env, chat);
+    case 'referens': {
+      const url = (String(n.url || text).match(/https?:\/\/(?:www\.|m\.)?(?:youtube\.com|youtu\.be)\/\S+/) || [])[0];
+      if (!url) return say(env, chat, 'Qaysi video? YouTube havolasini yuboring.');
+      await dispatch(env, 'referens.yml', { url, telegram: String(chat) });
+      return say(env, chat, "🔎 Referensni Gemini ko'ryapti (1–3 daqiqa): hook, tuzilma, temp va bizga moslash g'oyalari. Natija shu yerga keladi.");
+    }
+    case 'qirq':
+    case 'montaj': {
+      const montaj = amal === 'montaj';
+      const sn = Math.max(2, Math.min(soni, montaj ? 4 : 3));
+      if (vid) return qirq(env, chat, { fileId: vid.file_id, size: vid.file_size || 0, soni: sn, hook, montaj });
+      if (fayllar.length) return qirq(env, chat, { driveFayl: fayllar[0], soni: sn, hook, montaj });
+      return say(env, chat, `${montaj ? '🎬' : '✂️'} Videoni shu yerga yuboring (20 MB gacha), izohiga <code>${montaj ? 'Montaj' : 'Qirq'}</code> yozing; kattasini Drive'dagi <b>Claude → Raw</b> ga tashlab <code>${montaj ? 'Montaj' : 'Qirq'} fayl.mp4</code> deb yozing.\nYouTube havolasidan yuklab bo'lmaydi — GitHub serverlari bloklanadi.`);
+    }
+    case 'ula': {
+      const format = n.format === 'youtube' || n.format === 'shorts' ? n.format : 'auto';
+      if (vid && msg.media_group_id) return ula(env, chat, { fayllar: await albomOl(env, chat, msg), format, hook });
+      if (fayllar.length) return ula(env, chat, { driveFayllar: fayllar, format, hook });
+      return say(env, chat, "🔗 Ulash uchun 2–10 ta videoni <b>bitta albom</b> qilib yuboring, izohiga <code>Ula</code> yozing (Ula shorts / Ula youtube). Kattasi — Drive'dagi Claude → Raw: <code>Ula a.mp4 b.mp4</code>");
+    }
+    case 'imzo':
+      if (vid) return imzo(env, chat, { fileId: vid.file_id, size: vid.file_size || 0, hook });
+      if (fayllar.length) return imzo(env, chat, { driveFayl: fayllar[0], hook });
+      return say(env, chat, "✍️ Videoni yuboring, izohiga <code>Imzo: hook matni</code>; 20 MB dan katta — Drive Raw'ga tashlab <code>Imzo fayl.mp4: hook</code>.");
+    case 'imzo_uzun':
+      if (fayllar.length) return imzoUzun(env, chat, { driveFayl: fayllar[0], hook });
+      return say(env, chat, "✍️ Uzun videoni Drive'dagi <b>Claude → Raw</b> ga tashlang va yozing: <code>Imzo uzun fayl.mp4: hook matni</code>");
+    case 'yordam':
+      return onMessage(env, { ...msg, text: '/yordam', caption: undefined, video: undefined, document: undefined, voice: undefined, audio: undefined });
+    default:
+      return say(env, chat, esc(n.javob || 'Tushunmadim, qaytadan yozing.'));
+  }
+}
+
+// Izohli video, lekin nima qilish aniq emas — tugmalar bilan so'raymiz (video file_id xotirada, tugmada faqat raqam)
+async function videoSora(env, chat, msg, vid, hook) {
+  await kvYoz(env, `vid/${chat}/${msg.message_id}`, { f: vid.file_id, size: vid.file_size || 0, hook }, 86400);
+  const id = msg.message_id;
+  return say(env, chat, '🎥 Bu video bilan nima qilay?', {
+    reply_markup: { inline_keyboard: [
+      [{ text: "✍️ Imzo (hook, subtitr)", callback_data: `v:imzo:${id}` }],
+      [{ text: '✂️ Qirq (2–3 Shorts)', callback_data: `v:qirq:${id}` }, { text: '🎬 Montaj (bitta)', callback_data: `v:montaj:${id}` }],
+    ] },
+  });
 }
 
 async function onCallback(env, cb) {
@@ -662,6 +802,15 @@ async function onCallback(env, cb) {
   if (k === 's') return sozBos(env, cb, name, fmt); // sozlama tugmalari (xabar qoladi, yangilanadi)
   if (k === 'j') return jadvalBos(env, cb, cb.data.split(':').slice(1)); // kunlik jadval
   if (k === 'n') return newVideo(env, chat, { mavzu: cb.data.slice(2), format: 'shorts', til: 'uz' }); // trend g'oyasi (tugmalar qoladi)
+  if (k === 'v') {
+    // izohli video uchun tanlov (videoSora)
+    await TG(env, 'editMessageReplyMarkup', { chat_id: chat, message_id: cb.message.message_id, reply_markup: { inline_keyboard: [] } });
+    const v = await kvOl(env, `vid/${chat}/${fmt}`);
+    if (!v) return say(env, chat, 'Video eskirib qoldi — qaytadan yuboring.');
+    await tarixQosh(env, chat, 'men', `[tugma] ${name}`).catch(() => {});
+    if (name === 'imzo') return imzo(env, chat, { fileId: v.f, size: v.size, hook: v.hook });
+    return qirq(env, chat, { fileId: v.f, size: v.size, soni: 3, hook: v.hook, montaj: name === 'montaj' });
+  }
   await TG(env, 'editMessageReplyMarkup', { chat_id: chat, message_id: cb.message.message_id, reply_markup: { inline_keyboard: [] } });
   if (k === 'x') return say(env, chat, '❌ Bekor qilindi.');
   if (k === 'y') {
