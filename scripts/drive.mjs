@@ -57,16 +57,26 @@ async function list(folder, extraQ = '') {
   return files;
 }
 
-// Papka va ichki papkalardan nom bo'yicha qidirish
-async function findByName(name, folder = FOLDERS.claude, depth = 0) {
+// Papka va ichki papkalardan nom bo'yicha qidirish.
+// Avval aynan mos nom; topilmasa — katta-kichik harf, bo'sh joy / _ / - farqisiz (telefon klaviaturasi
+// birinchi harfni katta qiladi: «Bobil-youtube.mp4» → «bobil-youtube.mp4» ham topiladi).
+const yumshoq = (n) => String(n).toLowerCase().normalize('NFKC').replace(/[\s_-]+/g, '-').trim();
+async function barchaFayllar(folder = FOLDERS.claude, depth = 0, out = []) {
   const items = await list(folder);
-  const hit = items.find((f) => f.name === name);
-  if (hit) return hit;
-  if (depth > 2) return null;
-  for (const f of items.filter((x) => x.mimeType === 'application/vnd.google-apps.folder')) {
-    const r = await findByName(name, f.id, depth + 1);
-    if (r) return r;
+  for (const f of items) {
+    if (f.mimeType === 'application/vnd.google-apps.folder') {
+      if (depth < 3) await barchaFayllar(f.id, depth + 1, out);
+    } else out.push(f);
   }
+  return out;
+}
+async function findByName(name, folder = FOLDERS.claude) {
+  const all = await barchaFayllar(folder);
+  const hit = all.find((f) => f.name === name) || all.find((f) => yumshoq(f.name) === yumshoq(name));
+  if (hit) return hit;
+  // yordam uchun: o'xshash nomlar (xato xabarida ko'rsatiladi)
+  const q = yumshoq(name).replace(/\.[a-z0-9]+$/, '');
+  findByName.oxshash = all.filter((f) => yumshoq(f.name).includes(q.slice(0, 4)) || q.includes(yumshoq(f.name).replace(/\.[a-z0-9]+$/, '').slice(0, 4))).slice(0, 5).map((f) => f.name);
   return null;
 }
 
@@ -126,7 +136,7 @@ if (cmd === 'upload') await upload(a, b || FOLDERS.export);
 else if (cmd === 'get') {
   // node scripts/drive.mjs get <fayl nomi> <chiqish yo'li> — Claude papkasidan (Raw va boshqalar) nom bo'yicha
   const f = await findByName(a);
-  if (!f) throw new Error(`Drive'da topilmadi: ${a} (Claude papkasi ichida bo'lishi kerak)`);
+  if (!f) throw new Error(`Drive'da topilmadi: ${a} (Claude papkasi ichida bo'lishi kerak)${findByName.oxshash?.length ? `. O'xshash fayllar: ${findByName.oxshash.join(', ')}` : ''}`);
   console.log(`▶ ${a} (${(Number(f.size || 0) / 1e6).toFixed(1)} MB)…`);
   await download(f.id, b);
   console.log(`  ✓ ${b}`);

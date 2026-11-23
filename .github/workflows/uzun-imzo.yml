@@ -65,7 +65,7 @@ jobs:
           mkdir -p public/uzun
           NOM=$(basename "$FAYL")
           echo "NOM=${NOM%.*}" >> "$GITHUB_ENV"
-          if [ -f "public/$FAYL" ]; then cp "public/$FAYL" "public/uzun/$NOM"; else node scripts/drive.mjs get "$FAYL" "public/uzun/$NOM"; fi
+          if [ -f "public/$FAYL" ]; then cp "public/$FAYL" "public/uzun/$NOM"; else node scripts/drive.mjs get "$FAYL" "public/uzun/$NOM" 2> >(tee -a /tmp/xato.txt >&2); fi
           echo "SRC=uzun/$NOM" >> "$GITHUB_ENV"
 
       - name: Imzo (3 oyna + ffmpeg)
@@ -104,4 +104,5 @@ jobs:
           TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT: ${{ github.event.inputs.telegram }}
         run: |
-          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Uzun imzo xatosi ($FAYL): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null
+          SABAB=$(grep -ho "Drive.da topilmadi.*" /tmp/xato.txt 2>/dev/null | head -1)
+          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Uzun imzo xatosi ($FAYL)${SABAB:+: $SABAB} — ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null
