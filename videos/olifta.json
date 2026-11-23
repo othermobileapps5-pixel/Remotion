@@ -15,7 +15,9 @@
       "duration": 10,
       "zoom": "in",
       "ovoz": "Lola never passed a mirror without stopping. Not a shop window. Not a puddle. Not once.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/olifta-1.wav",
+      "ovozKalit": "1002ea283c"
     },
     {
       "type": "image",
@@ -23,7 +25,9 @@
       "duration": 10,
       "zoom": "out",
       "ovoz": "Her phone held twelve thousand selfies. And today needed the perfect one: the city's biggest fashion party.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/olifta-2.wav",
+      "ovozKalit": "cebb3542fb"
     },
     {
       "type": "image",
@@ -31,7 +35,9 @@
       "duration": 10,
       "zoom": "in",
       "ovoz": "She walked the street like a runway, eyes on one screen only: her own.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/olifta-3.wav",
+      "ovozKalit": "7c0beff3fc"
     },
     {
       "type": "image",
@@ -39,7 +45,9 @@
       "duration": 10,
       "zoom": "out",
       "ovoz": "Then an old man slipped. Oranges rolled into the mud... and everyone kept walking.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/olifta-4.wav",
+      "ovozKalit": "5480be3e9e"
     },
     {
       "type": "image",
@@ -47,7 +55,9 @@
       "duration": 10,
       "zoom": "in",
       "ovoz": "Lola looked at her white dress. Then she knelt right into the mud.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/olifta-5.wav",
+      "ovozKalit": "20058bd256"
     },
     {
       "type": "image",
@@ -55,7 +65,9 @@
       "duration": 10,
       "zoom": "out",
       "ovoz": "At the party, everyone stared. For the first time, Lola didn't want a single photo.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/olifta-6.wav",
+      "ovozKalit": "d77a985ae4"
     },
     {
       "type": "image",
@@ -63,7 +75,9 @@
       "duration": 10,
       "zoom": "in",
       "ovoz": "But a stranger had filmed her in the rain. By morning, a million people had seen it. Her best picture ever was the one she never took.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/olifta-7.wav",
+      "ovozKalit": "f4c95f1640"
     }
   ]
 }
