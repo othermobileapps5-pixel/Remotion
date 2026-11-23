@@ -11,13 +11,14 @@
       "caption": "On New Year's Eve, Qor Bobo made a terrible discovery. His sack was empty... and one house was still waiting.",
       "ovoz": "On New Year's Eve, Qor Bobo made a terrible discovery. His sack was empty... and one house was still waiting.",
       "ovozchi": "kokoro:am_michael",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/ce72282e-4342-49b7-ab7f-47438ba6d19c/1db421b9-fb65-4b55-bd90-8a8cb068c3ba/_qb__keep_his_exact_face__beard__blue_coat__hat_and_staff__f.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODdhYjQ3NDU2ZDliMTdhMCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU5MjI2MX0.EwMOmtIYDX_LT1fzaQDycQsyFc4SizQtVwJwksWvZZU",
+      "image": "gemini/img-1795477850380-y8gz3.png",
       "prompt": "Slow upward tilt from the glowing rooftops to the sleigh crossing the moon; the horses gallop gently through the air; Qor Bobo opens the sack, looks inside and freezes in shock; snow falls steadily. Smooth natural motion, no morphing, faces and clothes stay exactly as in the image. 3D animated feature-film style. No text, no dialogue.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "360p",
       "muted": true,
       "ovozFayl": "ovoz/qorbobo-jonli-1.wav",
-      "ovozKalit": "d98b90f812"
+      "ovozKalit": "d98b90f812",
+      "src": "fal/qorbobo-jonli-1.mp4"
     },
     {
       "type": "video",
@@ -25,13 +26,14 @@
       "caption": "In that house, little Malika had been knitting for a whole month. Not a wish. A gift. For him.",
       "ovoz": "In that house, little Malika had been knitting for a whole month. Not a wish. A gift. For him.",
       "ovozchi": "kokoro:am_michael",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/b66f78a2-3e02-4404-828a-31d4513d26e4/81365767-8327-41eb-a0cf-b609e3be5e9b/_mk__keep_her_exact_face__braids_with_red_ribbons__red_hat_a.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzAwMmMwYWE3YmI5MTcyNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYzMDc2Mn0.FgjjVqFrFFYuxmXPgmA2Q6dHDwUftaLqHPiWAuvBpAY",
+      "image": "gemini/img-1795477850378-xkhvy.png",
       "prompt": "Slow push-in; Malika's hands knit the last stitches, she ties the final knot, holds the scarf up and smiles proudly; the candle flame flickers softly. Stable hands and face, no flicker. Smooth natural motion, no morphing, faces and clothes stay exactly as in the image. 3D animated feature-film style. No text, no dialogue.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "360p",
       "muted": true,
       "ovozFayl": "ovoz/qorbobo-jonli-2.wav",
-      "ovozKalit": "8a74ec3c19"
+      "ovozKalit": "8a74ec3c19",
+      "src": "fal/qorbobo-jonli-2.mp4"
     },
     {
       "type": "video",
@@ -39,13 +41,14 @@
       "caption": "Qor Bobo searched every corner. Nothing. For the first time in a hundred years, he had nothing to give.",
       "ovoz": "Qor Bobo searched every corner. Nothing. For the first time in a hundred years, he had nothing to give.",
       "ovozchi": "kokoro:am_michael",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/a410af69-4e2f-40d3-ac54-c7696791b0a8/2a563ba7-6e4d-49d6-8b2e-4455f0789aec/_qb__keep_his_exact_face__beard__blue_coat__hat_and_staff__s.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOTRjYWUxZjZkYzFkMjQ4MiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYyMDA4Nn0.eKPwQa6HUbn8bBxdgggA7MWJddmPkq4nhNZ8s9fTH0E",
+      "image": "gemini/img-1795477850340-flir7.png",
       "prompt": "Nearly static camera with a slow creep in; Qor Bobo shakes the empty sack, a few snowflakes fall out, he lowers it and sighs, his breath visible in the cold air; the horses shuffle behind him. Gentle, sad pacing. Smooth natural motion, no morphing, faces and clothes stay exactly as in the image. 3D animated feature-film style. No text, no dialogue.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "360p",
       "muted": true,
       "ovozFayl": "ovoz/qorbobo-jonli-3.wav",
-      "ovozKalit": "0ad91a3a43"
+      "ovozKalit": "0ad91a3a43",
+      "src": "fal/qorbobo-jonli-3.mp4"
     },
     {
       "type": "video",
@@ -53,13 +56,14 @@
       "caption": "So he turned to leave quietly... but the door burst open.",
       "ovoz": "So he turned to leave quietly... but the door burst open.",
       "ovozchi": "kokoro:am_michael",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/05486e64-3e94-45e9-b614-40df395a26cf/a4241f8f-c183-4ca7-b375-22895f10f5d2/Over_the_shoulder_shot_from_behind__qb__same_blue_coat__hat_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiY2E3Yjc3NmRhODRmODQwMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU3ODczM30.P2DEiUFBw1yCHMuhDXA4h0_FVJejp6Az0mvaTRRLdP0",
+      "image": "gemini/img-1795477850347-son9d.png",
       "prompt": "Over-the-shoulder; Qor Bobo takes two slow steps toward the sleigh; the door behind him bursts open and warm light floods the snow; he turns his head; Malika runs out through the snow. The light change is smooth, no flashing. Smooth natural motion, no morphing, faces and clothes stay exactly as in the image. 3D animated feature-film style. No text, no dialogue.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "360p",
       "muted": true,
       "ovozFayl": "ovoz/qorbobo-jonli-4.wav",
-      "ovozKalit": "af515fce1e"
+      "ovozKalit": "af515fce1e",
+      "src": "fal/qorbobo-jonli-4.mp4"
     },
     {
       "type": "video",
@@ -67,13 +71,14 @@
       "caption": "Malika: “Everyone sends you wishes. I wanted to give you something!”",
       "ovoz": "Everyone sends you wishes. I wanted to give you something!",
       "ovozchi": "kokoro:af_sky",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/90c6d872-41d8-4701-9820-cc6704b58fa0/3b1f0c75-cdc2-4abd-9328-2488fc2e5fc1/_mk__same_braids_with_red_ribbons__red_hat__mustard_yellow_c.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzM3NzJjN2E4MmIwNDBkNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYyMDA5MH0.0Uz0AkBydAsDnYE2YuJWz9wGDpS-r6YVIYLC3lJ_5JA",
+      "image": "gemini/img-1795477882241-fmke7.png",
       "prompt": "Slow orbit at child height; Qor Bobo kneels, Malika wraps the scarf around his neck and pats it; his surprised face softens into a trembling smile. Scarf stripes and heart patch stay stable. Smooth natural motion, no morphing, faces and clothes stay exactly as in the image. 3D animated feature-film style. No text, no dialogue.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "360p",
       "muted": true,
       "ovozFayl": "ovoz/qorbobo-jonli-5.wav",
-      "ovozKalit": "5c4e1c331b"
+      "ovozKalit": "5c4e1c331b",
+      "src": "fal/qorbobo-jonli-5.mp4"
     },
     {
       "type": "video",
@@ -81,13 +86,14 @@
       "caption": "A single tear rolled down his cheek, froze into a star... and the whole sky began to glow.",
       "ovoz": "A single tear rolled down his cheek, froze into a star... and the whole sky began to glow.",
       "ovozchi": "kokoro:am_michael",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/32e7dff3-6dcc-42ec-bada-f2af4852a231/f8bb1b26-90fe-4615-b126-3289c6d0fa9c/Close_up_of_the_face_of__qb__same_face__white_beard__blue_ha.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzg2MGY5MWUyYjkxNGExMCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYyMzMyNn0.ZpAs4Rv8MperZco06Um2O_0pgt8YtOa4z8b6MVRpRLw",
+      "image": "gemini/img-1795477883789-jxa5h.png",
       "prompt": "Slow push-in toward his eye; a tear rolls and freezes into a glowing ice star; the camera tilts up as snowflakes swirl and glow across the sky; Malika gasps. The glow builds gradually, no flashing. Smooth natural motion, no morphing, faces and clothes stay exactly as in the image. 3D animated feature-film style. No text, no dialogue.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "360p",
       "muted": true,
       "ovozFayl": "ovoz/qorbobo-jonli-6.wav",
-      "ovozKalit": "e513ff7f8c"
+      "ovozKalit": "e513ff7f8c",
+      "src": "fal/qorbobo-jonli-6.mp4"
     },
     {
       "type": "video",
@@ -95,13 +101,14 @@
       "caption": "That night, Qor Bobo learned the oldest secret of New Year: the warmest gift is the one you give.",
       "ovoz": "That night, Qor Bobo learned the oldest secret of New Year: the warmest gift is the one you give.",
       "ovozchi": "kokoro:am_michael",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/13872300-d593-4c47-9a7d-b7017f46b5e6/b472daa4-4252-4bc9-9022-40784557af65/Wide_shot_of_a_whole_snowy_Central_Asian_village_with_domed_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzMyNTA5NmUwMzVkYTBiNiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU5Mzk2Nn0.UaHOHkrNbQs2kH0I5iABdmvp8PXqbCDv05JVKOpWP38",
+      "image": "gemini/img-1795477884085-lpuhc.png",
       "prompt": "Crane up and back over the whole glowing village; the sleigh rises across the moon, the scarf fluttering; Malika waves from her doorstep; snow falls gently. Smooth natural motion, no morphing, faces and clothes stay exactly as in the image. 3D animated feature-film style. No text, no dialogue.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "360p",
       "muted": true,
       "ovozFayl": "ovoz/qorbobo-jonli-7.wav",
-      "ovozKalit": "f0529632cc"
+      "ovozKalit": "f0529632cc",
+      "src": "fal/qorbobo-jonli-7.mp4"
     }
   ]
 }
