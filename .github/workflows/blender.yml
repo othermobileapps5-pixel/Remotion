@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       nom:
-        description: "Skript nomi: blender/<nom>.py (.py siz)"
+        description: "universal — bitta universal generator; yoki blender/<nom>.py"
         required: true
-        default: tomy-logo
+        default: universal
       rejim:
         description: "sinov — bir nechta kadr; toliq — butun video"
         type: choice
