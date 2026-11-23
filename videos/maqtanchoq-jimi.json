@@ -1,0 +1,75 @@
+{
+  "title": "Maqtanchoq Jimi — Haqiqiy kuch amalda",
+  "theme": {
+    "bg": "#F7F5EF",
+    "accent": "#F4B400",
+    "text": "#202020"
+  },
+  "rasmUslub": "consistent clean 2D children's storybook line art, hand-drawn black outlines, soft flat pastel colors, warm sunlight, expressive friendly faces, simple park backgrounds, polished animation storyboard illustration, vertical 9:16 composition. Character consistency: Jimi is a young boy with spiky dark hair, yellow T-shirt, blue shorts and red sneakers. His friend is a young boy with round glasses and a green hoodie. Keep the same character designs, clothing, proportions and colors in every image. No text, no letters, no captions, no logos, no watermark.",
+  "ovozchi": "sardor",
+  "ovozTezligi": "+0%",
+  "ovozgaMoslash": true,
+  "ovozPad": 0.35,
+  "transition": 0.35,
+  "musicVolume": 0.12,
+  "scenes": [
+    {
+      "type": "title",
+      "text": "MAQTANCHOQ JIMI",
+      "subtitle": "Haqiqiy kuch amalda bilinadi",
+      "duration": 8,
+      "ovoz": "Jimi o‘zini dunyodagi eng kuchli bola deb bilardi. U har kuni do‘stlariga qanchalik kuchli va chaqqon ekanini aytardi.",
+      "rasm": "Jimi, a cheerful young boy with spiky dark hair, yellow T-shirt, blue shorts and red sneakers, stands proudly in a sunny green park with hands on hips, smiling confidently. A few children play in the background. Wide friendly establishing shot."
+    },
+    {
+      "type": "text",
+      "text": "MEN HAMMASINI QILA OLAMAN!",
+      "duration": 8,
+      "ovoz": "— Men hammadan kuchliman! Istagan ishni bir o‘zim uddalayman! — deb maqtanardi Jimi. Do‘stlari esa indamay tinglashardi.",
+      "rasm": "In the same sunny park, Jimi in his yellow T-shirt, blue shorts and red sneakers points proudly at himself while boasting to two children. His expression is overconfident; the children look at him politely but unconvinced. Medium shot."
+    },
+    {
+      "type": "text",
+      "text": "VARRAK DARAXTDA QOLDI",
+      "duration": 8,
+      "ovoz": "Bir kuni bolalar rang-barang varrak uchirishdi. Birdan shamol kuchaydi va qizil-sariq varrak baland daraxt shoxiga ilinib qoldi.",
+      "rasm": "A bright red-and-yellow diamond kite is stuck high in the branches of a leafy tree in the sunny park. Jimi and his friend with round glasses and a green hoodie look up at it. The kite string hangs down. Clear vertical composition."
+    },
+    {
+      "type": "text",
+      "text": "JIMI URINIB KO‘RDI",
+      "duration": 8,
+      "ovoz": "Jimi darrov: — Buni men olaman! — dedi. U daraxtga chiqishga urindi, ammo shoshilib oyog‘i sirpanib, yumshoq maysaga yiqildi.",
+      "rasm": "Jimi, same spiky dark hair, yellow T-shirt, blue shorts and red sneakers, has slipped and landed safely on the soft green grass beneath the tree. He looks embarrassed and surprised, not hurt. The kite remains stuck above."
+    },
+    {
+      "type": "text",
+      "text": "DO‘STI YORDAM BERDI",
+      "duration": 9,
+      "ovoz": "Shunda ko‘zoynakli, yashil hudili do‘sti oldinga chiqdi. U uzun tayoq topib, ehtiyotkorlik bilan varrakni shoxdan tushirdi.",
+      "rasm": "Jimi's friend, a young boy with round glasses and a green hoodie, carefully uses a long fallen branch to lift the red-and-yellow kite from the tree. Jimi watches from nearby, surprised. Safe, gentle action, full-body view."
+    },
+    {
+      "type": "text",
+      "text": "JIMI TUSHUNDI",
+      "duration": 9,
+      "ovoz": "Jimi do‘stiga hayrat bilan qaradi. U ko‘p gapirmagan, lekin kerak paytda yordam bergan edi. Jimi o‘zining maqtanchoqligini tushuna boshladi.",
+      "rasm": "Close medium shot of Jimi, same yellow T-shirt and spiky dark hair, looking thoughtful and humbled. His friend in the green hoodie and round glasses stands beside him holding the rescued kite. Warm gentle sunlight, expressive faces."
+    },
+    {
+      "type": "text",
+      "text": "KECHIR, DO‘STIM!",
+      "duration": 9,
+      "ovoz": "— Rahmat, do‘stim. Men seni mensimay qo‘ygan ekanman. Kechir, — dedi Jimi. Do‘sti kulib, qo‘lini uzatdi. Ikkalasi qo‘l berib ko‘rishdi.",
+      "rasm": "Jimi in yellow and his friend in green hoodie with round glasses smile and shake hands warmly under the tree. The rescued red-and-yellow kite is safely held between them. Friendship and forgiveness, medium shot."
+    },
+    {
+      "type": "title",
+      "text": "HAQIQIY KUCH — AMALDA!",
+      "subtitle": "Kamroq maqtan, ko‘proq yaxshilik qil",
+      "duration": 11,
+      "ovoz": "Bolalar yana birga varrak uchirishdi. O‘sha kundan boshlab Jimi kamroq maqtanadigan, ko‘proq ish qiladigan bo‘ldi. Chunki u bir narsani anglab yetdi: haqiqiy kuch gapda emas, amalda!",
+      "rasm": "Happy ending in the same sunny park: Jimi in yellow, his friend in a green hoodie and two other children run together while flying the red-and-yellow kite high in the blue sky. Everyone is smiling. Joyful wide shot, uplifting children's storybook ending."
+    }
+  ]
+}
