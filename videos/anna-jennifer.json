@@ -13,7 +13,9 @@
       "zoom": "in",
       "caption": "Annaning yangi maktabdagi birinchi kuni. U hech kimni tanimasdi.",
       "ovoz": "It was Anna's first day at a new school. Everything felt big, and she didn't know a single face.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-1.wav",
+      "ovozKalit": "ae9b5c9177"
     },
     {
       "type": "image",
@@ -22,7 +24,9 @@
       "zoom": "out",
       "caption": "Hovlida Jennifer do'stlari bilan kulardi. U hammani tanirdi.",
       "ovoz": "Across the yard, Jennifer laughed with her friends. She seemed to know everyone.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-2.wav",
+      "ovozKalit": "4accbbaa59"
     },
     {
       "type": "image",
@@ -31,7 +35,9 @@
       "zoom": "in",
       "caption": "Anna jur'at qilib qo'l silkitdi. Jennifer ham jilmayib javob berdi.",
       "ovoz": "Anna gathered her courage and waved. Jennifer smiled... and waved back.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-3.wav",
+      "ovozKalit": "d5ed3065d8"
     },
     {
       "type": "image",
@@ -40,7 +46,9 @@
       "zoom": "out",
       "caption": "Shunda Jennifer qoqilib ketdi. Rasmi va qalamlari sochilib ketdi.",
       "ovoz": "Then Jennifer tripped. Her flower drawing and all her pencils scattered across the floor.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-4.wav",
+      "ovozKalit": "416c1f07e1"
     },
     {
       "type": "image",
@@ -49,7 +57,9 @@
       "zoom": "in",
       "caption": "Anna o'ylab o'tirmadi: tiz cho'kib, har bir qalamni terdi.",
       "ovoz": "Anna didn't think twice. She knelt down and helped pick up every pencil.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-5.wav",
+      "ovozKalit": "94a41b858f"
     },
     {
       "type": "image",
@@ -58,7 +68,9 @@
       "zoom": "out",
       "caption": "«Rahmat!» dedi Jennifer. Lekin rasmi o'rtasidan yirtilgan edi.",
       "ovoz": "\"Thank you!\" Jennifer said. But her drawing was torn right down the middle.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-6.wav",
+      "ovozKalit": "dcc3b99485"
     },
     {
       "type": "image",
@@ -67,7 +79,9 @@
       "zoom": "in",
       "caption": "Anna skotch topdi va ular rasmni birga yopishtirishdi.",
       "ovoz": "So Anna found some tape, and together they fixed it, piece by piece.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-7.wav",
+      "ovozKalit": "67ecbe5a4f"
     },
     {
       "type": "image",
@@ -76,7 +90,9 @@
       "zoom": "out",
       "caption": "Keyin yangi ranglar qo'shishdi. Endi bu ularning guli edi.",
       "ovoz": "Then they added new colors. Brighter petals, greener leaves. Now it was their flower.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-8.wav",
+      "ovozKalit": "5ad51bc7c3"
     },
     {
       "type": "image",
@@ -85,7 +101,9 @@
       "zoom": "in",
       "caption": "Rasmni sinfga ko'rsatishganda, hamma qarsak chaldi.",
       "ovoz": "When they showed it to the class, everyone clapped.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-9.wav",
+      "ovozKalit": "10a245a17e"
     },
     {
       "type": "image",
@@ -94,7 +112,9 @@
       "zoom": "out",
       "caption": "Anna maktabga notanish bo'lib keldi, birinchi dugonasi bilan qaytdi.",
       "ovoz": "Anna came to school a stranger. She went home with her first new friend.",
-      "ovozchi": "kokoro:af_heart"
+      "ovozchi": "kokoro:af_heart",
+      "ovozFayl": "ovoz/anna-jennifer-10.wav",
+      "ovozKalit": "70ee14ff6b"
     }
   ]
 }
