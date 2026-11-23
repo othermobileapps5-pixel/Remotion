@@ -103,7 +103,6 @@ jobs:
           node -e '
             const e=process.env, o={TELEGRAM_BOT_TOKEN:e.TELEGRAM_BOT_TOKEN, GEMINI_API_KEY:e.GEMINI_API_KEY, BOT_GITHUB_TOKEN:e.BOT_GITHUB_TOKEN,
               WEBHOOK_SECRET:process.argv[1],
-              // video yasash workflow'i /rasm (tekin FLUX) uchun — bot tokenidan hisoblanadi, u yerda ham xuddi shunday
               RASM_KALIT:require("crypto").createHash("sha256").update("rasm:"+e.TELEGRAM_BOT_TOKEN).digest("hex")};
             if (e.GEMINI_FREE_KEY) o.GEMINI_FREE_KEY=e.GEMINI_FREE_KEY;
             if (e.OWNER) o.OWNER_CHAT_ID=e.OWNER;
