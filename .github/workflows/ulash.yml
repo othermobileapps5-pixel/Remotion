@@ -1,6 +1,8 @@
 # Ulash (faqat bot «Ula» buyrug'i yoki qo'lda): bir nechta videoni yuborilgan tartibda silliq o'tishlar bilan bitta videoga
 # ulaydi va Imzo qo'yadi (hook, Whisper subtitr, zoom, «Obuna bo'ling»).
 # Manba: Telegram albomi (bot file_id'larni beradi, har biri 20 MB gacha) yoki Drive «Claude → Raw» dagi fayllar.
+# Uzun natija (3 daqiqadan ko'p): butun video render qilinmaydi — «Uzun imzo» usuli (scripts/uzun-imzo.mjs):
+# faqat boshi / o'rtasi / oxiri qayta yasalib, ffmpeg bilan ulangan video ustiga qo'yiladi (tez).
 # Natija repoga/relizga yuklanmaydi (repo ochiq) — faqat Telegram'ga va Drive «Export» ga.
 name: Ulash
 
@@ -51,6 +53,11 @@ jobs:
         with:
           path: ~/.cache/huggingface
           key: whisper-small-v1
+      - name: rembg modeli keshi
+        uses: actions/cache@v4
+        with:
+          path: ~/.u2net
+          key: rembg-isnet-v1
       - name: Paketlar
         run: |
           npm install --no-audit --no-fund
@@ -83,12 +90,32 @@ jobs:
       - name: Ulash (silliq o'tishlar)
         env:
           HOOK: ${{ github.event.inputs.hook }}
-        run: node scripts/ula.mjs "$NOM" "${{ github.event.inputs.format }}" $LIST --hook "$HOOK"
+        run: |
+          node scripts/ula.mjs "$NOM" "${{ github.event.inputs.format }}" $LIST --hook "$HOOK"
+          # 3 daqiqadan uzun — tez usul (Uzun imzo)
+          UZUN=$(node -e "console.log(require('./out/ulash.json').uzunlik > 180 ? 1 : '')")
+          echo "UZUN=$UZUN" >> "$GITHUB_ENV"
+          [ -n "$UZUN" ] && echo "Uzun natija — faqat boshi/o'rtasi/oxiri imzolanadi" || true
+
+      - name: Uzun imzo paketlari
+        if: ${{ env.UZUN == '1' }}
+        run: pip install -q "rembg[cpu]"
+
+      - name: Uzun video — imzo (3 oyna + ffmpeg)
+        if: ${{ env.UZUN == '1' }}
+        env:
+          HOOK: ${{ github.event.inputs.hook }}
+          U2NET_HOME: /home/runner/.u2net
+        run: |
+          mkdir -p out
+          node scripts/uzun-imzo.mjs "ulash/$NOM.mp4" "out/$NOM.mp4" --hook "$HOOK"
 
       - name: Imzo — subtitr va zoom (Whisper)
+        if: ${{ env.UZUN != '1' }}
         run: node scripts/subtitr.mjs "videos/$NOM.json"
 
       - name: Render
+        if: ${{ env.UZUN != '1' }}
         run: |
           COMP=$(node -e "console.log(require('./out/ulash.json').komp)")
           mkdir -p out
