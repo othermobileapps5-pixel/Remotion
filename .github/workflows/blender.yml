@@ -1,0 +1,137 @@
+# Blender 3D — alohida, faqat qo'lda. blender/<nom>.py skriptini Blender 4.2 LTS (Cycles CPU) bilan render qiladi.
+#   sinov: har bo'lakdan kadrlar (yarim o'lcham) → «kadrlar» branch'i blender/<nom>/ — ko'rib chiqish uchun
+#   to'liq: 4 parallel bo'lak → ffmpeg H.264 → «videolar» relizi, Drive Export, Telegram
+name: Blender 3D
+
+on:
+  workflow_dispatch:
+    inputs:
+      nom:
+        description: "Skript nomi: blender/<nom>.py (.py siz)"
+        required: true
+        default: tomy-logo
+      rejim:
+        description: "sinov — bir nechta kadr; toliq — butun video"
+        type: choice
+        options: [sinov, toliq]
+        default: sinov
+      samples:
+        description: "Cycles samples (sifat/tezlik): 20 odatiy"
+        default: "20"
+      telegram:
+        description: "Tayyor videoni yuboriladigan Telegram chat (ixtiyoriy)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blender-${{ github.event.inputs.nom }}-${{ github.event.inputs.rejim }}
+  cancel-in-progress: false
+
+env:
+  NOM: ${{ github.event.inputs.nom }}
+  SAMPLES: ${{ github.event.inputs.samples }}
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: true
+      matrix:
+        part: ${{ github.event.inputs.rejim == 'toliq' && fromJSON('[1,2,3,4]') || fromJSON('[1]') }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skript borligini tekshirish
+        run: test -f "blender/$NOM.py" || { echo "::error::blender/$NOM.py topilmadi"; exit 1; }
+      - name: Blender versiyasi
+        id: v
+        run: |
+          F=$(curl -fsSL https://download.blender.org/release/Blender4.2/ | grep -oE 'blender-4\.2\.[0-9]+-linux-x64\.tar\.xz' | sort -uV | tail -1)
+          [ -n "$F" ] || { echo "::error::Blender 4.2 topilmadi"; exit 1; }
+          echo "f=$F" >> "$GITHUB_OUTPUT"; echo "Blender: $F"
+      - name: Blender keshi
+        uses: actions/cache@v4
+        with:
+          path: ~/blender
+          key: ${{ steps.v.outputs.f }}
+      - name: Blender o'rnatish
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq libxrender1 libxi6 libxkbcommon0 libgl1 libsm6 libxxf86vm1 libxfixes3 >/dev/null
+          if [ ! -x ~/blender/blender ]; then
+            curl -fsSL "https://download.blender.org/release/Blender4.2/${{ steps.v.outputs.f }}" -o /tmp/b.tar.xz
+            mkdir -p ~/blender && tar -xJf /tmp/b.tar.xz -C ~/blender --strip-components=1
+          fi
+          ~/blender/blender --version | head -1
+      - name: Render
+        run: |
+          mkdir -p out/frames
+          if [ "${{ github.event.inputs.rejim }}" = sinov ]; then
+            # kadrlar soni skriptdan: avval umumiy uzunlikni bilib olamiz
+            END=$(~/blender/blender -b -P "blender/$NOM.py" -- --info 2>/dev/null | grep -oE 'KADRLAR [0-9]+' | tail -1 | cut -d' ' -f2)
+            END=${END:-150}
+            S=$(node -e "const e=$END;console.log([1,Math.round(e*0.2),Math.round(e*0.4),Math.round(e*0.6),Math.round(e*0.8),e].join(','))")
+            echo "Sinov kadrlari: $S (jami $END)"
+            ~/blender/blender -b -P "blender/$NOM.py" -- --out out/frames --samples "$SAMPLES" --scale 50 --stills "$S"
+          else
+            ~/blender/blender -b -P "blender/$NOM.py" -- --out out/frames --samples "$SAMPLES" --part "${{ matrix.part }}/4"
+          fi
+          ls out/frames | head; ls out/frames | wc -l
+      - name: Sinov kadrlarini «kadrlar» branch'iga
+        if: ${{ github.event.inputs.rejim == 'sinov' }}
+        run: |
+          mkdir -p /tmp/k && cp out/frames/*.png /tmp/k/
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin +refs/heads/kadrlar:refs/remotes/origin/kadrlar && git checkout -q -B kadrlar origin/kadrlar || git checkout -q --orphan kadrlar
+          rm -rf "blender/$NOM" && mkdir -p "blender/$NOM" && cp /tmp/k/*.png "blender/$NOM/"
+          git add "blender/$NOM" && git commit -qm "Blender sinov: $NOM" && git push -q origin kadrlar
+          echo "Kadrlar: https://github.com/${{ github.repository }}/tree/kadrlar/blender/$NOM" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: ${{ github.event.inputs.rejim == 'toliq' }}
+        with:
+          name: frames-${{ matrix.part }}
+          path: out/frames/*.png
+          retention-days: 2
+
+  video:
+    needs: render
+    if: ${{ github.event.inputs.rejim == 'toliq' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          path: out/frames
+          merge-multiple: true
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+      - name: MP4 (H.264, CRF 16)
+        run: |
+          ls out/frames | wc -l
+          FPS=$(grep -oE '^FPS[^=]*=\s*[0-9]+' "blender/$NOM.py" | grep -oE '[0-9]+$' | head -1); FPS=${FPS:-30}
+          # kadr nomlari Blender'dan: 0001.png, 0002.png ...
+          ffmpeg -y -framerate "$FPS" -pattern_type glob -i 'out/frames/*.png' -c:v libx264 -crf 16 -preset veryfast -pix_fmt yuv420p -movflags +faststart "out/$NOM-3d.mp4"
+          ls -lh out/*.mp4
+      - name: «videolar» relizga
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view videolar >/dev/null 2>&1 || gh release create videolar --title "Videolar" --notes "Tayyor videolar (MP4)" --prerelease
+          gh release upload videolar "out/$NOM-3d.mp4" --clobber
+          echo "- https://github.com/${{ github.repository }}/releases/download/videolar/$NOM-3d.mp4" >> "$GITHUB_STEP_SUMMARY"
+      - name: Drive «Export»
+        continue-on-error: true
+        env:
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        run: node scripts/drive.mjs upload "out/$NOM-3d.mp4"
+      - name: Telegram
+        if: ${{ github.event.inputs.telegram != '' }}
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+        run: |
+          curl -s -F chat_id="$CHAT" -F video=@"out/$NOM-3d.mp4" -F supports_streaming=true -F caption="🧊 3D: $NOM" "https://api.telegram.org/bot$TG/sendVideo" | head -c 200
