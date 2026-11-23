@@ -1,0 +1,35 @@
+# Storyboard taxtasi: storyboard/<nom>.json dagi rasmlarni (URL) yuklab, bitta taxta rasmga yig'adi.
+# Natija: «kadrlar» relizida <out>-board.jpg. Pullik AI yo'q — faqat PIL.
+name: Storyboard taxta
+
+on:
+  workflow_dispatch:
+    inputs:
+      fayl:
+        description: "storyboard/ ichidagi JSON (masalan qorbobo.json)"
+        required: true
+  push:
+    paths: ['storyboard/**', 'scripts/storyboard_board.py']
+
+permissions:
+  contents: write
+
+jobs:
+  board:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Taxta yasash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FAYL: ${{ github.event.inputs.fayl }}
+        run: |
+          pip install --quiet pillow
+          if [ -n "$FAYL" ]; then list="storyboard/$FAYL"; else list=$(ls storyboard/*.json); fi
+          for f in $list; do
+            python3 scripts/storyboard_board.py "$f" --yuklama
+            out=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['out'])" "$f")
+            gh release upload kadrlar "out/$out-board.jpg" --clobber
+            echo "### $out-board.jpg tayyor (reliz: kadrlar)" >> "$GITHUB_STEP_SUMMARY"
+          done
