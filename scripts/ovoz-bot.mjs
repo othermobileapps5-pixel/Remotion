@@ -146,29 +146,40 @@ if (localTodo.length) {
     });
     return JSON.parse(fs.readFileSync('/tmp/tts-res.json', 'utf8'));
   };
-  const first = voiceOf(localTodo[0].s);
-  let [engine, voice] = first.split(':');
-  // Chatterbox vaqtincha o'chiq (keyin Hugging Face'da GPU bilan) — o'rniga Kokoro. Yoqish: CHATTERBOX_YOQ=1
-  if (engine === 'chatterbox' && process.env.CHATTERBOX_YOQ !== '1') {
-    console.log("  Chatterbox o'chiq — Kokoro ishlatiladi");
-    engine = 'kokoro';
-    voice = '';
+  // Har xil ovozlar (masalan hikoyachi + qahramonlar) — har ovoz guruhi alohida yasaladi
+  const groups = new Map();
+  for (const it of localTodo) {
+    const v = voiceOf(it.s);
+    if (!groups.has(v)) groups.set(v, []);
+    groups.get(v).push(it);
   }
-  let res;
-  try {
-    res = runLocal(engine, voice, localTodo);
-  } catch (e) {
-    if (engine !== 'chatterbox') throw e;
-    console.log(`  Chatterbox ishlamadi (${String(e.message).split('\n')[0].slice(0, 120)}) — Kokoro bilan davom etamiz`);
-    res = runLocal('kokoro', '', localTodo);
+  let count = 0;
+  for (const [full, items] of groups) {
+    let [engine, voice] = full.split(':');
+    // Chatterbox vaqtincha o'chiq (keyin Hugging Face'da GPU bilan) — o'rniga Kokoro. Yoqish: CHATTERBOX_YOQ=1
+    if (engine === 'chatterbox' && process.env.CHATTERBOX_YOQ !== '1') {
+      console.log("  Chatterbox o'chiq — Kokoro ishlatiladi");
+      engine = 'kokoro';
+      voice = '';
+    }
+    let res;
+    try {
+      res = runLocal(engine, voice, items);
+    } catch (e) {
+      if (engine !== 'chatterbox') throw e;
+      console.log(`  Chatterbox ishlamadi (${String(e.message).split('\n')[0].slice(0, 120)}) — Kokoro bilan davom etamiz`);
+      res = runLocal('kokoro', '', items);
+    }
+    res.forEach((r, k) => {
+      const { s } = items[k];
+      s.ovozFayl = r.out.replace(/^public\//, '');
+      s.ovozKalit = keyOf(s);
+      const need = Math.ceil((r.sec + PAD) * 10) / 10;
+      if (!s.duration || s.duration < need) s.duration = need;
+    });
+    count += res.length;
   }
-  res.forEach((r, k) => {
-    const { s } = localTodo[k];
-    s.ovozFayl = r.out.replace(/^public\//, '');
-    s.ovozKalit = keyOf(s);
-    const need = Math.ceil((r.sec + PAD) * 10) / 10;
-    if (!s.duration || s.duration < need) s.duration = need;
-  });
+  const res = { length: count };
   fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
   console.log(`  ✓ ${res.length} ta ovoz tayyor`);
 }

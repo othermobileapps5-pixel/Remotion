@@ -16,6 +16,8 @@ import { HomePilotWhip } from './videos/homepilot/HomePilotWhip';
 import whipTimeline from './videos/homepilot/whip-timeline.json';
 import { TradingShort, tradingMetadata } from './videos/trading/TradingShort';
 import tradingScript from '../videos/trading-xatolar.json';
+import { TomyFilm, tomyMetadata } from './videos/tomy/TomyFilm';
+import tomyScript from '../videos/tomy-robot.json';
 
 // Uzunlik ssenariydan hisoblanadi: render paytida --props=videos/<nom>.json beriladi
 const calculateMetadata: CalculateMetadataFunction<VideoProps> = ({ props }) => ({
@@ -74,5 +76,7 @@ export const Root: React.FC = () => (
     <Composition id="VenusDialog" component={VenusDialog} width={1920} height={1080} fps={FPS} durationInFrames={DIALOG_TOTAL} defaultProps={{ scenes: [] }} />
     <Composition id="AiClips" component={AiClips} width={1920} height={1080} fps={FPS} durationInFrames={240} defaultProps={{ scenes: [] }} calculateMetadata={aiClipsMetadata} />
     <Composition id="TradingShort" component={TradingShort} width={1080} height={1920} fps={FPS} durationInFrames={1200} defaultProps={{ scenes: tradingScript.scenes }} calculateMetadata={tradingMetadata} />
+    {/* Tomy the Robot — ovozli 2D multfilm (videos/tomy-robot.json, "komponent": "TomyFilm") */}
+    <Composition id="TomyFilm" component={TomyFilm} width={1080} height={1920} fps={FPS} durationInFrames={2100} defaultProps={tomyScript as unknown as VideoProps} calculateMetadata={tomyMetadata} />
   </Folder>
 );
