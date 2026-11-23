@@ -102,7 +102,7 @@ Uning xabarini o'qib, FAQAT JSON qaytar:
 - suhbat: boshqa hamma narsa; "javob" ga qisqa, foydali o'zbekcha javob yoz.
 til — video tili (aytilmasa "uz").`;
 
-const SSENARIY = `Sen qisqa YouTube video ssenariy muallifisan. Kinetik matnli (rasm va AI klipsiz) video uchun ssenariy yoz.
+const SSENARIY = `Sen qisqa YouTube video ssenariy muallifisan. Ekranda yozuv YO'Q video uchun ssenariy yoz: har sahna — faqat rasm + ovoz.
 Qoidalar:
 - Faqat haqiqatga mos ma'lumot. Aniq raqam yoki statistikani bilmasang — umuman ishlatma. To'qib chiqarma.
 - Moliya, sog'liq mavzularida maslahat berma, faqat umumiy ta'lim; oxirida "Maslahat emas" kabi eslatma qo'y.
@@ -111,9 +111,12 @@ Qoidalar:
 - Agar "Davomiylik" berilsa — aynan shunga mosla (har sahna ~6-8 soniya; masalan 180 soniya ≈ 24-28 sahna), mavzuni chuqurroq, bo'limlarga bo'lib yorit.
 - Har sahnada "ovoz" — o'qiladigan gap (sahna matnidan uzunroq bo'lishi mumkin, 1-2 gap). "text" — ekrandagi qisqa matn (5-9 so'z, \\n bilan 2 qator).
 - duration: ovoz uzunligiga mos (o'zbekcha ~2.3 so'z/soniya) + 0.8.
+- HAR sahnada (birinchi va oxirgisi ham) "rasm": INGLIZCHA rasm tavsifi (15-30 so'z): aniq obraz, joy, yorug'lik, kadr (close-up / wide shot); sahna mazmuniga mos, haqiqiy odamlar, brendlar va logolar bo'lmasin, rasmda yozuv bo'lmasin.
+- "rasmUslub": butun video uchun bitta INGLIZCHA uslub (masalan "cinematic photorealistic, warm film grain" yoki "dramatic digital painting, dark teal and orange") — rasmlar bir-biriga mos chiqadi.
 FAQAT JSON qaytar:
 {"title": "...", "theme": {"bg": "#0b1020", "accent": "#ffcc33", "text": "#ffffff"},
- "scenes": [{"type": "title", "text": "...", "subtitle": "...", "duration": 4, "ovoz": "..."}, {"type": "text", "text": "...", "duration": 5, "ovoz": "..."}],
+ "rasmUslub": "...",
+ "scenes": [{"type": "title", "text": "...", "subtitle": "...", "duration": 4, "ovoz": "..."}, {"type": "text", "text": "...", "duration": 5, "ovoz": "...", "rasm": "..."}],
  "youtube": {"nom": "YouTube sarlavha (60 belgigacha)", "tavsif": "2-4 qator tavsif", "teglar": ["...", "..."]},
  "muqova": {"matn": "2-4 SO'Z", "urgu": "SO'Z", "belgi": "", "rasm_prompt": "..."}}
 Muqova (YouTube thumbnail) qoidalari — ko'p bosiladigan bo'lsin:
@@ -700,6 +703,19 @@ function sahifa(yol) {
 
 export default {
   async fetch(req, env, ctx) {
+    // Video yasash workflow'i uchun tekin rasm (Cloudflare FLUX): POST /rasm {prompt, steps} → image/jpeg
+    if (req.method === 'POST' && new URL(req.url).pathname === '/rasm') {
+      if (!env.RASM_KALIT || req.headers.get('X-Rasm-Kalit') !== env.RASM_KALIT) return new Response('no', { status: 403 });
+      if (!env.AI) return new Response('AI binding yo\'q', { status: 500 });
+      const { prompt, steps } = await req.json();
+      try {
+        const r = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt: String(prompt || '').slice(0, 2000), steps: Math.min(8, Number(steps) || 4) });
+        if (!r?.image) return new Response('rasm yo\'q', { status: 502 });
+        return new Response(Uint8Array.from(atob(r.image), (c) => c.charCodeAt(0)), { headers: { 'Content-Type': 'image/jpeg' } });
+      } catch (e) {
+        return new Response(String(e.message || e).slice(0, 300), { status: 502 });
+      }
+    }
     if (req.method !== 'POST') return sahifa(new URL(req.url).pathname);
     if (req.headers.get('X-Telegram-Bot-Api-Secret-Token') !== env.WEBHOOK_SECRET) return new Response('no', { status: 403 });
     const u = await req.json();
