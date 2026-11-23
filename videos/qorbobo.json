@@ -12,7 +12,9 @@
       "zoom": "out",
       "caption": "On New Year's Eve, Qor Bobo made a terrible discovery. His sack was empty... and one house was still waiting.",
       "ovoz": "On New Year's Eve, Qor Bobo made a terrible discovery. His sack was empty... and one house was still waiting.",
-      "ovozchi": "kokoro:am_michael"
+      "ovozchi": "kokoro:am_michael",
+      "ovozFayl": "ovoz/qorbobo-1.wav",
+      "ovozKalit": "d98b90f812"
     },
     {
       "type": "image",
@@ -21,7 +23,9 @@
       "zoom": "in",
       "caption": "In that house, little Malika had been knitting for a whole month. Not a wish. A gift. For him.",
       "ovoz": "In that house, little Malika had been knitting for a whole month. Not a wish. A gift. For him.",
-      "ovozchi": "kokoro:am_michael"
+      "ovozchi": "kokoro:am_michael",
+      "ovozFayl": "ovoz/qorbobo-2.wav",
+      "ovozKalit": "8a74ec3c19"
     },
     {
       "type": "image",
@@ -30,7 +34,9 @@
       "zoom": "in",
       "caption": "Qor Bobo searched every corner. Nothing. For the first time in a hundred years, he had nothing to give.",
       "ovoz": "Qor Bobo searched every corner. Nothing. For the first time in a hundred years, he had nothing to give.",
-      "ovozchi": "kokoro:am_michael"
+      "ovozchi": "kokoro:am_michael",
+      "ovozFayl": "ovoz/qorbobo-3.wav",
+      "ovozKalit": "0ad91a3a43"
     },
     {
       "type": "image",
@@ -39,7 +45,9 @@
       "zoom": "in",
       "caption": "So he turned to leave quietly... but the door burst open.",
       "ovoz": "So he turned to leave quietly... but the door burst open.",
-      "ovozchi": "kokoro:am_michael"
+      "ovozchi": "kokoro:am_michael",
+      "ovozFayl": "ovoz/qorbobo-4.wav",
+      "ovozKalit": "af515fce1e"
     },
     {
       "type": "image",
@@ -48,7 +56,9 @@
       "zoom": "in",
       "caption": "Malika: “Everyone sends you wishes. I wanted to give you something!”",
       "ovoz": "Everyone sends you wishes. I wanted to give you something!",
-      "ovozchi": "kokoro:af_sky"
+      "ovozchi": "kokoro:af_sky",
+      "ovozFayl": "ovoz/qorbobo-5.wav",
+      "ovozKalit": "5c4e1c331b"
     },
     {
       "type": "image",
@@ -57,7 +67,9 @@
       "zoom": "in",
       "caption": "A single tear rolled down his cheek, froze into a star... and the whole sky began to glow.",
       "ovoz": "A single tear rolled down his cheek, froze into a star... and the whole sky began to glow.",
-      "ovozchi": "kokoro:am_michael"
+      "ovozchi": "kokoro:am_michael",
+      "ovozFayl": "ovoz/qorbobo-6.wav",
+      "ovozKalit": "e513ff7f8c"
     },
     {
       "type": "image",
@@ -66,7 +78,9 @@
       "zoom": "out",
       "caption": "That night, Qor Bobo learned the oldest secret of New Year: the warmest gift is the one you give.",
       "ovoz": "That night, Qor Bobo learned the oldest secret of New Year: the warmest gift is the one you give.",
-      "ovozchi": "kokoro:am_michael"
+      "ovozchi": "kokoro:am_michael",
+      "ovozFayl": "ovoz/qorbobo-7.wav",
+      "ovozKalit": "f0529632cc"
     }
   ]
 }
