@@ -1,0 +1,12 @@
+{
+  "title": "Imzo imzo-202611230617",
+  "transition": 0,
+  "scenes": [
+    {
+      "type": "custom",
+      "name": "shorts/klip",
+      "src": "drive/gd_158EgFaBJEQFQkbNuDxiZf63oBRDCQCqn.mp4",
+      "duration": 10
+    }
+  ]
+}
