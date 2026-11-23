@@ -353,15 +353,21 @@ const kq = (n) => (n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? Math.round
 const sek = (d) => { const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(d || '') || []; return (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0); };
 const qisqa = (s, max) => { let o = ''; for (const ch of s) { if (new TextEncoder().encode(o + ch).length > max) break; o += ch; } return o; };
 
+// AI kontent trendi: oxirgi 7 kunda AI bilan yasalgan, eng ko'p ko'rilgan videolar (YouTube qidiruvi, "|" — yoki)
+const AI_TREND = {
+  usa: { joy: ['US'], kalit: 'usa', ispan: false, nom: 'AI kontent', mavzu: '"AI generated"|"made with AI"|"AI video"|"AI animation"|"AI short film"|sora|veo' },
+  spanish: { joy: ['MX'], kalit: 'spanish', ispan: true, nom: 'AI kontent', mavzu: '"hecho con IA"|"video con IA"|"generado con IA"|"animación IA"|"inteligencia artificial" video' },
+};
 async function trend(env, chat, arg) {
   if (!env.YT_REFRESH_TOKEN) return say(env, chat, '📈 YouTube hali ulanmagan.');
   const a = typeof arg === 'string' ? trendArg(arg) : arg;
   const joyNom = a.ispan ? 'ispan tilidagi (MX, ES, CO, AR)' : a.joy.join(', ');
-  await say(env, chat, `📈 Trendlarni yig'yapman: <b>${esc(a.mavzu || 'umumiy')}</b> · ${esc(joyNom)}…`);
+  const mNom = a.nom || a.mavzu || 'umumiy';
+  await say(env, chat, `📈 Trendlarni yig'yapman: <b>${esc(mNom)}</b> · ${esc(joyNom)}…`);
   const vids = await ytTrend(env, a);
   if (!vids.length) return say(env, chat, 'Hech narsa topilmadi. Boshqa mavzu yoki mamlakat bilan urinib ko\'ring.');
-  const top = vids.slice(0, 10).map((v, i) => `${i + 1}. ${esc(v.nom.slice(0, 70))} — ${kq(v.korish)} · ${sek(v.uzunlik) <= 60 ? 'shorts' : Math.round(sek(v.uzunlik) / 60) + ' daq'}`).join('\n');
-  await say(env, chat, `🔥 <b>Top videolar</b> (${esc(joyNom)}${a.mavzu ? ', «' + esc(a.mavzu) + '»' : ''}):\n${top}`);
+  const top = vids.slice(0, 10).map((v, i) => `${i + 1}. <a href="https://youtu.be/${v.id}">${esc(v.nom.slice(0, 70))}</a> — ${kq(v.korish)} · ${sek(v.uzunlik) <= 60 ? 'shorts' : Math.round(sek(v.uzunlik) / 60) + ' daq'}`).join('\n');
+  await say(env, chat, `🔥 <b>Top videolar</b> (${esc(joyNom)}${a.mavzu ? ', «' + esc(mNom) + '»' : ''}):\n${top}`, { link_preview_options: { is_disabled: true } });
   const r = await gemini(env, [{ text: JSON.stringify(vids.map(({ id, ...x }) => ({ ...x, sekund: sek(x.uzunlik) }))) }], {
     json: true,
     system: `Sen YouTube strategisan. Egasi o'zbek, AQShda tirakchi, Shorts va qisqa videolar yasaydi (kinetik matn + ovoz, rasm/klip kam). Berilgan trend videolar ro'yxatini tahlil qil.
@@ -570,7 +576,7 @@ async function onMessage(env, msg) {
   }
   if (!text && !msg.video && !msg.document) return;
   // pastki doimiy tugmalar
-  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '🤖 Tomy': '/tomy', '⚙️ Sozlama': '/tomy', '❓ Yordam': '/yordam' };
+  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '🤖 AI trend USA': '/aitrend usa', '🤖 AI trend Spanish': '/aitrend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '🤖 Tomy': '/tomy', '⚙️ Sozlama': '/tomy', '❓ Yordam': '/yordam' };
   if (TUGMA[text]) text = TUGMA[text];
   const vid = msg.video || (msg.document && /^video\//.test(msg.document.mime_type || '') ? msg.document : null);
   // Albom videolari eslab qolinadi; izohsiz albom videosi hech narsa qilmaydi (faqat buyruq bilan)
@@ -618,9 +624,9 @@ async function onMessage(env, msg) {
   if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
     await say(env, chat, 'Tugmalar pastda 👇', {
-      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '🤖 Tomy' }, { text: '🎬 Yangi video' }], [{ text: '📊 Kanal tahlili' }, { text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
+      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '🤖 AI trend USA' }, { text: '🤖 AI trend Spanish' }], [{ text: '🤖 Tomy' }, { text: '🎬 Yangi video' }], [{ text: '📊 Kanal tahlili' }, { text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
     });
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /tomy (yoki /sozlama) — Tomy, kunlik video agenti: jadval (English/Español, Uzun/Shorts, soat), muqova\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib\n• Video yuboring + izoh «Montaj» — eng yaxshi lahzalardan bitta Shorts\n• 2–10 ta videoni albom qilib yuboring + izoh «Ula» — bitta videoga ulayman (Ula shorts / Ula youtube)`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /aitrend usa · /aitrend spanish — AI bilan yasalgan, eng ko'p ko'rilgan videolar (7 kun)\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /tomy (yoki /sozlama) — Tomy, kunlik video agenti: jadval (English/Español, Uzun/Shorts, soat), muqova\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib\n• Video yuboring + izoh «Montaj» — eng yaxshi lahzalardan bitta Shorts\n• 2–10 ta videoni albom qilib yuboring + izoh «Ula» — bitta videoga ulayman (Ula shorts / Ula youtube)`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
   if (text.startsWith('/bugun')) return kunlik(env, chat);
@@ -635,6 +641,7 @@ async function onMessage(env, msg) {
   }
   if (text.startsWith('/referens')) return say(env, chat, 'Havolani ham yozing: /referens https://youtu.be/…');
   if (text.startsWith('/sozlama') || /^\/?tomy\b/i.test(text)) return sozlama(env, chat);
+  if (/^\/aitrend/.test(text)) return trend(env, chat, /spanish|es\b|ispan/i.test(text) ? AI_TREND.spanish : AI_TREND.usa);
   if (text.startsWith('/trend')) return trend(env, chat, text.replace(/^\/trend\S*/, ''));
   if (text.startsWith('/yangi')) return newVideo(env, chat, { mavzu: text.replace('/yangi', '').trim() || 'kanal mavzusida qiziqarli fakt', format: 'shorts', til: 'uz' });
   const n = await gemini(env, [{ text }], { json: true, system: NIYAT });
