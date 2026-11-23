@@ -139,6 +139,17 @@ async function saveScript(env, name, data) {
   if (r.status === 401) throw new Error("GitHub tokeni eskirgan yoki xato (401). Yangi BOT_GITHUB_TOKEN qo'ying.");
   if (!r.ok) throw new Error(`GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
 }
+async function muqovaRasm(env, name, s) {
+  if (!env.AI) return;
+  const prompt = `${s.muqova.rasm_prompt || s.youtube?.nom || s.title}. YouTube thumbnail background, one bold central subject, cinematic dramatic lighting, high contrast, vivid saturated colors, ultra detailed, absolutely no text, no letters, no logos.`;
+  const r = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt: prompt.slice(0, 2000), steps: 8 });
+  if (!r?.image) throw new Error('FLUX rasm qaytarmadi');
+  const res = await GH(env, `/contents/public/muqova/${name}.jpg`, {
+    method: 'PUT',
+    body: JSON.stringify({ message: `Bot: ${name} muqova rasmi`, content: r.image, branch: env.GITHUB_BRANCH }),
+  });
+  if (!res.ok) throw new Error(`GitHub ${res.status}`);
+}
 async function loadScript(env, name) {
   const r = await GH(env, `/contents/videos/${name}.json?ref=${env.GITHUB_BRANCH}`);
   if (!r.ok) return null;
@@ -264,6 +275,9 @@ async function newVideo(env, chat, { mavzu, format, til, soniya, avto, avtoYukla
   const name = `bot-${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}${qoshimcha}`;
   const data = { ...s, ovozchi: KOKORO_TIL[til] || env.OVOZCHI || 'google:Charon', ...(OVOZ_USLUB[til] ? { ovozUslubi: OVOZ_USLUB[til] } : {}), bot: { format, mavzu, til } };
   await saveScript(env, name, data);
+  // Muqova rasmi (uzun video): Google o'chiq bo'lsa — tekin Cloudflare FLUX shu yerda chiziladi;
+  // Google yoqiq bo'lsa — workflow'da Gemini chizadi (scripts/muqova.mjs). Xato bo'lsa video baribir yasaladi.
+  if (format !== 'shorts' && !googleAI && s.muqova) await muqovaRasm(env, name, s).catch((e) => console.log('muqova:', e.message));
   if (avto) {
     // kunlik rejim: tasdiqsiz darrov yig'iladi (AI klipsiz, faqat ovoz — bir necha sent)
     await dispatch(env, 'video-yasash.yml', { video: name, format, ai_kliplar: 'false', max_klip: '0', telegram: String(chat), google_ai: String(!!googleAI), avto_yuklash: avtoYuklash ? 'true' : 'false' });
