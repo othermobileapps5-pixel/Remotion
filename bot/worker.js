@@ -123,7 +123,8 @@ Muqova (YouTube thumbnail) qoidalari — ko'p bosiladigan bo'lsin:
 - "matn": 2-4 so'z, KATTA HARFDA, video tilida; sarlavhani takrorlama — qiziqish uyg'ot ("NOBODY KNEW THIS", "HE LIED", "NUNCA TE LO DIJERON").
 - "urgu": matndagi eng kuchli bitta so'z (rangli quti ichida chiqadi).
 - "belgi": ixtiyoriy qisqa stiker: "?", "!", raqam ("$5000", "24H", "1912") yoki "".
-- "rasm_prompt": INGLIZCHA, bitta kuchli markaziy obraz (odam yuzi hayratda, portlash, qadimiy shahar...), dramatik yorug'lik; matn so'rama.`;
+- "rasm_prompt": INGLIZCHA, bitta kuchli markaziy obraz (odam yuzi hayratda, portlash, qadimiy shahar...), dramatik yorug'lik; matn so'rama.
+- "rasm" va "rasm_prompt" ichida HECH QACHON brend, o'yin, film, kompaniya yoki mashhur odam nomini yozma (GTA, iPhone, Marvel, Elon Musk...) — umumiy tasvirla ("open-world crime game city at sunset", "a tech billionaire"). Aks holda rasmga logo tushadi.`;
 
 // ---------- GitHub ----------
 const GH = (env, path, init = {}) =>
@@ -144,7 +145,7 @@ async function saveScript(env, name, data) {
 }
 async function muqovaRasm(env, name, s) {
   if (!env.AI) return;
-  const prompt = `${s.muqova.rasm_prompt || s.youtube?.nom || s.title}. YouTube thumbnail background, one bold central subject, cinematic dramatic lighting, high contrast, vivid saturated colors, ultra detailed, absolutely no text, no letters, no logos.`;
+  const prompt = `${s.muqova.rasm_prompt || s.youtube?.nom || s.title}. YouTube thumbnail background, one bold central subject, cinematic dramatic lighting, high contrast, vivid saturated colors, ultra detailed, absolutely no text, no letters, no logos, no brand names, no trademarks.`;
   const r = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt: prompt.slice(0, 2000), steps: 8 });
   if (!r?.image) throw new Error('FLUX rasm qaytarmadi');
   const res = await GH(env, `/contents/public/muqova/${name}.jpg`, {
