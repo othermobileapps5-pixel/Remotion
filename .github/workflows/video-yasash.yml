@@ -193,6 +193,24 @@ jobs:
             git pull --rebase -q && git push
           fi
 
+      # Sahna rasmlari: ssenariyda "rasm" bo'lsa — tekin FLUX (bot orqali) yoki Gemini (google_ai). Bir marta yasalib repoda qoladi.
+      - name: Sahna rasmlari
+        continue-on-error: true
+        env:
+          GOOGLE_AI: ${{ github.event.inputs.google_ai == 'true' && '1' || '0' }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          grep -q '"rasm"' "videos/$VIDEO.json" || { echo "rasm yo'q"; exit 0; }
+          export RASM_KALIT=$(node -e 'console.log(require("crypto").createHash("sha256").update("rasm:"+process.env.TELEGRAM_BOT_TOKEN).digest("hex"))')
+          node scripts/sahna-rasm.mjs "videos/$VIDEO.json" "$FORMAT" 2>&1 | tee rasm.log
+          grep -h "Sahna rasmlari" rasm.log >> "$GITHUB_STEP_SUMMARY" || true
+          if [ -n "$(git status --porcelain public/rasm "videos/$VIDEO.json")" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/rasm "videos/$VIDEO.json" && git commit -qm "Sahna rasmlari: $VIDEO" && (git pull --rebase -q && git push -q || true)
+          fi
+
       - name: Render
         run: |
           mkdir -p out
@@ -219,7 +237,9 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
+          [ -n "$TELEGRAM_BOT_TOKEN" ] && export RASM_KALIT=$(node -e 'console.log(require("crypto").createHash("sha256").update("rasm:"+process.env.TELEGRAM_BOT_TOKEN).digest("hex"))')
           node scripts/muqova.mjs "videos/$VIDEO.json" out 2>&1 | tee muqova.log
           grep -h "Muqova rasmi" muqova.log >> "$GITHUB_STEP_SUMMARY" || true
           if [ -f "public/muqova/$VIDEO.jpg" ] && [ -n "$(git status --porcelain public/muqova)" ]; then

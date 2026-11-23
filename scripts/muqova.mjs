@@ -49,10 +49,18 @@ async function flux() {
   return Buffer.from(j.result.image, 'base64');
 }
 
+async function botFlux() {
+  const url = (e.BOT_URL || 'https://faro-kanal-bot.othermobileapps5.workers.dev').replace(/\/$/, '') + '/rasm';
+  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Rasm-Kalit': e.RASM_KALIT }, body: JSON.stringify({ prompt, steps: 8 }) });
+  if (!r.ok) throw new Error(`bot ${r.status}: ${(await r.text()).slice(0, 160)}`);
+  return Buffer.from(await r.arrayBuffer());
+}
+
 let manba = 'oldin yasalgan';
 if (!fs.existsSync(abs)) {
   const yollar = [];
   if (e.GOOGLE_AI === '1' && e.GEMINI_API_KEY) yollar.push(['Gemini', gemini]);
+  if (e.RASM_KALIT) yollar.push(['Cloudflare FLUX bot orqali (tekin)', botFlux]);
   if (e.CLOUDFLARE_ACCOUNT_ID && e.CLOUDFLARE_API_TOKEN) yollar.push(['Cloudflare FLUX (tekin)', flux]);
   manba = 'rasmsiz (gradient)';
   for (const [n, f] of yollar) {
