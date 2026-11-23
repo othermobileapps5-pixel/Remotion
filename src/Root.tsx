@@ -5,6 +5,7 @@ import { FPS, type VideoProps } from './types';
 import { totalFrames } from './util';
 import namuna from '../videos/namuna.json';
 import { UZUN_DEFAULT, UzunImzo, type UzunProps } from './videos/uzun/UzunImzo';
+import { Muqova, MUQOVA_DEFAULT } from './videos/muqova/Muqova';
 import { HomePilotAd } from './videos/homepilot/HomePilotAd';
 import { VenusRomance } from './videos/venus/VenusRomance';
 import { VenusDialog, DIALOG_TOTAL } from './videos/venus/VenusDialog';
@@ -65,6 +66,8 @@ export const Root: React.FC = () => (
       })}
     />
     {/* Maxsus animatsion videolar (ssenariyda "komponent") */}
+    {/* YouTube muqovasi — still: npx remotion still src/index.ts Muqova out.jpg --props=... */}
+    <Composition id="Muqova" component={Muqova} width={1280} height={720} fps={FPS} durationInFrames={1} defaultProps={MUQOVA_DEFAULT} />
     <Composition id="HomePilotAd" component={HomePilotAd} width={1080} height={1920} fps={FPS} durationInFrames={homepilotTimeline.total} defaultProps={{ scenes: [] }} />
     <Composition id="HomePilotWhip" component={HomePilotWhip} width={1080} height={1920} fps={FPS} durationInFrames={whipTimeline.total} defaultProps={{ scenes: [] }} />
     <Composition id="VenusRomance" component={VenusRomance} width={1920} height={1080} fps={FPS} durationInFrames={venusTimeline.total} defaultProps={{ scenes: [] }} />

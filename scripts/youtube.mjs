@@ -4,7 +4,7 @@
 // Ishlatish: node scripts/youtube.mjs videos/<nom>.json out/<fayl>.mp4  → video ID ni chiqaradi
 import fs from 'node:fs';
 
-const [file, mp4] = process.argv.slice(2);
+const [file, mp4, muqova] = process.argv.slice(2);
 const d = JSON.parse(fs.readFileSync(file, 'utf8'));
 const e = process.env;
 const tok = await (await fetch('https://oauth2.googleapis.com/token', {
@@ -37,3 +37,12 @@ const j = await up.json();
 if (!j.id) { console.error('Yuklash xatosi:', JSON.stringify(j).slice(0, 300)); process.exit(1); }
 console.log(j.id);
 console.error(`holat: ${j.status && j.status.privacyStatus}`);
+// Muqova (thumbnail) — kanalda telefon tasdig'i bo'lsa ishlaydi; xato bo'lsa video baribir yuklangan
+if (muqova && fs.existsSync(muqova)) {
+  const t = await fetch(`https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=${j.id}&uploadType=media`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${tok.access_token}`, 'Content-Type': 'image/jpeg' },
+    body: fs.readFileSync(muqova),
+  });
+  console.error(t.ok ? "muqova: qo'yildi" : `muqova xato ${t.status}: ${(await t.text()).slice(0, 200)}`);
+}

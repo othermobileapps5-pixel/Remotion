@@ -11,6 +11,10 @@ on:
         description: "Natija yuboriladigan Telegram chat (bot to'ldiradi)"
         required: false
         default: ""
+      muqova:
+        description: "Muqova varianti (1 yoki 2; bo'sh — YouTube o'zi tanlaydi)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -33,6 +37,8 @@ jobs:
         run: |
           mkdir -p out
           gh release download videolar -p "$VIDEO*.mp4" -D out --clobber
+          M="${{ github.event.inputs.muqova }}"
+          [ -n "$M" ] && gh release download videolar -p "$VIDEO-muqova-$M.jpg" -D out --clobber || true
           ls -lh out
       - name: Yuklash
         id: up
@@ -41,7 +47,7 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
         run: |
-          ID=$(node scripts/youtube.mjs "videos/$VIDEO.json" "$(ls out/*.mp4 | head -1)" 2> err.txt) || { cat err.txt; exit 1; }
+          ID=$(node scripts/youtube.mjs "videos/$VIDEO.json" "$(ls out/*.mp4 | head -1)" "$(ls out/*-muqova-*.jpg 2>/dev/null | head -1)" 2> err.txt) || { cat err.txt; exit 1; }
           cat err.txt
           echo "id=$ID" >> "$GITHUB_OUTPUT"
           echo "holat=$(grep -o 'holat: .*' err.txt | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
@@ -51,6 +57,8 @@ jobs:
           if [ -n "${{ steps.up.outputs.id }}" ]; then
             T="✅ YouTube'ga yuklandi: https://youtu.be/${{ steps.up.outputs.id }} (holat: ${{ steps.up.outputs.holat }})"
             [ "${{ steps.up.outputs.holat }}" = private ] && T="$T — Google audit'idan o'tilmaguncha video «private» bo'ladi."
+            grep -q "muqova: qo'yildi" err.txt && T="$T 🖼 Muqova qo'yildi."
+            grep -q "muqova xato" err.txt && T="$T ⚠️ Muqova qo'yilmadi: kanalda telefon tasdig'i kerak (YouTube Studio → Settings → Channel → Feature eligibility)."
           else
             T="⚠️ YouTube'ga yuklab bo'lmadi ($VIDEO). Claude chatida xatoni ko'rib beraman."
           fi
