@@ -416,12 +416,14 @@ const OVOZ_USLUB = {
 // Eski sozlama (tillar × format, bitta soat) bo'lsa — undan yasaladi.
 const BAYROQ = { uz: '🇺🇿', en: '🇺🇸', es: '🇪🇸', ru: '🇷🇺' };
 const SOATLAR = [5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 21];
+const TOMY_TILLAR = ['en', 'es'];
 function sozJadval(s) {
   if (Array.isArray(s.jadval)) return s.jadval;
   const f = sozFormat(s);
   return sozTillar(s).flatMap((til) => (f === 'ikkalasi' ? ['youtube', 'shorts'] : [f]).map((format) => ({ soat: Number(s.soat), til, format })));
 }
 const qatorNom = (j) => `${BAYROQ[j.til] || ''} ${TIL_NOM[j.til] || j.til} · ${j.format === 'shorts' ? 'Shorts' : 'Uzun'} · ${j.soat}:00`;
+const qatorQisqa = (j) => `${BAYROQ[j.til] || j.til} ${j.format === 'shorts' ? 'Shorts' : 'Uzun'} ${j.soat}:00`;
 // Tahrir qoralamada bo'ladi (s.qoralama) — 💾 Saqlash bosilmaguncha kunlik ish eski sozlama bilan davom etadi.
 // Rejimlar (s.rejimlar: { "1": {jadval, daqiqa, yuklash}, ... }) — tayyor to'plamlar, bir bosishda yuklanadi.
 const REJIMLAR = ['1', '2', '3'];
@@ -432,20 +434,19 @@ function sozMatn(s) {
   const j = w.jadval.slice().sort((a, b) => a.soat - b.soat);
   const ro = j.length ? j.map((x, i) => `${i + 1}. ${qatorNom(x)}`).join('\n') : "— bo'sh (➕ bilan qo'shing)";
   const holat = s.qoralama ? '✏️ <b>Saqlanmagan o\'zgarish bor</b> — 💾 Saqlash bosing' : '✅ Saqlangan';
-  return `🤖 <b>Tomy — kunlik video sozlamasi</b> (Los Anjeles vaqti)\n\nTomy: ${s.yoqiq ? '▶️ ishlayapti' : '⏸ dam olyapti'}\n${holat}\n\n${ro}\n\nUzun video: ${w.daqiqa} daqiqa\nYuklash: ${w.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\nMuqova rasmi: ${s.googleAI ? '🎨 Google Gemini (pullik, ~bir necha sent)' : '🆓 Cloudflare FLUX (tekin)'}\n\n▶️ — hozir yasash, ❌ — o'chirish, 📂 — rejimlar.`;
+  return `🤖 <b>Tomy — kunlik video sozlamasi</b> (Los Anjeles vaqti)\n\nTomy: ${s.yoqiq ? '▶️ ishlayapti' : '⏸ dam olyapti'}\n${holat}\n\n${ro}\n\nUzun video: ${w.daqiqa} daqiqa\nYuklash: ${w.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\nMuqova rasmi: ${s.googleAI ? '🎨 Google Gemini (pullik, ~bir necha sent)' : '🆓 Cloudflare FLUX (tekin)'}\n\n▶️ Hozir — darrov yasash, ❌ — o'chirish.`;
 }
 function sozTugma(s) {
   const w = ishOl(s);
   const b = (t, k, v) => ({ text: (String(w[k]) === String(v) ? '● ' : '') + t, callback_data: `s:${k}:${v}` });
   const j = w.jadval.map((x, i) => ({ ...x, i })).sort((a, b) => a.soat - b.soat);
   return { inline_keyboard: [
-    ...(s.qoralama ? [[{ text: '💾 Saqlash', callback_data: 'j:saqla' }, { text: '↩️ Bekor qilish', callback_data: 'j:bekor' }]] : []),
-    ...j.map((x) => [{ text: qatorNom(x), callback_data: `j:run:${x.i}` }, { text: '▶️', callback_data: `j:run:${x.i}` }, { text: '❌', callback_data: `j:del:${x.i}` }]),
+    ...(s.qoralama ? [[{ text: '💾 Saqlash', callback_data: 'j:saqla' }, { text: '↩️ Bekor', callback_data: 'j:bekor' }]] : []),
+    ...j.map((x) => [{ text: qatorQisqa(x), callback_data: `j:run:${x.i}` }, { text: '▶️ Hozir', callback_data: `j:run:${x.i}` }, { text: '❌', callback_data: `j:del:${x.i}` }]),
     [{ text: '➕ Video qo\'shish', callback_data: 'j:yangi' }],
-    [b('Uzun: 3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
-    [b('✅ Tasdiq bilan', 'yuklash', 'tasdiq'), b('🤖 Avto yuklash', 'yuklash', 'avto')],
-    [{ text: s.googleAI ? '🎨 Google AI: yoqiq' : '🆓 Google AI: o\'chiq', callback_data: `s:googleAI:${s.googleAI ? 0 : 1}` }],
-    [{ text: '📂 Rejimlar', callback_data: 'j:rejim' }, { text: s.yoqiq ? '⏸ Tomy\'ni to\'xtatish' : '▶️ Tomy\'ni yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }],
+    [b('3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
+    [b('✅ Tasdiqlab', 'yuklash', 'tasdiq'), b('🤖 Avto yuklash', 'yuklash', 'avto')],
+    [{ text: s.googleAI ? '🎨 Google AI: yoqiq' : '🆓 Google AI: o\'chiq', callback_data: `s:googleAI:${s.googleAI ? 0 : 1}` }, { text: s.yoqiq ? '⏸ To\'xtatish' : '▶️ Yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }],
   ] };
 }
 async function sozlama(env, chat) {
@@ -475,7 +476,7 @@ async function jadvalBos(env, cb, q) {
   const w = ishOl(s);
   const yoz = async () => { await sozYoz(env, s); return sozYangila(env, cb); };
   if (q[0] === 'orqa') return sozYangila(env, cb);
-  if (q[0] === 'yangi') return tahrir('➕ Yangi video — <b>tili</b>?', [Object.keys(TIL_NOM).map((t) => ({ text: `${BAYROQ[t]} ${TIL_NOM[t]}`, callback_data: `j:t:${t}` })), orqaga]);
+  if (q[0] === 'yangi') return tahrir('➕ Yangi video — <b>tili</b>?', [TOMY_TILLAR.map((t) => ({ text: `${BAYROQ[t]} ${TIL_NOM[t]}`, callback_data: `j:t:${t}` })), orqaga]);
   if (q[0] === 't') return tahrir(`➕ ${BAYROQ[q[1]]} ${TIL_NOM[q[1]]} — <b>format</b>?`, [[{ text: '🎬 Uzun', callback_data: `j:f:${q[1]}:youtube` }, { text: '📱 Shorts', callback_data: `j:f:${q[1]}:shorts` }], orqaga]);
   if (q[0] === 'f') {
     const kb = [];
@@ -615,9 +616,9 @@ async function onMessage(env, msg) {
   if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
     await say(env, chat, 'Tugmalar pastda 👇', {
-      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '📈 Trend UZ' }, { text: '📊 Kanal tahlili' }], [{ text: '🎬 Yangi video' }, { text: '🤖 Tomy' }], [{ text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
+      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '🤖 Tomy' }, { text: '🎬 Yangi video' }], [{ text: '📊 Kanal tahlili' }, { text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
     });
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /tomy (yoki /sozlama) — Tomy, kunlik video agenti: jadval, til, Uzun/Shorts, soat, rejimlar\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib\n• Video yuboring + izoh «Montaj» — eng yaxshi lahzalardan bitta Shorts\n• 2–10 ta videoni albom qilib yuboring + izoh «Ula» — bitta videoga ulayman (Ula shorts / Ula youtube)`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /tomy (yoki /sozlama) — Tomy, kunlik video agenti: jadval (English/Español, Uzun/Shorts, soat), muqova\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib\n• Video yuboring + izoh «Montaj» — eng yaxshi lahzalardan bitta Shorts\n• 2–10 ta videoni albom qilib yuboring + izoh «Ula» — bitta videoga ulayman (Ula shorts / Ula youtube)`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
   if (text.startsWith('/bugun')) return kunlik(env, chat);
