@@ -1,0 +1,98 @@
+{
+  "title": "Lola and the Perfect Picture",
+  "komponent": "LolaFilm",
+  "til": "en",
+  "ovozgaMoslash": true,
+  "transition": 0,
+  "theme": {
+    "bg": "#fbfaf6",
+    "accent": "#e5484d",
+    "text": "#17171b"
+  },
+  "scenes": [
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 7.0,
+      "ovoz": "Lola never passed a mirror without stopping. Not a shop window. Not a puddle. Not once.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 2.8,
+      "ovoz": "Hello, gorgeous!",
+      "ovozchi": "kokoro:af_bella"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 8.0,
+      "ovoz": "Her phone held twelve thousand selfies. And today needed the perfect one: the city's biggest fashion party.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 6.5,
+      "ovoz": "She walked the street like a runway, eyes on one screen only: her own.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 8.5,
+      "ovoz": "Then an old man slipped. Oranges rolled into the mud... and everyone kept walking.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 3.8,
+      "ovoz": "Lola looked at her white dress.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 3.8,
+      "ovoz": "Then she knelt right into the mud.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 3.0,
+      "ovoz": "Here, let me help you!",
+      "ovozchi": "kokoro:af_bella"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 3.0,
+      "ovoz": "Bless you, child.",
+      "ovozchi": "kokoro:am_onyx"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 7.0,
+      "ovoz": "At the party, everyone stared. For the first time, Lola didn't want a single photo.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 7.0,
+      "ovoz": "But a stranger had filmed her in the rain. By morning, a million people had seen it.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "custom",
+      "name": "lola/beat",
+      "duration": 6.5,
+      "ovoz": "Her best picture ever was the one she never took.",
+      "ovozchi": "kokoro:af_heart"
+    }
+  ]
+}

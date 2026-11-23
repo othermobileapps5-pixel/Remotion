@@ -174,6 +174,7 @@ if (localTodo.length) {
       const { s } = items[k];
       s.ovozFayl = r.out.replace(/^public\//, '');
       s.ovozKalit = keyOf(s);
+      s.ovozSek = Math.round(r.sec * 100) / 100; // aniq ovoz uzunligi (og'iz harakati uchun)
       const need = Math.ceil((r.sec + PAD) * 10) / 10;
       if (!s.duration || s.duration < need) s.duration = need;
     });
@@ -195,6 +196,7 @@ for (const { s, i } of todo) {
     const seconds = wavSeconds(buf);
     s.ovozFayl = out;
     s.ovozKalit = keyOf(s);
+    s.ovozSek = Math.round(seconds * 100) / 100;
     const need = Math.ceil((seconds + PAD) * 10) / 10;
     if (!s.duration || s.duration < need) s.duration = need;
     fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');

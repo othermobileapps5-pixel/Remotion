@@ -18,6 +18,8 @@ import { TradingShort, tradingMetadata } from './videos/trading/TradingShort';
 import tradingScript from '../videos/trading-xatolar.json';
 import { TomyFilm, tomyMetadata } from './videos/tomy/TomyFilm';
 import tomyScript from '../videos/tomy-robot.json';
+import { LolaFilm, lolaMetadata } from './videos/lola/LolaFilm';
+import lolaScript from '../videos/lola-film.json';
 
 // Uzunlik ssenariydan hisoblanadi: render paytida --props=videos/<nom>.json beriladi
 const calculateMetadata: CalculateMetadataFunction<VideoProps> = ({ props }) => ({
@@ -78,5 +80,7 @@ export const Root: React.FC = () => (
     <Composition id="TradingShort" component={TradingShort} width={1080} height={1920} fps={FPS} durationInFrames={1200} defaultProps={{ scenes: tradingScript.scenes }} calculateMetadata={tradingMetadata} />
     {/* Tomy the Robot — ovozli 2D multfilm (videos/tomy-robot.json, "komponent": "TomyFilm") */}
     <Composition id="TomyFilm" component={TomyFilm} width={1080} height={1920} fps={FPS} durationInFrames={2100} defaultProps={tomyScript as unknown as VideoProps} calculateMetadata={tomyMetadata} />
+    {/* Lola and the Perfect Picture — oq-qora chiziqli 2D multfilm (videos/lola-film.json, "komponent": "LolaFilm") */}
+    <Composition id="LolaFilm" component={LolaFilm} width={1080} height={1920} fps={FPS} durationInFrames={2100} defaultProps={lolaScript as unknown as VideoProps} calculateMetadata={lolaMetadata} />
   </Folder>
 );

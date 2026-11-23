@@ -15,6 +15,7 @@ export type Voice = {
   ovozUslubi?: string; // Gemini: o'qish uslubi
   ovozFayl?: string; // skript yozadi: yasalgan mp3
   ovozKalit?: string; // skript yozadi: matn o'zgarganini bilish uchun
+  ovozSek?: number; // skript yozadi: ovozning aniq uzunligi, sekund
 };
 
 export type TitleScene = Voice & {
