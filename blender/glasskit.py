@@ -96,7 +96,7 @@ def material(kind="smoked", color=None):
         "crystal": dict(base=(0.95, 0.97, 1.0), rough=0.02, trans=1.0, ior=1.52, coat=0.3),
         "frosted": dict(base=(0.85, 0.9, 0.95), rough=0.22, trans=0.95, ior=1.45, coat=0.2),
         "colored": dict(base=col or (0.05, 0.4, 0.02), rough=0.06, trans=0.9, ior=1.48, coat=0.5),
-        "neon": dict(base=col or (0.05, 0.6, 0.02), rough=0.1, trans=0.7, ior=1.45, coat=0.2),
+        "neon": dict(base=tuple(c * 0.55 for c in col) if col else (0.03, 0.35, 0.01), rough=0.1, trans=0.6, ior=1.45, coat=0.2),
         "metal_glass": dict(base=(0.6, 0.62, 0.65), rough=0.12, trans=0.5, ior=1.5, coat=0.8, metal=0.5),
     }[kind]
     s("Base Color", (*preset["base"], 1))
@@ -108,7 +108,7 @@ def material(kind="smoked", color=None):
     s("Metallic", preset.get("metal", 0.0))
     if kind == "neon":
         s("Emission Color", (*(col or preset["base"]), 1))
-        s("Emission Strength", 2.5)
+        s("Emission Strength", 1.2)
     return m, b
 
 
