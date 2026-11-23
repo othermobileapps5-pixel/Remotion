@@ -62,7 +62,14 @@ d = ImageDraw.Draw(img)
 y = PAD
 d.text((PAD, y), cfg['title'], font=F_T, fill=INK)
 d.text((PAD, y + 84), cfg['subtitle'], font=F_ST, fill=MUTED)
-badge(d, W - PAD - 260, y + 10, 'STORYBOARD', RED)
+bw = d.textlength('STORYBOARD', font=F_B) + 28
+badge(d, W - PAD - bw, y + 84, 'STORYBOARD', RED)
+# sarlavha juda uzun bo'lsa kichraytiramiz
+ft = F_T
+while d.textlength(cfg['title'], font=ft) > W - 2 * PAD and ft.size > 36:
+    ft = font(ft.size - 4)
+d.rectangle([PAD, y, W - PAD, y + 80], fill=BG)
+d.text((PAD, y), cfg['title'], font=ft, fill=INK)
 y += 170
 
 d.text((PAD, y), 'QAHRAMONLAR  ·  Character Lock', font=F_H, fill=INK); y += 60
