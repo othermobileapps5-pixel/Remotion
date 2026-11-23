@@ -68,7 +68,16 @@ async function generate(scene) {
 // Google Gemini Omni Flash: so'rov va javobni o'qish — scripts/gemini-omni.mjs (gemini-video.mjs bilan bir xil)
 async function generateGoogle(scene) {
   const model = scene.model.replace(/^google\//, '');
-  if (scene.image && /^https?:\/\//.test(scene.image)) throw new Error("Google uchun rasm mahalliy fayl bo'lishi kerak");
+  if (scene.image && /^https?:\/\//.test(scene.image)) {
+    // URL rasm (masalan Runway) — avval public/gemini/ ga yuklab olamiz
+    const r = await fetch(scene.image);
+    if (!r.ok) throw new Error(`Rasmni yuklab bo'lmadi (${r.status}): ${scene.image.slice(0, 80)}`);
+    const ext = /\.jpe?g(\?|$)/i.test(scene.image) ? 'jpg' : 'png';
+    const rel = `gemini/img-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+    fs.mkdirSync(path.join('public', 'gemini'), { recursive: true });
+    fs.writeFileSync(path.join('public', rel), Buffer.from(await r.arrayBuffer()));
+    scene.image = rel;
+  }
   const buf = await geminiOmniVideo({
     key: GEMINI_KEY, model, prompt: scene.prompt, image: scene.image, aspect,
     resolution: scene.resolution || '720p', duration: scene.duration,
