@@ -427,26 +427,26 @@ const qatorQisqa = (j) => `${BAYROQ[j.til] || j.til} ${j.format === 'shorts' ? '
 // Tahrir qoralamada bo'ladi (s.qoralama) — 💾 Saqlash bosilmaguncha kunlik ish eski sozlama bilan davom etadi.
 // Rejimlar (s.rejimlar: { "1": {jadval, daqiqa, yuklash}, ... }) — tayyor to'plamlar, bir bosishda yuklanadi.
 const REJIMLAR = ['1', '2', '3'];
-const ishOl = (s) => s.qoralama || { jadval: sozJadval(s), daqiqa: Number(s.daqiqa) > 1 ? Number(s.daqiqa) : 3, yuklash: s.yuklash || 'tasdiq' };
+const ishOl = (s) => ({ googleAI: !!s.googleAI, ...(s.qoralama || { jadval: sozJadval(s), daqiqa: Number(s.daqiqa) > 1 ? Number(s.daqiqa) : 3, yuklash: s.yuklash || 'tasdiq' }) });
 const rejimQisqa = (r) => (r?.jadval?.length ? r.jadval.slice().sort((a, b) => a.soat - b.soat).map((x) => `${BAYROQ[x.til] || x.til}${x.format === 'shorts' ? 'S' : 'U'} ${x.soat}`).join(', ') : "bo'sh");
 function sozMatn(s) {
   const w = ishOl(s);
   const j = w.jadval.slice().sort((a, b) => a.soat - b.soat);
   const ro = j.length ? j.map((x, i) => `${i + 1}. ${qatorNom(x)}`).join('\n') : "— bo'sh (➕ bilan qo'shing)";
   const holat = s.qoralama ? '✏️ <b>Saqlanmagan o\'zgarish bor</b> — 💾 Saqlash bosing' : '✅ Saqlangan';
-  return `🤖 <b>Tomy — kunlik video sozlamasi</b> (Los Anjeles vaqti)\n\nTomy: ${s.yoqiq ? '▶️ ishlayapti' : '⏸ dam olyapti'}\n${holat}\n\n${ro}\n\nUzun video: ${w.daqiqa} daqiqa\nYuklash: ${w.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\nMuqova rasmi: ${s.googleAI ? '🎨 Google Gemini (pullik, ~bir necha sent)' : '🆓 Cloudflare FLUX (tekin)'}\n\n▶️ Hozir — darrov yasash, ❌ — o'chirish.`;
+  return `🤖 <b>Tomy — kunlik video sozlamasi</b> (Los Anjeles vaqti)\n\nTomy: ${s.yoqiq ? '▶️ ishlayapti' : '⏸ dam olyapti'}\n${holat}\n\n${ro}\n\nUzun video: ${w.daqiqa} daqiqa\nYuklash: ${w.yuklash === 'avto' ? '🤖 avtomatik (tasdiqsiz)' : '✅ men tasdiqlayman'}\nMuqova rasmi: ${w.googleAI ? '🎨 Google Gemini (pullik, ~bir necha sent)' : '🆓 Cloudflare FLUX (tekin)'}\n\nTanlang va pastdagi 💾 Saqlash'ni bosing. ▶️ Hozir — darrov yasash, ❌ — o'chirish.`;
 }
 function sozTugma(s) {
   const w = ishOl(s);
   const b = (t, k, v) => ({ text: (String(w[k]) === String(v) ? '● ' : '') + t, callback_data: `s:${k}:${v}` });
   const j = w.jadval.map((x, i) => ({ ...x, i })).sort((a, b) => a.soat - b.soat);
   return { inline_keyboard: [
-    ...(s.qoralama ? [[{ text: '💾 Saqlash', callback_data: 'j:saqla' }, { text: '↩️ Bekor', callback_data: 'j:bekor' }]] : []),
     ...j.map((x) => [{ text: qatorQisqa(x), callback_data: `j:run:${x.i}` }, { text: '▶️ Hozir', callback_data: `j:run:${x.i}` }, { text: '❌', callback_data: `j:del:${x.i}` }]),
     [{ text: '➕ Video qo\'shish', callback_data: 'j:yangi' }],
     [b('3 daq', 'daqiqa', 3), b('5 daq', 'daqiqa', 5), b('8 daq', 'daqiqa', 8)],
     [b('✅ Tasdiqlab', 'yuklash', 'tasdiq'), b('🤖 Avto yuklash', 'yuklash', 'avto')],
-    [{ text: s.googleAI ? '🎨 Google AI: yoqiq' : '🆓 Google AI: o\'chiq', callback_data: `s:googleAI:${s.googleAI ? 0 : 1}` }, { text: s.yoqiq ? '⏸ To\'xtatish' : '▶️ Yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }],
+    [{ text: w.googleAI ? '🎨 Google AI: yoqiq' : '🆓 Google AI: o\'chiq', callback_data: `s:googleAI:${w.googleAI ? 0 : 1}` }, { text: s.yoqiq ? '⏸ To\'xtatish' : '▶️ Yoqish', callback_data: `s:yoqiq:${s.yoqiq ? 0 : 1}` }],
+    s.qoralama ? [{ text: '💾 Saqlash', callback_data: 'j:saqla' }, { text: '↩️ Bekor', callback_data: 'j:bekor' }] : [{ text: '💾 Saqlash', callback_data: 'j:saqla' }],
   ] };
 }
 async function sozlama(env, chat) {
@@ -459,7 +459,7 @@ async function sozBos(env, cb, k, v) {
   if (k === 'bugun') return sozlama(env, chat);
   const s = await sozOl(env);
   if (k === 'yoqiq') s.yoqiq = v === '1'; // yoqish/to'xtatish — darrov
-  else if (k === 'googleAI') s.googleAI = v === '1'; // pullik rasm — darrov
+  else if (k === 'googleAI') s.qoralama = { ...ishOl(s), googleAI: v === '1' }; // pullik rasm — Saqlash bilan
   else if (k === 'daqiqa' || k === 'yuklash') s.qoralama = { ...ishOl(s), [k]: k === 'daqiqa' ? Number(v) : v };
   else if (k === 'soat') s.soat = Number(v);
   else if (k === 'joy') s.joy = v;
@@ -486,8 +486,10 @@ async function jadvalBos(env, cb, q) {
   if (q[0] === 'a') { s.qoralama = { ...w, jadval: [...w.jadval, { soat: Number(q[3]), til: q[1], format: q[2] }] }; return yoz(); }
   if (q[0] === 'del') { s.qoralama = { ...w, jadval: w.jadval.filter((_, i) => i !== Number(q[1])) }; return yoz(); }
   if (q[0] === 'saqla') {
-    if (s.qoralama) { s.jadval = s.qoralama.jadval; s.daqiqa = s.qoralama.daqiqa; s.yuklash = s.qoralama.yuklash; delete s.qoralama; }
+    const ozgardi = !!s.qoralama;
+    if (s.qoralama) { s.jadval = s.qoralama.jadval; s.daqiqa = s.qoralama.daqiqa; s.yuklash = s.qoralama.yuklash; s.googleAI = !!s.qoralama.googleAI; delete s.qoralama; }
     await yoz();
+    if (!ozgardi) return say(env, chat, '✅ Hammasi saqlangan, o\'zgarish yo\'q.');
     return say(env, chat, `💾 Saqlandi. Tomy shu jadval bilan ishlaydi:\n${s.jadval.length ? s.jadval.slice().sort((a, b) => a.soat - b.soat).map(qatorNom).join('\n') : "— bo'sh (hech narsa yasalmaydi)"}`);
   }
   if (q[0] === 'bekor') { delete s.qoralama; return yoz(); }
