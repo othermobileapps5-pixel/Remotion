@@ -14,13 +14,7 @@
   ],
   "qoralama": {
     "googleAI": true,
-    "jadval": [
-      {
-        "soat": 7,
-        "til": "en",
-        "format": "shorts"
-      }
-    ],
+    "jadval": [],
     "daqiqa": 3,
     "yuklash": "tasdiq"
   }
