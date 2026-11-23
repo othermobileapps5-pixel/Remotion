@@ -72,7 +72,7 @@ jobs:
             P=$(curl -s "https://api.telegram.org/bot$TG/getFile?file_id=$FID" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);if(!j.ok){console.error(s);process.exit(1)}console.log(j.result.file_path)})')
             curl -sfL "https://api.telegram.org/file/bot$TG/$P" -o "public/qirq/$NOM-manba.mp4"
           elif [ -n "$FAYL" ]; then
-            node scripts/drive.mjs get "$FAYL" "public/qirq/$NOM-manba.mp4"
+            node scripts/drive.mjs get "$FAYL" "public/qirq/$NOM-manba.mp4" 2> >(tee -a /tmp/xato.txt >&2)
           else
             echo "::error::tg_fayl yoki fayl kerak"; exit 1
           fi
@@ -121,4 +121,5 @@ jobs:
       - name: Xato bo'lsa Telegram'ga
         if: ${{ failure() && github.event.inputs.telegram != '' }}
         run: |
-          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Qirqishda xato: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null
+          SABAB=$(grep -ho "Drive.da topilmadi.*" /tmp/xato.txt 2>/dev/null | head -1)
+          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Qirqishda xato${SABAB:+: $SABAB} — ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null

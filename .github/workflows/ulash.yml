@@ -80,7 +80,7 @@ jobs:
           done
           for F in $FAYLLAR; do
             k=$((k+1))
-            node scripts/drive.mjs get "$F" "public/ulash/$NOM-$k.mp4"
+            node scripts/drive.mjs get "$F" "public/ulash/$NOM-$k.mp4" 2> >(tee -a /tmp/xato.txt >&2)
             LIST="$LIST ulash/$NOM-$k.mp4"
           done
           if [ "$k" -lt 2 ]; then echo "::error::Kamida 2 ta video kerak"; exit 1; fi
@@ -145,4 +145,5 @@ jobs:
       - name: Xato bo'lsa Telegram'ga
         if: ${{ failure() && github.event.inputs.telegram != '' }}
         run: |
-          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Ulashda xato: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null
+          SABAB=$(grep -ho "Drive.da topilmadi.*" /tmp/xato.txt 2>/dev/null | head -1)
+          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Ulashda xato${SABAB:+: $SABAB} — ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" > /dev/null
