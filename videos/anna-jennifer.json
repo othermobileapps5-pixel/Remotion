@@ -1,0 +1,100 @@
+{
+  "title": "Anna va Jennifer",
+  "til": "en",
+  "ovozgaMoslash": true,
+  "transition": 0.3,
+  "music": "audio/anna/music.mp3",
+  "musicVolume": 0.12,
+  "scenes": [
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/914149b0-2bc0-40d0-9918-12b644d62a62/1362b054-5e7b-452b-9749-cd99836c1743/_anna__keep_her_exact_face__short_dark_brown_bob__small_blue.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODY4ZDFmOGYyZjk2MTI3YyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU4NzU5OX0.lG7wZQry4jrVNpP5APP8lkF5_1GNmAUAq80tdX_N8yI",
+      "duration": 7,
+      "zoom": "in",
+      "caption": "Annaning yangi maktabdagi birinchi kuni. U hech kimni tanimasdi.",
+      "ovoz": "It was Anna's first day at a new school. Everything felt big, and she didn't know a single face.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/62b7c590-cae4-4e1a-846e-1e9afdc85761/063d5ece-f9a9-417d-a131-cb4a7f858bfe/_jen__keep_her_exact_face__long_wavy_chestnut_brown_hair__wi.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNGQ1MWMwYmYxYzgxN2ZmNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU1ODU5MX0.J1-JxkZf1OlY4Ag07Es07SfjExOU4wzKj_xAxDwwEMs",
+      "duration": 7,
+      "zoom": "out",
+      "caption": "Hovlida Jennifer do'stlari bilan kulardi. U hammani tanirdi.",
+      "ovoz": "Across the yard, Jennifer laughed with her friends. She seemed to know everyone.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/3420210a-c064-4ec2-b92e-7dd3b982167d/4c4d70a4-342d-4c08-9e21-8d0bbc20d28a/In_a_bright_school_hallway___anna__keep_her_exact_face__shor.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmQ3Mjc1ODc3NzljYjBiYiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU2MDcxMX0.CfL7gwmFfDltScmZmH6iPAvEwIsk24InMpkWYsbIZjg",
+      "duration": 7,
+      "zoom": "in",
+      "caption": "Anna jur'at qilib qo'l silkitdi. Jennifer ham jilmayib javob berdi.",
+      "ovoz": "Anna gathered her courage and waved. Jennifer smiled... and waved back.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/9d0798a0-90c7-45ac-8a3c-1d6a3df41db5/49524dee-b77b-45f8-a8a3-7bcf46708637/_jen__keep_her_exact_face__long_wavy_chestnut_brown_hair__wi.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjE4NzM0Njk5ZTI5MjEwYiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYwOTcwNX0.yMzSiynDAkhyPWRhvkcUWecfBHBS9whCCinK0x_StLY",
+      "duration": 7,
+      "zoom": "out",
+      "caption": "Shunda Jennifer qoqilib ketdi. Rasmi va qalamlari sochilib ketdi.",
+      "ovoz": "Then Jennifer tripped. Her flower drawing and all her pencils scattered across the floor.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/3306575e-13cb-471a-b052-dcbcf4a517cd/dde48aec-69e4-439c-8b7c-4180269e5be3/_anna__keep_her_exact_face__short_dark_brown_bob__small_blue.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzE2ZmU4NjBkODhlYjg0ZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYyODc2OH0.QUBixlkOgq2ir5Y2s67LnWU5IHmMmNm_R3m4P0XjdC8",
+      "duration": 7,
+      "zoom": "in",
+      "caption": "Anna o'ylab o'tirmadi: tiz cho'kib, har bir qalamni terdi.",
+      "ovoz": "Anna didn't think twice. She knelt down and helped pick up every pencil.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/6dba1619-e140-431b-a288-2ec1e20ece18/a75d1c37-4449-45d8-be9d-17d2e24ad45f/_jen__keep_her_exact_face__long_wavy_chestnut_brown_hair__wi.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYWRlM2FkYTkxZTg5Mzg1MSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU2MTg5N30.JF82W7i3uHiRAr8OuucdrxeKaWjhw2iWbTjSBr1IgUs",
+      "duration": 7,
+      "zoom": "out",
+      "caption": "«Rahmat!» dedi Jennifer. Lekin rasmi o'rtasidan yirtilgan edi.",
+      "ovoz": "\"Thank you!\" Jennifer said. But her drawing was torn right down the middle.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/10eb6896-f14b-4282-8ae5-7d8cfe0cb74d/9ed8ae4d-2003-4a97-a5cc-964bac1f6c2a/At_a_classroom_desk___anna__keep_her_exact_face__short_dark_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDg3MmQwNGIzNThjYmI4ZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU3NTg4M30.QVokibJ9bqDZzoM5wJhV1spoavugSPv5gErGqF8sMHM",
+      "duration": 7,
+      "zoom": "in",
+      "caption": "Anna skotch topdi va ular rasmni birga yopishtirishdi.",
+      "ovoz": "So Anna found some tape, and together they fixed it, piece by piece.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/b738f5a6-149b-41e3-bf43-8802246c2fd7/112356a6-0ab6-45b0-8700-24f96920fdb0/At_a_classroom_desk___anna__keep_her_exact_face__short_dark_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYTcxMmY4Nzg5MTZhMjRjYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYxNDMyOH0.WeO0EfmeAI1PqQyr8l1CH4zhM9p8um1Zow4jz-_mizU",
+      "duration": 7,
+      "zoom": "out",
+      "caption": "Keyin yangi ranglar qo'shishdi. Endi bu ularning guli edi.",
+      "ovoz": "Then they added new colors. Brighter petals, greener leaves. Now it was their flower.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/96172919-2f5b-4b00-9bbd-fcfd74d0bf38/c2d9d91c-d90f-48a4-b962-801222c805ba/In_front_of_a_green_chalkboard___anna__keep_her_exact_face__.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNGUxOWQwZTY2Y2U3YWYwMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYyMzUyNn0.-qvAjg0DQ4Lo-co8imiWSvEu_WDKykShVQ8Up8u6FgE",
+      "duration": 7,
+      "zoom": "in",
+      "caption": "Rasmni sinfga ko'rsatishganda, hamma qarsak chaldi.",
+      "ovoz": "When they showed it to the class, everyone clapped.",
+      "ovozchi": "kokoro:af_heart"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/884ab408-e569-4bfa-9716-e51618de0392/0f2dc1bf-5190-466b-a7a2-f80bdd9ce62b/_anna__keep_her_exact_face__short_dark_brown_bob__small_blue.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzQ1MTFhMDRjZTg3N2E4ZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU1NzUwOH0.xTRXUd-LK_41at6Fb4k7K5tNyfz30eVob30ILLhPKwA",
+      "duration": 7,
+      "zoom": "out",
+      "caption": "Anna maktabga notanish bo'lib keldi, birinchi dugonasi bilan qaytdi.",
+      "ovoz": "Anna came to school a stranger. She went home with her first new friend.",
+      "ovozchi": "kokoro:af_heart"
+    }
+  ]
+}
