@@ -120,6 +120,7 @@ jobs:
           curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setMyCommands" -H 'Content-Type: application/json' -d '{"commands":[
             {"command":"trend","description":"Trendlar: /trend usa, /trend spanish, /trend usa trucking"},
             {"command":"bugun","description":"Tomy: videoni hozir yasash (tanlash)"},
+            {"command":"aitrend","description":"AI kontent trendi: /aitrend usa, /aitrend spanish"},
             {"command":"tomy","description":"Tomy — kunlik video agenti: jadval va rejimlar"},
             {"command":"sozlama","description":"Tomy sozlamasi (jadval, til, soat)"},
             {"command":"tahlil","description":"Kanal statistikasi va g‘oyalar"},
