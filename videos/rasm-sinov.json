@@ -1,12 +1,38 @@
 {
   "title": "Rasm sinov",
   "rasmUslub": "cinematic photorealistic, warm film grain, dramatic lighting",
-  "theme": { "bg": "#0b1020", "accent": "#ffcc33", "text": "#ffffff" },
+  "theme": {
+    "bg": "#0b1020",
+    "accent": "#ffcc33",
+    "text": "#ffffff"
+  },
   "scenes": [
-    { "type": "title", "text": "Apollo 13", "duration": 3, "rasm": "Saturn V rocket launching at dawn, huge plume of smoke and fire, wide shot" },
-    { "type": "text", "text": "Houston, we have a problem", "duration": 3, "rasm": "astronaut inside a cramped 1970s spacecraft cabin, worried face lit by red warning lights, close-up" },
-    { "type": "text", "text": "They made it home", "duration": 3, "rasm": "space capsule with three orange and white parachutes descending over the blue Pacific ocean, wide shot" }
+    {
+      "type": "title",
+      "text": "Apollo 13",
+      "duration": 3,
+      "rasm": "Saturn V rocket launching at dawn, huge plume of smoke and fire, wide shot"
+    },
+    {
+      "type": "text",
+      "text": "Houston, we have a problem",
+      "duration": 3,
+      "rasm": "astronaut inside a cramped 1970s spacecraft cabin, worried face lit by red warning lights, close-up"
+    },
+    {
+      "type": "text",
+      "text": "They made it home",
+      "duration": 3,
+      "rasm": "space capsule with three orange and white parachutes descending over the blue Pacific ocean, wide shot"
+    }
   ],
-  "youtube": { "nom": "Apollo 13 sinov" },
-  "muqova": { "matn": "THEY ALMOST DIED", "urgu": "DIED", "belgi": "1970", "rasm_prompt": "astronaut terrified face lit by red emergency light inside damaged spacecraft" }
+  "youtube": {
+    "nom": "Apollo 13 sinov"
+  },
+  "muqova": {
+    "matn": "THEY ALMOST DIED",
+    "urgu": "DIED",
+    "belgi": "1970",
+    "rasm_prompt": "astronaut terrified face lit by red emergency light inside damaged spacecraft"
+  }
 }
