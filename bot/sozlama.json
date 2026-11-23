@@ -11,11 +11,5 @@
       "til": "en",
       "format": "youtube"
     }
-  ],
-  "qoralama": {
-    "googleAI": true,
-    "jadval": [],
-    "daqiqa": 3,
-    "yuklash": "tasdiq"
-  }
+  ]
 }
