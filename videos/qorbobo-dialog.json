@@ -1,0 +1,79 @@
+{
+  "title": "Qor Bobo and the Empty Sack (dialog, 360p sinov)",
+  "til": "en",
+  "transition": 0.3,
+  "music": "audio/qorbobo/music.mp3",
+  "musicVolume": 0.1,
+  "scenes": [
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/ce72282e-4342-49b7-ab7f-47438ba6d19c/1db421b9-fb65-4b55-bd90-8a8cb068c3ba/_qb__keep_his_exact_face__beard__blue_coat__hat_and_staff__f.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODdhYjQ3NDU2ZDliMTdhMCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU5MjI2MX0.EwMOmtIYDX_LT1fzaQDycQsyFc4SizQtVwJwksWvZZU",
+      "duration": 10,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "360p",
+      "muted": false,
+      "prompt": "Slow upward tilt to the sleigh crossing the moon; the horses gallop gently; Qor Bobo opens the sack, looks inside and freezes in shock. Qor Bobo says in a deep, warm, elderly grandfather voice, shocked, whispering: \"No... no, no. It's empty!\" Qor Bobo says in a deep, warm, elderly grandfather voice, worried, looking down at one lit house: \"And one house left...\" Sound: Sleigh bells, soft wind. Lip-synced speech on screen, no narrator, no other dialogue. Faces and clothes stay exactly as in the image, smooth natural motion, no morphing. 3D animated feature-film style. No text.",
+      "caption": "Qor Bobo: No... no, no. It's empty!\nQor Bobo: And one house left..."
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/b66f78a2-3e02-4404-828a-31d4513d26e4/81365767-8327-41eb-a0cf-b609e3be5e9b/_mk__keep_her_exact_face__braids_with_red_ribbons__red_hat_a.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzAwMmMwYWE3YmI5MTcyNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYzMDc2Mn0.FgjjVqFrFFYuxmXPgmA2Q6dHDwUftaLqHPiWAuvBpAY",
+      "duration": 10,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "360p",
+      "muted": false,
+      "prompt": "Slow push-in; Malika ties the final knot of the red-and-white scarf, holds it up and smiles proudly; the candle flickers. Malika says in a bright voice of a 7-year-old girl, proud and excited: \"Done! He's going to love it!\" Sound: Knitting needles, candle crackle. Lip-synced speech on screen, no narrator, no other dialogue. Faces and clothes stay exactly as in the image, smooth natural motion, no morphing. 3D animated feature-film style. No text.",
+      "caption": "Malika: Done! He's going to love it!"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/a410af69-4e2f-40d3-ac54-c7696791b0a8/2a563ba7-6e4d-49d6-8b2e-4455f0789aec/_qb__keep_his_exact_face__beard__blue_coat__hat_and_staff__s.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOTRjYWUxZjZkYzFkMjQ4MiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYyMDA4Nn0.eKPwQa6HUbn8bBxdgggA7MWJddmPkq4nhNZ8s9fTH0E",
+      "duration": 10,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "360p",
+      "muted": false,
+      "prompt": "Slow creep in; Qor Bobo shakes the empty sack, lowers it and sighs, his breath visible in the cold air; the horses shuffle behind him. Qor Bobo says in a deep, warm, elderly grandfather voice, sad, voice trembling: \"A hundred years... and tonight I have nothing to give.\" Sound: Sack rustle, wind. Lip-synced speech on screen, no narrator, no other dialogue. Faces and clothes stay exactly as in the image, smooth natural motion, no morphing. 3D animated feature-film style. No text.",
+      "caption": "Qor Bobo: A hundred years... and tonight I have nothing to give."
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/05486e64-3e94-45e9-b614-40df395a26cf/a4241f8f-c183-4ca7-b375-22895f10f5d2/Over_the_shoulder_shot_from_behind__qb__same_blue_coat__hat_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiY2E3Yjc3NmRhODRmODQwMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU3ODczM30.P2DEiUFBw1yCHMuhDXA4h0_FVJejp6Az0mvaTRRLdP0",
+      "duration": 10,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "360p",
+      "muted": false,
+      "prompt": "Over-the-shoulder; Qor Bobo takes slow steps toward the sleigh; the door bursts open, warm light floods the snow; Malika runs out; he turns his head. Malika says in a bright voice of a 7-year-old girl, shouting, out of breath: \"Wait! Qor Bobo, wait!\" Qor Bobo says in a deep, warm, elderly grandfather voice, ashamed, softly: \"Forgive me, little one. I have no gift for you.\" Sound: Door bursting open, footsteps in snow. Lip-synced speech on screen, no narrator, no other dialogue. Faces and clothes stay exactly as in the image, smooth natural motion, no morphing. 3D animated feature-film style. No text.",
+      "caption": "Malika: Wait! Qor Bobo, wait!\nQor Bobo: Forgive me, little one. I have no gift for you."
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/90c6d872-41d8-4701-9820-cc6704b58fa0/3b1f0c75-cdc2-4abd-9328-2488fc2e5fc1/_mk__same_braids_with_red_ribbons__red_hat__mustard_yellow_c.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzM3NzJjN2E4MmIwNDBkNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYyMDA5MH0.0Uz0AkBydAsDnYE2YuJWz9wGDpS-r6YVIYLC3lJ_5JA",
+      "duration": 10,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "360p",
+      "muted": false,
+      "prompt": "Qor Bobo kneels; Malika wraps the scarf around his neck and pats it; his surprised face softens. Malika says in a bright voice of a 7-year-old girl, sincere and happy: \"Everyone asks you for gifts. This one is for you!\" Sound: Snow crunch, fabric rustle. Lip-synced speech on screen, no narrator, no other dialogue. Faces and clothes stay exactly as in the image, smooth natural motion, no morphing. 3D animated feature-film style. No text.",
+      "caption": "Malika: Everyone asks you for gifts. This one is for you!"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/32e7dff3-6dcc-42ec-bada-f2af4852a231/f8bb1b26-90fe-4615-b126-3289c6d0fa9c/Close_up_of_the_face_of__qb__same_face__white_beard__blue_ha.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzg2MGY5MWUyYjkxNGExMCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTYyMzMyNn0.ZpAs4Rv8MperZco06Um2O_0pgt8YtOa4z8b6MVRpRLw",
+      "duration": 10,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "360p",
+      "muted": false,
+      "prompt": "Slow push-in on Qor Bobo's face; a tear rolls down and freezes into a glowing ice star; snowflakes start to glow and swirl; Malika looks up in wonder. Qor Bobo says in a deep, warm, elderly grandfather voice, crying softly, then smiling: \"For... me? Nobody has ever given me a gift.\" Sound: Magical chime, shimmering sparkle. Lip-synced speech on screen, no narrator, no other dialogue. Faces and clothes stay exactly as in the image, smooth natural motion, no morphing. 3D animated feature-film style. No text.",
+      "caption": "Qor Bobo: For... me? Nobody has ever given me a gift."
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/13872300-d593-4c47-9a7d-b7017f46b5e6/b472daa4-4252-4bc9-9022-40784557af65/Wide_shot_of_a_whole_snowy_Central_Asian_village_with_domed_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzMyNTA5NmUwMzVkYTBiNiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTU5Mzk2Nn0.UaHOHkrNbQs2kH0I5iABdmvp8PXqbCDv05JVKOpWP38",
+      "duration": 10,
+      "model": "google/gemini-omni-1.2-flash",
+      "resolution": "360p",
+      "muted": false,
+      "prompt": "Crane up and back over the glowing village; the sleigh rises across the moon, scarf fluttering; Malika waves from her doorstep. Qor Bobo says in a deep, warm, elderly grandfather voice, laughing warmly, calling down: \"Thank you, Malika! Happy New Year!\" Malika says in a bright voice of a 7-year-old girl, joyful, waving: \"Happy New Year, Qor Bobo!\" Sound: Sleigh bells fading, soft choir. Lip-synced speech on screen, no narrator, no other dialogue. Faces and clothes stay exactly as in the image, smooth natural motion, no morphing. 3D animated feature-film style. No text.",
+      "caption": "Qor Bobo: Thank you, Malika! Happy New Year!\nMalika: Happy New Year, Qor Bobo!"
+    }
+  ]
+}
