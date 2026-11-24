@@ -1,0 +1,204 @@
+{
+  "title": "Hidden Details and Easter Eggs Hidden in the Next Open-World Crime Game",
+  "theme": {
+    "bg": "#0d131f",
+    "accent": "#ff007f",
+    "text": "#ffffff"
+  },
+  "rasmUslub": "cinematic hyper-realistic concept art, vibrant tropical dusk lighting, hyper-detailed 4k game render style, raytraced reflections",
+  "scenes": [
+    {
+      "type": "title",
+      "text": "HIDDEN SECRETS\nYOU MISSED",
+      "subtitle": "Mind-blowing trailer details",
+      "duration": 7.5,
+      "ovoz": "Millions analyzed the official reveal trailer, yet subtle Easter eggs and hidden mechanics completely slipped past the gaming community.",
+      "rasm": "Wide cinematic shot of a vibrant neon-lit tropical coastal city skyline at twilight, sports cars speeding on coastal highway, volumetric purple haze"
+    },
+    {
+      "type": "text",
+      "text": "ELECTRONIC ANKLE MONITOR\nRESTRICTS MAP ACCESS",
+      "duration": 7.8,
+      "ovoz": "Look closely at the female protagonist's leg in artwork. An active ankle monitor strongly suggests story-driven regional map lockdowns.",
+      "rasm": "Close-up cinematic shot of an electronic ankle tracking device locked around a woman's leg in a motel room, dramatic shadows"
+    },
+    {
+      "type": "text",
+      "text": "VIRAL SOCIAL MEDIA\nINTEGRATED INTO GAMEPLAY",
+      "duration": 7.6,
+      "ovoz": "Vertical short-form live feeds appear repeatedly, indicating player actions and NPC crimes will circulate dynamically across in-game digital platforms.",
+      "rasm": "First-person perspective holding a glowing smartphone filming chaotic nighttime street stunts, vibrant phone screen UI elements, blurry background"
+    },
+    {
+      "type": "text",
+      "text": "PARODY OF REAL\nVIRAL CELEBRITIES",
+      "duration": 7.4,
+      "ovoz": "The infamous courtroom scene depicts a heavily tattooed purple-haired suspect, parodying a viral real-world mugshot sensation from Florida.",
+      "rasm": "Dramatic courtroom interior shot of an eccentric criminal suspect with facial tattoos and neon hair standing before a judge"
+    },
+    {
+      "type": "text",
+      "text": "REVOLUTIONARY HAIR\nAND CLOTH PHYSICS",
+      "duration": 7.9,
+      "ovoz": "Wind patterns interact realistically with strand-level hair and multi-layered clothing, showcasing a massive leap in rendering physics.",
+      "rasm": "Detailed close-up portrait of a woman riding in an open-top convertible, strands of hair blowing realistically across the frame in ocean breeze"
+    },
+    {
+      "type": "text",
+      "text": "EVERGLADES ECOSYSTEM\nEXPANDED WILDLIFE AI",
+      "duration": 7.7,
+      "ovoz": "Swamp scenes reveal fully simulated wildlife ecosystems, where apex predators actively hunt prey and occasionally invade suburban backyards.",
+      "rasm": "Menacing alligator swimming through murky marsh water toward a sunlit suburban swimming pool fence, dense tropical vegetation"
+    },
+    {
+      "type": "text",
+      "text": "RETURN OF CLASSIC\nSATIRICAL BRANDS",
+      "duration": 7.5,
+      "ovoz": "Eagle-eyed fans spotted returning fictional beer brands, satirical convenience stores, and parody airline logos plastered across billboards.",
+      "rasm": "Wide shot of a bustling convenience store exterior covered in glowing neon parody signs and advertisement posters at dusk"
+    },
+    {
+      "type": "text",
+      "text": "ADVANCED CAR INTERIORS\nWORKING MIRRORS",
+      "duration": 7.8,
+      "ovoz": "Inside vehicles, pedals move accurately while functional rearview mirrors and adjustable steering wheels indicate deeper vehicle personalization.",
+      "rasm": "First-person view inside a luxury muscle car cockpit showing detailed dashboard gauges and accurate side mirror reflections of highway traffic"
+    },
+    {
+      "type": "text",
+      "text": "PORT GELLHORN\nINDUSTRIAL OUTPOST REGION",
+      "duration": 7.6,
+      "ovoz": "Signboards hint at secondary sprawling cities outside the neon paradise, including run-down industrial ports and rural rust-belt communities.",
+      "rasm": "Atmospheric wide shot of rusty industrial shipping docks, cargo cranes, and run-down warehouses under overcast coastal skies"
+    },
+    {
+      "type": "text",
+      "text": "DEEP UNDERWATER\nWRECK EXPLORATION",
+      "duration": 7.9,
+      "ovoz": "Ocean biomes feature dynamic marine life, deep coral reefs, and sunken vessel wreckage ripe for maritime salvage missions.",
+      "rasm": "Deep ocean underwater shot showing sunlight rays filtering through water over a sunken cargo ship surrounded by sea turtles and hammerhead sharks"
+    },
+    {
+      "type": "text",
+      "text": "DYNAMIC WEATHER\nCYCLONES AND FLOODS",
+      "duration": 8.1,
+      "ovoz": "Volumetric storm clouds point toward severe tropical weather cycles, capable of triggering street flooding and dangerous vehicular aquaplaning.",
+      "rasm": "Dramatic wide angle shot of dark hurricane clouds engulfing a coastal metropolis with palm trees violently bending in torrential rain"
+    },
+    {
+      "type": "text",
+      "text": "DUAL PROTAGONIST\nCOORDINATED HEISTS",
+      "duration": 7.5,
+      "ovoz": "The Bonnie and Clyde dynamic means seamless tactical commands between the duo during high-stakes store robberies and getaways.",
+      "rasm": "A man and a woman in bandanas aiming handguns inside a neon-lit convenience store while grabbing bundles of cash"
+    },
+    {
+      "type": "text",
+      "text": "IMPROVED POLICE TACTICS\nSURROUND STRATEGIES",
+      "duration": 8,
+      "ovoz": "Law enforcement vehicles demonstrate coordinated pit maneuvers, tactical roadblocks, and smart flanking behavior rather than reckless ramming.",
+      "rasm": "Action pursuit shot showing highway patrol sedans executing a tactical flanking maneuver against a speeding getaway truck on a bridge"
+    },
+    {
+      "type": "text",
+      "text": "UNPRECEDENTED INTERIOR\nBUILDING ACCESS",
+      "duration": 7.8,
+      "ovoz": "Leaks and background trailer footage suggest a staggering percentage of buildings, motels, and shopping plazas feature enterable interiors.",
+      "rasm": "Interior wide shot of a bustling multi-story shopping mall filled with diverse shopper NPCs and detailed boutique storefronts"
+    },
+    {
+      "type": "text",
+      "text": "NIGHTCLUB LIGHTING\nVOLUMETRIC SMOKE",
+      "duration": 7.4,
+      "ovoz": "Crowded indoor club environments boast ray-traced laser strobes, dynamic crowd collisions, and complex volumetric haze simulation.",
+      "rasm": "Packed underground nightclub dance floor drenched in pink and cyan laser beams with thick atmospheric haze drifting over dancers"
+    },
+    {
+      "type": "text",
+      "text": "PAWN SHOPS AND\nLOOTABLE INVENTORIES",
+      "duration": 7.7,
+      "ovoz": "Shops reveal fully physicalized items on shelves, allowing players to physically steal specific goods instead of triggering generic animations.",
+      "rasm": "Detailed shelf display inside a pawn shop filled with antique watches, camera lenses, and gold chains under warm track lights"
+    },
+    {
+      "type": "text",
+      "text": "MYSTERIOUS CULTS\nAND SWAMP CRYPTIDS",
+      "duration": 8,
+      "ovoz": "Secret graffiti scattered around trailer shots references hidden swamp folklore, shadowy cult symbols, and classic conspiracy theories.",
+      "rasm": "Mysterious glowing symbol spray-painted onto an ancient cypress tree inside a foggy, eerie swamp at night"
+    },
+    {
+      "type": "text",
+      "text": "ROOFTOP PARTIES\nAUTONOMOUS AI LIFE",
+      "duration": 7.6,
+      "ovoz": "NPCs now perform context-specific actions such as applying sunscreen, recording vlogs, or reacting organically to ambient music changes.",
+      "rasm": "Luxurious skyscraper rooftop infinity pool party overlooking a glittering tropical city skyline at sunset with relaxed partygoers"
+    },
+    {
+      "type": "text",
+      "text": "REAL-TIME SUN DAMAGE\nAND ACCURATE TANNING",
+      "duration": 7.8,
+      "ovoz": "Close examination shows character skin responds dynamically to sunlight exposure, featuring realistic sunburns, sweat sheen, and tan lines.",
+      "rasm": "Extreme close-up of a sunbather's face showing realistic skin pores, subtle sunburn redness, and realistic sweat droplets"
+    },
+    {
+      "type": "text",
+      "text": "AIRPORT HUBS AND\nGLOBAL CONNECTIONS",
+      "duration": 7.6,
+      "ovoz": "Commercial airliners taxi realistically across sprawling airport runways, hinting at potential travel connections to distant island locations.",
+      "rasm": "Wide cinematic shot of a commercial jet plane landing on an airport runway against a pink sunset over tropical waterways"
+    },
+    {
+      "type": "text",
+      "text": "AUTHENTIC AUDIO\n3D REVERBERATION",
+      "duration": 7.5,
+      "ovoz": "Next-generation audio engines process gunshots and vehicle acoustics based on room size, architectural materials, and open terrain.",
+      "rasm": "Low angle shot of an empty concrete highway underpass with dramatic light beams breaking through structural pillars"
+    },
+    {
+      "type": "text",
+      "text": "MAP SCALE\nLARGER THAN EVER",
+      "duration": 8.2,
+      "ovoz": "Cartography analysis based on visible mountain ranges and coordinates suggests the total playground easily eclipses all predecessor titles combined.",
+      "rasm": "Top-down satellite style digital topographical map showing expansive islands, river deltas, and vast metropolitan zones glowing in blue grid lines"
+    },
+    {
+      "type": "text",
+      "text": "DECADE OF SECRETS\nWAITING TO BE FOUND",
+      "duration": 7.7,
+      "ovoz": "With years of anticipation, this massive digital world promises secrets that gamers will spend the next decade discovering.",
+      "rasm": "Silhouette of two criminals standing atop a coastal hill looking over a massive, breathtaking glowing metropolis under night stars"
+    },
+    {
+      "type": "text",
+      "text": "SUBSCRIBE FOR MORE\nGAMING BREAKDOWNS",
+      "duration": 6.8,
+      "ovoz": "Which hidden Easter egg excited you the most? Subscribe now and drop your craziest map theories in the comments below!",
+      "rasm": "Glowing modern video gaming controller resting on an illuminated high-tech desk beside glowing dual monitors"
+    }
+  ],
+  "youtube": {
+    "nom": "Hidden Details & Easter Eggs in GTA 6 You Missed!",
+    "tavsif": "A deep dive breakdown uncovering 20+ hidden details, Easter eggs, and secret gameplay mechanics tucked away in the official GTA 6 reveal trailer.\n\nSubscribe for more in-depth gaming breakdowns!",
+    "teglar": [
+      "gta 6 details",
+      "gta 6 easter eggs",
+      "grand theft auto vi secrets",
+      "gta 6 trailer breakdown",
+      "gta 6 map size"
+    ]
+  },
+  "muqova": {
+    "matn": "THEY HID THIS",
+    "urgu": "HID",
+    "belgi": "!",
+    "rasm_prompt": "Cinematic low-angle close-up of a shocked gamer face illuminated by glowing neon pink and cyan screen reflections in a dark room"
+  },
+  "ovozchi": "kokoro:am_michael",
+  "ovozUslubi": "natural, confident and energetic male narrator speaking English at a brisk pace",
+  "bot": {
+    "format": "youtube",
+    "mavzu": "GTA 6 o'yinidagi sirli detal va easter eggslar",
+    "til": "en"
+  }
+}
