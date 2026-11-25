@@ -14,22 +14,22 @@ async function gj(key, url, body) {
 }
 
 let modelCache;
-async function resolveModel(key, want) {
-  // want: "veo-3.1-lite" → ro'yxatdan "veo-3.1-lite-generate-001" yoki "...-preview" ni topamiz
-  if (/generate/.test(want)) return want;
+async function candidates(key, want) {
+  // want: "veo-3.1-lite" → avval Google ro'yxatidan, bo'lmasa ma'lum nomlar (…-001, …-preview)
+  if (/generate/.test(want)) return [want];
   if (!modelCache) {
     modelCache = [];
-    let tok = '';
-    for (let i = 0; i < 10; i++) {
-      const res = await gj(key, `${API}/models?pageSize=200${tok ? `&pageToken=${tok}` : ''}`);
-      modelCache.push(...(res.models || []).map((m) => m.name.replace(/^models\//, '')));
-      if (!(tok = res.nextPageToken)) break;
-    }
+    try {
+      let tok = '';
+      for (let i = 0; i < 10; i++) {
+        const res = await gj(key, `${API}/models?pageSize=200${tok ? `&pageToken=${tok}` : ''}`);
+        modelCache.push(...(res.models || []).map((m) => m.name.replace(/^models\//, '')));
+        if (!(tok = res.nextPageToken)) break;
+      }
+    } catch (e) { console.log(`  modellar ro'yxati olinmadi: ${e.message.slice(0, 120)}`); }
   }
-  const c = modelCache.filter((n) => n.startsWith(`${want}-generate`) && (n.endsWith('-001') || n.includes('preview')));
-  const pick = c.find((n) => n.endsWith('-001')) || c[0];
-  if (!pick) throw new Error(`Google'da ${want} modeli topilmadi. Bor Veo modellari: ${modelCache.filter((n) => n.startsWith('veo')).join(', ') || 'yo\'q'}`);
-  return pick;
+  const listed = modelCache.filter((n) => n.startsWith(`${want}-generate`));
+  return [...new Set([...listed.filter((n) => n.endsWith('-001')), ...listed, `${want}-generate-001`, `${want}-generate-preview`])];
 }
 
 const mimeFor = (p) => (path.extname(p).toLowerCase() === '.png' ? 'image/png' : path.extname(p).toLowerCase() === '.webp' ? 'image/webp' : 'image/jpeg');
@@ -37,7 +37,6 @@ const mimeFor = (p) => (path.extname(p).toLowerCase() === '.png' ? 'image/png' :
 /** Bitta Veo klipi. image — public/ ichidagi yo'l. Natija: { buf, model } */
 export async function veoVideo({ key, model, prompt, image, aspect = '16:9', resolution = '720p', duration = 8 }) {
   if (!key) throw new Error("GEMINI_API_KEY yo'q.");
-  const name = await resolveModel(key, model);
   const instance = { prompt };
   if (image) {
     const p = path.join('public', image);
@@ -46,8 +45,19 @@ export async function veoVideo({ key, model, prompt, image, aspect = '16:9', res
   }
   const durationSeconds = [4, 6, 8].find((d) => d >= Math.round(duration)) || 8;
   const parameters = { aspectRatio: aspect, resolution, durationSeconds };
+  let op, name, lastErr;
+  for (const n of await candidates(key, model)) {
+    try {
+      op = await gj(key, `${API}/models/${n}:predictLongRunning`, { instances: [instance], parameters });
+      name = n; break;
+    } catch (e) {
+      lastErr = e;
+      if (!/\((404|400)\)/.test(e.message) || /402|credit|billing/i.test(e.message)) throw e; // pul/limit xatosi — boshqa nom sinalmaydi
+      console.log(`  ${n}: ${e.message.slice(0, 160)}`);
+    }
+  }
+  if (!op) throw lastErr || new Error(`Veo modeli topilmadi: ${model}`);
   console.log(`  Veo: ${name}, ${resolution}, ${durationSeconds} s`);
-  let op = await gj(key, `${API}/models/${name}:predictLongRunning`, { instances: [instance], parameters });
   for (let k = 0; !op.done && k < 120; k++) {
     await sleep(10000);
     op = await gj(key, `${API}/${op.name}`);
