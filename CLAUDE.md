@@ -27,7 +27,7 @@ Egasi telefon orqali ishlaydi: javoblar **o'zbek tilida**, qisqa va aniq.
 
 ## Tarmoqlar (branch) qoidasi
 - **Telegram bot faqat `main` ga yozadi** (`bot/wrangler.toml` → `GITHUB_BRANCH = "main"`). Bot sozlamasini o'zgartirgach — Actions → «Bot o'rnatish».
-- `claude/bot` — o'chirilgan (2026-11-25: undan eski bot qayta o'rnatilib, yangi imkoniyatlar yo'qolgan edi). Bot faqat `main` dan o'rnatiladi.
+- `claude/bot` — ESKI, to'liq main'da; undan «Bot o'rnatish» ishga tushirilMAsin (2026-11-25 eski bot o'rnatilib, yangi imkoniyatlar yo'qolgan edi). Bot faqat `main` dan o'rnatiladi. Tarmoqni egasi GitHub'da o'chiradi (proxy o'chirishga ruxsat bermaydi).
 - Har sessiya o'z `claude/...` tarmog'ida ishlaydi, lekin ish tugagach **PR orqali tezda `main` ga qo'shiladi** — tarmoqlar uzoq vaqt alohida qolmasin.
 - Bot commit'lari (`Bot: ...`) «Tekshiruv» ni ishga tushirmaydi.
 - **Lemo-Opuscar uslublari** (100 ta: akvarel, ukiyo-e, ink-wash, pixel-rpg, blueprint, newsreel...): ko'nikma `.claude/skills/lemo-opuscar/`, kutubxona `sh scripts/lemo.sh` bilan `ext/` ga yuklanadi (repoga qo'shilmaydi). `STYLE.md` — yo'riqnoma, yasash Remotion'da. Lemo-Opuscar by Lemomo (LemoLab), hujjatlar CC BY-NC 4.0, kod MIT; Clawd va brendlar ishlatilmaydi.
