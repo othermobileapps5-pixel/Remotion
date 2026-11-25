@@ -8,96 +8,114 @@
   "rasmUslub": "cinematic photorealistic, warm film grain",
   "scenes": [
     {
-      "type": "title",
-      "text": "GTA 6 Secrets",
-      "subtitle": "Explore the Unknown",
+      "type": "image",
       "duration": 7.1,
       "ovoz": "Welcome to the world of Grand Theft Auto 6, where secrets await around every corner.",
       "rasm": "A wide shot of the GTA 6 cityscape at dusk, with a hint of mystery in the air.",
       "ovozFayl": "ovoz/bot-202611250202-en-1.wav",
-      "ovozKalit": "416381ad22"
+      "ovozKalit": "416381ad22",
+      "src": "rasm/bot-202611250202-en/1.jpg",
+      "zoom": "in",
+      "matn": "GTA 6 Secrets"
     },
     {
-      "type": "text",
-      "text": "Hidden Locations",
+      "type": "image",
       "duration": 8.3,
       "ovoz": "From hidden alleys to secret rooftops, we'll take you on a journey to discover the most elusive spots in the game.",
       "rasm": "A close-up of a character navigating through a narrow alleyway, with a map in hand.",
       "ovozFayl": "ovoz/bot-202611250202-en-2.wav",
-      "ovozKalit": "8d25cad0ef"
+      "ovozKalit": "8d25cad0ef",
+      "src": "rasm/bot-202611250202-en/2.jpg",
+      "zoom": "out",
+      "matn": "Hidden Locations"
     },
     {
-      "type": "text",
-      "text": "Easter Eggs",
+      "type": "image",
       "duration": 8.1,
       "ovoz": "We'll also explore the Easter eggs and references that Rockstar Games has cleverly hidden throughout the game.",
       "rasm": "A wide shot of a character standing in front of a mural, with a puzzled expression.",
       "ovozFayl": "ovoz/bot-202611250202-en-3.wav",
-      "ovozKalit": "3b0c82007d"
+      "ovozKalit": "3b0c82007d",
+      "src": "rasm/bot-202611250202-en/3.jpg",
+      "zoom": "in",
+      "matn": "Easter Eggs"
     },
     {
-      "type": "text",
-      "text": "Glitches and Exploits",
+      "type": "image",
       "duration": 8.5,
       "ovoz": "And for the more adventurous players, we'll dive into the world of glitches and exploits that can give you an edge in the game.",
       "rasm": "A close-up of a character using a glitch to access a restricted area.",
       "ovozFayl": "ovoz/bot-202611250202-en-4.wav",
-      "ovozKalit": "0ec45d32cc"
+      "ovozKalit": "0ec45d32cc",
+      "src": "rasm/bot-202611250202-en/4.jpg",
+      "zoom": "out",
+      "matn": "Glitches and Exploits"
     },
     {
-      "type": "text",
-      "text": "Community Secrets",
+      "type": "image",
       "duration": 7.7,
       "ovoz": "We'll also share some secrets and tips from the GTA 6 community, so you can stay ahead of the game.",
       "rasm": "A wide shot of a group of players gathered around a computer, discussing strategies.",
       "ovozFayl": "ovoz/bot-202611250202-en-5.wav",
-      "ovozKalit": "aad3c23c79"
+      "ovozKalit": "aad3c23c79",
+      "src": "rasm/bot-202611250202-en/5.jpg",
+      "zoom": "in",
+      "matn": "Community Secrets"
     },
     {
-      "type": "text",
-      "text": "The Hunt Begins",
+      "type": "image",
       "duration": 6.4,
       "ovoz": "So, are you ready to start your journey and uncover the secrets of GTA 6?",
       "rasm": "A close-up of a character looking at a map, with a determined expression.",
       "ovozFayl": "ovoz/bot-202611250202-en-6.wav",
-      "ovozKalit": "70694a5164"
+      "ovozKalit": "70694a5164",
+      "src": "rasm/bot-202611250202-en/6.jpg",
+      "zoom": "out",
+      "matn": "The Hunt Begins"
     },
     {
-      "type": "text",
-      "text": "Let's Explore",
+      "type": "image",
       "duration": 6.7,
       "ovoz": "Join us as we explore the world of GTA 6 and discover its hidden gems.",
       "rasm": "A wide shot of the GTA 6 cityscape at night, with a sense of adventure in the air.",
       "ovozFayl": "ovoz/bot-202611250202-en-7.wav",
-      "ovozKalit": "8a42b8451e"
+      "ovozKalit": "8a42b8451e",
+      "src": "rasm/bot-202611250202-en/7.jpg",
+      "zoom": "in",
+      "matn": "Let's Explore"
     },
     {
-      "type": "text",
-      "text": "Stay Tuned",
+      "type": "image",
       "duration": 8,
       "ovoz": "Stay tuned for more GTA 6 content, and don't forget to like and subscribe for more gaming videos.",
       "rasm": "A close-up of a character giving a thumbs up, with a friendly smile.",
       "ovozFayl": "ovoz/bot-202611250202-en-8.wav",
-      "ovozKalit": "523d304df0"
+      "ovozKalit": "523d304df0",
+      "src": "rasm/bot-202611250202-en/8.jpg",
+      "zoom": "out",
+      "matn": "Stay Tuned"
     },
     {
-      "type": "text",
-      "text": "Thanks for Watching",
+      "type": "image",
       "duration": 6,
       "ovoz": "Thanks for watching, and we'll catch you in the next video!",
       "rasm": "A wide shot of the GTA 6 cityscape at sunset, with a sense of closure.",
       "ovozFayl": "ovoz/bot-202611250202-en-9.wav",
-      "ovozKalit": "687ff0b080"
+      "ovozKalit": "687ff0b080",
+      "src": "rasm/bot-202611250202-en/9.jpg",
+      "zoom": "in",
+      "matn": "Thanks for Watching"
     },
     {
-      "type": "title",
-      "text": "Subscribe Now",
-      "subtitle": "Join the Community",
+      "type": "image",
       "duration": 8.3,
       "ovoz": "Don't forget to subscribe to our channel for more gaming content, and hit the notification bell to stay up-to-date.",
       "rasm": "A close-up of a character clicking the subscribe button, with a satisfied expression.",
       "ovozFayl": "ovoz/bot-202611250202-en-10.wav",
-      "ovozKalit": "b43c0d3b1d"
+      "ovozKalit": "b43c0d3b1d",
+      "src": "rasm/bot-202611250202-en/10.jpg",
+      "zoom": "out",
+      "matn": "Subscribe Now"
     }
   ],
   "youtube": {
