@@ -1,0 +1,31 @@
+name: VoiceStudio sinov
+# Alohida sinov: OmniVoice (VoiceStudio dvigateli, k2-fsa) bilan bepul ovoz, CPU'da.
+# Model vaznlari CC-BY-NC (notijorat) — monetizatsiyali YouTube uchun emas.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/voicestudio]
+    paths: ['ovoz-sinov/**', '.github/workflows/voicestudio.yml']
+permissions:
+  contents: write
+jobs:
+  ovoz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: O'rnatish (CPU)
+        run: |
+          pip install -q torch torchaudio torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -q soundfile "git+https://github.com/k2-fsa/OmniVoice@4d5ed0f0621507e8aebd4560bde316549e85c553"
+          sudo apt-get install -y -qq ffmpeg >/dev/null
+      - name: Ovoz yasash
+        run: python ovoz-sinov/sinov.py
+      - name: MP3 va relizga
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          cd ovoz-sinov/out && for f in *.wav; do ffmpeg -v error -y -i "$f" -b:a 128k "${f%.wav}.mp3"; done; ls -la
+          gh release view ovoz-sinov >/dev/null 2>&1 || gh release create ovoz-sinov -t "Ovoz sinov" -n "VoiceStudio/OmniVoice namunalari" --prerelease
+          gh release upload ovoz-sinov *.mp3 --clobber

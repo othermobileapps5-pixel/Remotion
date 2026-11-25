@@ -1,0 +1,6 @@
+[
+  {"nom": "uz-erkak", "til": "uz", "instruct": "male, middle-aged", "matn": "Assalomu alaykum! Bugun sizga qadimgi Misr piramidalari qanday qurilgani haqida hikoya qilib beraman."},
+  {"nom": "uz-ayol", "til": "uz", "instruct": "female, young adult", "matn": "Qor Bobo bo'sh qopiga qaradi va hayron qoldi. Endi u bolalarga nima sovg'a qiladi?"},
+  {"nom": "uz-bola", "til": "uz", "instruct": "female, child", "matn": "Qor Bobo, to'xtang! Men sizga sovg'a tayyorladim!"},
+  {"nom": "en-bobo", "til": "en", "instruct": "male, elderly", "matn": "Forgive me, little one. I have no gift for you tonight."}
+]
