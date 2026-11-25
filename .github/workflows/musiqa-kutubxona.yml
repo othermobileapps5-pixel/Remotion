@@ -5,6 +5,15 @@ name: Musiqa kutubxona
 on:
   workflow_dispatch:
     inputs:
+      qidiruv:
+        description: "Pixabay'da qidirish (inglizcha, masalan: arabic female vocal duduk) — topilganlarni yuklaydi"
+        default: ""
+      soni:
+        description: "Qidiruvda nechta trek olish"
+        default: "3"
+      min_soniya:
+        description: "Trek kamida necha soniya bo'lsin"
+        default: "60"
       tg_fayl:
         description: "Telegram file_id (bot to'ldiradi)"
         default: ""
@@ -44,12 +53,17 @@ jobs:
           TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           FID: ${{ github.event.inputs.tg_fayl }}
           DRIVE: ${{ github.event.inputs.drive }}
+          QIDIRUV: ${{ github.event.inputs.qidiruv }}
+          SONI: ${{ github.event.inputs.soni }}
+          MIN: ${{ github.event.inputs.min_soniya }}
           GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
           GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
           GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
         run: |
           mkdir -p /tmp/m
-          if [ -n "$FID" ]; then
+          if [ -n "$QIDIRUV" ]; then
+            python3 -I scripts/pixabay_musiqa.py "$QIDIRUV" "$SONI" "$MIN" /tmp/m
+          elif [ -n "$FID" ]; then
             P=$(curl -s "https://api.telegram.org/bot$TG/getFile?file_id=$FID" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);if(!j.ok){console.error(s);process.exit(1)}console.log(j.result.file_path)})')
             EXT="${P##*.}"; curl -s -o "/tmp/m/kirish.$EXT" "https://api.telegram.org/file/bot$TG/$P"
           elif [ -n "$DRIVE" ]; then
@@ -65,14 +79,23 @@ jobs:
           TEGLAR: ${{ github.event.inputs.teglar }}
           MANBA: ${{ github.event.inputs.manba }}
           DRIVE: ${{ github.event.inputs.drive }}
+          QIDIRUV: ${{ github.event.inputs.qidiruv }}
         run: |
-          F=$(ls /tmp/m/* | head -1)
-          [ -n "$NOM" ] || NOM="${DRIVE:-}"
-          Y=$(node scripts/kutubxona.mjs qosh "$F" "$NOM" "$TEGLAR" "$MANBA")
+          if [ -f /tmp/m/natija.json ]; then
+            Y=$(node -e '
+              const {execFileSync}=require("child_process");
+              const r=JSON.parse(require("fs").readFileSync("/tmp/m/natija.json","utf8"));
+              const out=r.map(t=>JSON.parse(execFileSync("node",["scripts/kutubxona.mjs","qosh",t.fayl,t.nom,[process.env.TEGLAR,process.env.QIDIRUV,...(t.teglar||[])].filter(Boolean).join(","),"pixabay"],{encoding:"utf8"}).trim().split("\n").pop()));
+              console.log(JSON.stringify(out));')
+          else
+            F=$(ls /tmp/m/* | head -1)
+            [ -n "$NOM" ] || NOM="${DRIVE:-}"
+            Y="[$(node scripts/kutubxona.mjs qosh "$F" "$NOM" "$TEGLAR" "$MANBA" | tail -1)]"
+          fi
           echo "$Y"
           echo "yozuv=$Y" >> "$GITHUB_OUTPUT"
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/musiqa && git commit -qm "Musiqa kutubxonasi: $(echo "$Y" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).fayl))')"
+          git add public/musiqa && git commit -qm "Musiqa kutubxonasi: $(echo "$Y" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).map(y=>y.fayl).join(", ")))')"
           for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 3; done
       - name: Telegram
         if: always() && github.event.inputs.telegram != ''
@@ -81,9 +104,10 @@ jobs:
           CHAT: ${{ github.event.inputs.telegram }}
           Y: ${{ steps.q.outputs.yozuv }}
         run: |
-          if [ -n "$Y" ]; then
-            T=$(echo "$Y" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const y=JSON.parse(s);console.log(`🎵 Kutubxonaga qo'\''shildi: ${y.nom}\n⏱ ${Math.floor(y.soniya/60)}:${String(y.soniya%60).padStart(2,"0")} · 🏷 ${y.teglar.join(", ")}\n📁 ${y.fayl}`)})')
+          if [ -n "$Y" ] && [ "$Y" != "[]" ]; then
+            echo "$Y" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{for(const y of JSON.parse(s))console.log([y.fayl,`🎵 ${y.nom}\n⏱ ${Math.floor(y.soniya/60)}:${String(y.soniya%60).padStart(2,"0")} · 🏷 ${y.teglar.slice(0,6).join(", ")}\n📁 ${y.fayl}`].join("\t"))})' | while IFS=$'\t' read -r F CAP; do
+              curl -s -F chat_id="$CHAT" -F audio=@"public/$F" -F caption="$(printf '%b' "$CAP")" "https://api.telegram.org/bot$TG/sendAudio" >/dev/null
+            done
           else
-            T="⚠️ Musiqani kutubxonaga qo'shib bo'lmadi: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=⚠️ Musiqani kutubxonaga qo'shib bo'lmadi: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null
           fi
-          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=$T" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null

@@ -623,6 +623,12 @@ async function onMessage(env, msg) {
   const chat = msg.chat.id;
   TG(env, 'sendChatAction', { chat_id: chat, action: 'typing' }).catch(() => {});
   let text = msg.text || msg.caption || '';
+  // «Musiqa top: arabic female vocal duduk» → Pixabay'da qidirib, eng ko'p yuklangan 3 ta trekni kutubxonaga
+  const mtop = /^\s*musiqa\s+top(?:ib)?\s*:?\s*(.+)$/i.exec(text);
+  if (mtop && !msg.audio && !msg.document) {
+    await dispatchMain(env, 'musiqa-kutubxona.yml', { qidiruv: mtop[1].trim().slice(0, 80), soni: '3', min_soniya: '60', telegram: String(chat) });
+    return say(env, chat, `🔎 Pixabay'da qidiryapman: <b>${esc(mtop[1].trim())}</b> — topilgan 3 ta trek kutubxonaga tushadi va shu yerga keladi (~1–2 daqiqa).`);
+  }
   // Musiqa fayli (Pixabay, YouTube Audio Library...) → kutubxonaga: «Musiqa kutubxona» workflow'i
   const audio = msg.audio || (msg.document && /^audio\//.test(msg.document.mime_type || '') ? msg.document : null);
   if (audio && !/^\s*(ovoz|buyruq)\b/i.test(text)) {
