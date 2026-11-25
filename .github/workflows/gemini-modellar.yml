@@ -1,0 +1,18 @@
+name: Gemini modellar (tekshiruv, bepul)
+on:
+  push:
+    branches: [claude/giza]
+    paths: ['.github/workflows/gemini-modellar.yml']
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ro'yxat
+        env: { K: '${{ secrets.GEMINI_API_KEY }}' }
+        run: |
+          tok=""; for i in 1 2 3 4 5; do
+            r=$(curl -s -H "x-goog-api-key: $K" "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&pageToken=$tok")
+            echo "$r" | python3 -c "import json,sys;d=json.load(sys.stdin);print('\n'.join(m['name']+' '+','.join(m.get('supportedGenerationMethods',[])) for m in d.get('models',[]) if any(x in m['name'] for x in ('veo','omni','imagen','image'))));print('XATO',d.get('error')) if 'error' in d else None"
+            tok=$(echo "$r" | python3 -c "import json,sys;print(json.load(sys.stdin).get('nextPageToken',''))"); [ -z "$tok" ] && break
+          done
+          echo "--- jami modellar soni:"; curl -s -H "x-goog-api-key: $K" "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200" | python3 -c "import json,sys;print(len(json.load(sys.stdin).get('models',[])))"
