@@ -1,0 +1,43 @@
+name: Giza rasmlar (Drive zip)
+# Drive'dagi rasmlar zip'ini oladi, public/giza/ ga ochadi, branch'ga commit qiladi va kontakt varag'ini kadrlar relizga qo'yadi.
+on:
+  push:
+    branches: [claude/giza]
+    paths: ['giza/zip-id.txt', '.github/workflows/giza-rasmlar.yml']
+permissions:
+  contents: write
+jobs:
+  ol:
+    runs-on: ubuntu-latest
+    env:
+      GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+      GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+      GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Zip'ni olish
+        run: |
+          mkdir -p tmp && node scripts/drive.mjs get "gd_$(cat giza/zip-id.txt).zip" tmp/r.zip
+          mkdir -p tmp/x && unzip -q -o tmp/r.zip -d tmp/x && find tmp/x -type f | sort | tee giza/zip-list.txt
+      - name: public/giza ga
+        run: |
+          mkdir -p public/giza
+          find tmp/x -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | sort | while read f; do cp "$f" "public/giza/$(basename "$f")"; done
+          ls -la public/giza
+          python3 -c "
+          from PIL import Image,ImageDraw;import glob,os
+          fs=sorted(glob.glob('public/giza/*'));W=480;cols=4
+          ims=[Image.open(f).convert('RGB') for f in fs]
+          th=[im.resize((W,int(W*im.height/im.width))) for im in ims];H=max([t.height for t in th]+[1])+40
+          S=Image.new('RGB',(W*cols,H*((len(th)+cols-1)//cols or 1)),'black');d=ImageDraw.Draw(S)
+          for i,(t,f,im) in enumerate(zip(th,fs,ims)):
+            x,y=(i%cols)*W,(i//cols)*H;S.paste(t,(x,y+40));d.text((x+8,y+8),f'{os.path.basename(f)}  {im.width}x{im.height}',fill='white')
+          S.save('giza-zip-varaq.jpg',quality=85)"
+          gh release upload kadrlar giza-zip-varaq.jpg --clobber
+      - name: Commit
+        run: |
+          git config user.name github-actions; git config user.email github-actions@users.noreply.github.com
+          git add public/giza giza/zip-list.txt && git commit -qm "Giza: Drive zip rasmlari" && git push
