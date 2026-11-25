@@ -1,0 +1,86 @@
+{
+  "title": "Venerada bir kun bir yildan uzun",
+  "theme": {
+    "bg": "#0b0c16",
+    "accent": "#f59e0b",
+    "text": "#ffffff"
+  },
+  "rasmUslub": "cinematic photorealistic space photography, deep dark cosmos, dramatic golden hour lighting, 8k resolution",
+  "musiqa_qidiruv": "deep space ambient synth",
+  "scenes": [
+    {
+      "type": "title",
+      "text": "KUN YILDAN UZUN BO'LGAN\nSIRLI SAYYORA",
+      "subtitle": "Koinot mo'jizasi",
+      "duration": 6,
+      "ovoz": "Tasavvur qiling, tug'ilgan kuningiz kun botishidan oldin kelib qolsa! Koinotda shunday sayyora bor.",
+      "rasm": "Dramatic wide shot of a glowing golden-yellow rocky planet floating in dark starry space, photorealistic, cinematic rim light"
+    },
+    {
+      "type": "text",
+      "text": "QUYOSH TIZIMIDAGI VENERA\nJUDA SEKIN AYLANADI",
+      "duration": 6,
+      "ovoz": "Bu bizga qo'shni bo'lgan Venera sayyorasi. U o'z o'qi atrofida aqlbovar qilmas darajada sekin aylanadi.",
+      "rasm": "Close-up cinematic shot of planet Venus showing swirling dense golden sulfuric atmosphere, high detail, photorealistic"
+    },
+    {
+      "type": "text",
+      "text": "BIR MARTA AYLANISH UCHUN\n243 YER KUNI KЕRAK",
+      "duration": 6,
+      "ovoz": "Venerada o'z o'qi atrofida bir marta to'liq aylanish Yer hisobida ikki yuz qirq uch kunga teng.",
+      "rasm": "Planetary orbit representation in deep space with glowing planetary dust trail, majestic cosmic perspective, photorealistic"
+    },
+    {
+      "type": "text",
+      "text": "QUYOSH ATROFIDA ESA\n225 KUNDA AYLANADI",
+      "duration": 6,
+      "ovoz": "Ammo uning Quyosh atrofini to'liq aylanib chiqishi bor-yo'g'i ikki yuz yigirma besh kun davom etadi.",
+      "rasm": "Wide view of a radiant glowing star illuminating a rocky planet orbiting on an elliptical path, dramatic contrast"
+    },
+    {
+      "type": "text",
+      "text": "QUYOSH G'ARBDAN CHIQIB\nSHARQQA BOTADI",
+      "duration": 6,
+      "ovoz": "Bundan tashqari, Venera boshqa sayyoralarga teskari aylanadi, ya'ni bu yerda Quyosh g'arbdan chiqadi.",
+      "rasm": "Surreal alien rocky surface under a dense yellowish sky with a dim distant sun rising over sharp cliffs, hyper-realistic"
+    },
+    {
+      "type": "text",
+      "text": "BU YERDA BIR KUN\nBIR YILDAN UZUNROQ",
+      "duration": 5,
+      "ovoz": "Demak, Venera sayyorasida bir kun uning butun bir yilidan ancha uzoq davom etadi.",
+      "rasm": "Extreme close-up of an astronaut helmet visor reflecting a stormy golden planetary atmosphere, cinematic lighting"
+    },
+    {
+      "type": "text",
+      "text": "KO'PROQ BILISH UCHUN\nOBUNA BO'LING",
+      "duration": 5,
+      "ovoz": "Koinot sirlaridan doimiy boxabar bo'lish uchun obuna bo'ling va videoni do'stlaringizga ulashing!",
+      "rasm": "Breathtaking view of deep space with luminous nebulae and glowing distant stars, epic cinematic composition"
+    }
+  ],
+  "youtube": {
+    "nom": "Kun Yildan Uzun Bo'lgan Sayyora!",
+    "tavsif": "Quyosh tizimidagi eng g'alati sayyora haqida bilarmidingiz? Venerada bir kun uning bir yilidan ko'proq davom etadi. Qiziqarli astronomik faktlar bilan tanishing!\n\nObuna bo'ling va yangi sirlarni kashf eting.",
+    "teglar": [
+      "faktlar",
+      "koinot",
+      "venera",
+      "qiziqarli faktlar",
+      "astronomiya",
+      "shorts"
+    ]
+  },
+  "muqova": {
+    "matn": "BIR KUN BIR YIL",
+    "urgu": "YIL",
+    "belgi": "!",
+    "rasm_prompt": "Shocked astronaut face visible inside space helmet reflecting a glowing giant golden planet in deep space, high drama, cinematic orange and cyan lighting"
+  },
+  "ovozchi": "google:Charon",
+  "bot": {
+    "format": "shorts",
+    "mavzu": "kanal mavzusida qiziqarli fakt",
+    "til": "uz"
+  }
+}
