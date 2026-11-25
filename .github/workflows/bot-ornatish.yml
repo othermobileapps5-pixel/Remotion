@@ -100,6 +100,7 @@ jobs:
             {"command":"trend","description":"Trendlar: /trend usa, /trend spanish, /trend usa trucking"},
             {"command":"bugun","description":"Kunlik videoni hozir yasash"},
             {"command":"sozlama","description":"Kunlik video sozlamalari"},
+            {"command":"mavzular","description":"Kunlik mavzular ro‘yxati"},
             {"command":"tahlil","description":"Kanal statistikasi va g‘oyalar"},
             {"command":"yangi","description":"Yangi video ssenariysi: /yangi mavzu"},
             {"command":"start","description":"Tugmalarni ko‘rsatish"},
