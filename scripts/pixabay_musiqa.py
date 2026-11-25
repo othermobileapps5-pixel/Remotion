@@ -29,10 +29,16 @@ SAHIFA = {
     "Upgrade-Insecure-Requests": "1",
 }
 
-ochuvchi = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+def yangi_sessiya():
+    return urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
 
 
-def ol(url, sarlavhalar, urinish=5):
+ochuvchi = yangi_sessiya()
+
+
+def ol(url, sarlavhalar, urinish=8):
+    """Pixabay bot himoyasi 403 ni vaqti-vaqti bilan beradi: kutib, yangi sessiya bilan qayta urinamiz (~3 daqiqagacha)."""
+    global ochuvchi
     for i in range(urinish):
         try:
             with ochuvchi.open(urllib.request.Request(url, headers=sarlavhalar), timeout=30) as r:
@@ -40,7 +46,10 @@ def ol(url, sarlavhalar, urinish=5):
         except urllib.error.HTTPError as e:
             if e.code not in (403, 429, 500, 502, 503, 504) or i == urinish - 1:
                 raise
-            time.sleep(2 + 3 * i)
+            print(f"  {e.code} — {i + 1}-urinish, kutaman…", file=sys.stderr)
+            time.sleep(4 + 6 * i)
+            if e.code == 403 and "music/search" in url:
+                ochuvchi = yangi_sessiya()
     return b""
 
 
