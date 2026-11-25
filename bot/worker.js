@@ -597,6 +597,77 @@ async function jadvalBos(env, cb, q) {
   }
 }
 
+// ---------- mavzular ro'yxati (YOPIQ repo: env.DATA_REPO → mavzular.json) ----------
+const GHD = (env, path, init = {}) =>
+  fetch(`https://api.github.com/repos/${env.DATA_REPO}${path}`, {
+    ...init,
+    headers: { Authorization: `Bearer ${env.BOT_GITHUB_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'faro-bot', ...(init.headers || {}) },
+  });
+const b64e = (s) => btoa(unescape(encodeURIComponent(s)));
+const b64d = (s) => decodeURIComponent(escape(atob(s.replace(/\n/g, ''))));
+
+async function mavOl(env) {
+  if (!env.DATA_REPO) throw new Error("Mavzular uchun yopiq repo ulanmagan (DATA_REPO).");
+  const r = await GHD(env, '/contents/mavzular.json');
+  if (r.status === 404) return { data: { mavzular: [] }, sha: undefined };
+  if (!r.ok) throw new Error(`Mavzular repo'siga kirib bo'lmadi (${r.status}). Tokenga yopiq repo qo'shilganini tekshiring.`);
+  const j = await r.json();
+  return { data: JSON.parse(b64d(j.content)), sha: j.sha };
+}
+async function mavYoz(env, data, sha, msg) {
+  const r = await GHD(env, '/contents/mavzular.json', { method: 'PUT', body: JSON.stringify({ message: msg, content: b64e(JSON.stringify(data, null, 2) + '\n'), ...(sha ? { sha } : {}) }) });
+  if (!r.ok) throw new Error(`Mavzularni saqlab bo'lmadi (${r.status})`);
+}
+const navbat = (d) => d.mavzular.filter((m) => m.holat !== 'ishlatildi');
+
+function mavRoyxat(d) {
+  const n = navbat(d), u = d.mavzular.length - n.length;
+  const qator = n.slice(0, 25).map((m, i) => `${i + 1}. ${esc(m.nom)}`).join('\n');
+  const kb = [];
+  n.slice(0, 25).forEach((m, i) => {
+    const btn = [{ text: `⬆️ ${i + 1}`, callback_data: `m:top:${m.id}` }, { text: `🗑 ${i + 1}`, callback_data: `m:del:${m.id}` }];
+    if (i % 2 === 0) kb.push(btn); else kb[kb.length - 1].push(...btn);
+  });
+  return {
+    text: `📋 <b>Mavzular</b> — navbatda ${n.length} ta, ishlatilgan ${u} ta\n\n${qator || "(bo'sh — «mavzu qo'sh: …» deb yozing)"}\n\nHar kuni 1-raqamdagi mavzu olinadi. ⬆️ — birinchiga qo'yish, 🗑 — o'chirish.`,
+    reply_markup: { inline_keyboard: kb },
+  };
+}
+async function mavzular(env, chat) {
+  const { data } = await mavOl(env);
+  const r = mavRoyxat(data);
+  return say(env, chat, r.text, { reply_markup: r.reply_markup });
+}
+async function mavQosh(env, chat, matn) {
+  const yangi = matn.split(/\n|;/).map((s) => s.replace(/^\s*[\d]+[.)]\s*/, '').replace(/^[-•*]\s*/, '').trim()).filter((s) => s.length > 2);
+  if (!yangi.length) return say(env, chat, "Mavzuni yozing, masalan:\nmavzu qo'sh: The Lost Army of Cambyses\n(bir nechta bo'lsa — har biri yangi qatorda)");
+  const { data, sha } = await mavOl(env);
+  let id = data.mavzular.reduce((a, m) => Math.max(a, m.id || 0), 0);
+  for (const nom of yangi) data.mavzular.push({ id: ++id, nom, holat: 'navbatda', qoshildi: new Date().toISOString().slice(0, 10) });
+  await mavYoz(env, data, sha, `Bot: ${yangi.length} ta mavzu qo'shildi`);
+  return say(env, chat, `✅ ${yangi.length} ta mavzu qo'shildi. Navbatda jami: ${navbat(data).length} ta. /mavzular — ro'yxat.`);
+}
+async function mavBos(env, cb, amal, id) {
+  const { data, sha } = await mavOl(env);
+  const i = data.mavzular.findIndex((m) => String(m.id) === String(id));
+  if (i < 0) return;
+  if (amal === 'del') data.mavzular.splice(i, 1);
+  if (amal === 'top') { const [m] = data.mavzular.splice(i, 1); const birinchi = data.mavzular.findIndex((x) => x.holat !== 'ishlatildi'); data.mavzular.splice(birinchi < 0 ? data.mavzular.length : birinchi, 0, m); }
+  await mavYoz(env, data, sha, `Bot: mavzu ${amal === 'del' ? "o'chirildi" : 'birinchiga'}`);
+  const r = mavRoyxat(data);
+  await TG(env, 'editMessageText', { chat_id: cb.message.chat.id, message_id: cb.message.message_id, text: r.text, parse_mode: 'HTML', reply_markup: r.reply_markup });
+}
+// kunlik video uchun navbatdagi mavzuni olib, «ishlatildi» deb belgilaydi
+async function mavKeyingi(env, til = 'en') {
+  if (!env.DATA_REPO) return null;
+  const { data, sha } = await mavOl(env);
+  const m = navbat(data).find((x) => (x.til || 'en') === til);
+  if (!m) return null;
+  m.holat = 'ishlatildi'; m.sana = new Date().toISOString().slice(0, 10);
+  await mavYoz(env, data, sha, `Bot: kunlik mavzu — ${m.nom}`.slice(0, 120));
+  return { ...m, qoldi: navbat(data).length };
+}
+
 // ---------- kunlik avtomatik video ----------
 // Har kuni (sozlamadagi soatda) yoki /bugun: trend → eng yaxshi g'oya → ssenariy → yig'ish → Telegram (✅ yoki avto yuklash)
 async function kunlik(env, chat, soat) {
@@ -613,6 +684,17 @@ async function kunlikTil(env, chat, soz, til, format, daqiqa) {
   // ispancha video — ispan tilidagi trend, qolganlari — sozlamadagi joy
   const joy = til === 'es' ? 'spanish' : soz.joy;
   const uzun = format !== 'shorts'; // 'youtube' yoki eski 'ikkalasi'
+  // 1) avval yopiq repo'dagi mavzular ro'yxati (shu tildagi navbatdagi mavzu)
+  const mv = await mavKeyingi(env, til).catch((e) => { say(env, chat, `⚠️ Mavzular: ${esc(e.message)} — trenddan tanlayman.`); return null; });
+  if (mv) {
+    await say(env, chat, `📋 Tomy (${esc(TIL_NOM[til] || til)}) — ro'yxatdan: <b>${esc(mv.nom)}</b>\nNavbatda yana ${mv.qoldi} ta.${mv.qoldi <= 3 ? "\n⚠️ Mavzular tugayapti — «mavzu qo'sh: …» bilan qo'shing." : ''}`);
+    const mavzu = `${mv.nom}\nHistorical documentary story: real facts; if something is a legend say "legend says" / "according to Herodotus". Open with the most cinematic scene (hook), then tell the events in order, end with a surprising fact.`;
+    const um = { mavzu, til, avto: true, avtoYuklash: soz.yuklash === 'avto', googleAI: !!soz.googleAI };
+    if (uzun) await newVideo(env, chat, { ...um, format: 'youtube', soniya: daqiqa * 60, qoshimcha: `-${til}` });
+    if (format !== 'youtube') await newVideo(env, chat, { ...um, format: 'shorts', soniya: 0, qoshimcha: `-${til}-s` });
+    return;
+  }
+  // 2) ro'yxat bo'sh — trend
   await say(env, chat, `🤖 Tomy (${esc(TIL_NOM[til] || til)}): trendni ko'ryapman (${esc(joy)})…`);
   const vids = await ytTrend(env, trendArg(joy));
   if (!vids.length) return say(env, chat, `🤖 Tomy (${esc(TIL_NOM[til] || til)}): bugun trend topilmadi — ertaga yana urinaman.`);
@@ -672,7 +754,7 @@ async function onMessage(env, msg) {
   const vid0 = msg.video || (msg.document && /^video\//.test(msg.document.mime_type || '') ? msg.document : null);
   await tarixQosh(env, chat, 'men', (vid0 ? '[video] ' : '') + text).catch(() => {});
   // pastki doimiy tugmalar
-  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '🤖 AI trend USA': '/aitrend usa', '🤖 AI trend Spanish': '/aitrend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '🤖 Tomy': '/tomy', '⚙️ Sozlama': '/tomy', '❓ Yordam': '/yordam' };
+  const TUGMA = { '📈 Trend USA': '/trend usa', '📈 Trend Spanish': '/trend spanish', '🤖 AI trend USA': '/aitrend usa', '🤖 AI trend Spanish': '/aitrend spanish', '📈 Trend UZ': '/trend uz', '📊 Kanal tahlili': '/tahlil', '🤖 Tomy': '/tomy', '📋 Mavzular': '/mavzular', '⚙️ Sozlama': '/tomy', '❓ Yordam': '/yordam' };
   if (TUGMA[text]) text = TUGMA[text];
   // Drive havolasi = fayl nomi bilan teng: havola "gd_<ID>.mp4" ga aylanadi (scripts/drive.mjs ID bo'yicha oladi)
   text = driveHavola(text);
@@ -725,9 +807,9 @@ async function onMessage(env, msg) {
   if (text === '🎬 Yangi video') return say(env, chat, 'Qaysi mavzuda? Yozing yoki ovoz yuboring, masalan: «tirakchilar uchun 5 ta tejash usuli».');
   if (text === '/start' || text === '/yordam') {
     await say(env, chat, 'Tugmalar pastda 👇', {
-      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '🤖 AI trend USA' }, { text: '🤖 AI trend Spanish' }], [{ text: '🤖 Tomy' }, { text: '🎬 Yangi video' }], [{ text: '📊 Kanal tahlili' }, { text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
+      reply_markup: { keyboard: [[{ text: '📈 Trend USA' }, { text: '📈 Trend Spanish' }], [{ text: '🤖 AI trend USA' }, { text: '🤖 AI trend Spanish' }], [{ text: '🤖 Tomy' }, { text: '🎬 Yangi video' }], [{ text: '📊 Kanal tahlili' }, { text: '📋 Mavzular' }], [{ text: '❓ Yordam' }]], resize_keyboard: true, is_persistent: true },
     });
-    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /aitrend usa · /aitrend spanish — AI bilan yasalgan, eng ko'p ko'rilgan videolar (7 kun)\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /tomy (yoki /sozlama) — Tomy, kunlik video agenti: jadval (English/Español, Uzun/Shorts, soat), muqova\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib\n• Video yuboring + izoh «Montaj» — eng yaxshi lahzalardan bitta Shorts\n• 2–10 ta videoni albom qilib yuboring + izoh «Ula» — bitta videoga ulayman (Ula shorts / Ula youtube)`);
+    return say(env, chat, `Salom! Men kanal botingizman.\n\n• Yozing yoki ovoz yuboring: «Tirakchilik haqida shorts yasa»\n• /tahlil — kanal statistikasi va g'oyalar\n• /trend usa · /trend spanish · /trend usa trucking — trendlar va g'oyalar\n• /aitrend usa · /aitrend spanish — AI bilan yasalgan, eng ko'p ko'rilgan videolar (7 kun)\n• /yangi mavzu — yangi video ssenariysi\n• /bugun — kunlik videoni hozir yasash\n• YouTube havolasini yuboring — referens tahlili (hook, temp, tuzilma, g'oyalar)\n• /mavzular — Tomy'ning mavzular ro'yxati (yopiq repo); «mavzu qo'sh: …» — har qator bitta mavzu\n• /tomy (yoki /sozlama) — Tomy, kunlik video agenti: jadval (English/Español, Uzun/Shorts, soat), muqova\n• Video yuboring + izoh «Imzo: hook» — hook, subtitr, zoom, «Obuna bo'ling» (bepul)\n• Video yuboring + izoh «Qirq» — eng yaxshi 2–3 sahna, ball bilan, Shorts qilib\n• Video yuboring + izoh «Montaj» — eng yaxshi lahzalardan bitta Shorts\n• 2–10 ta videoni albom qilib yuboring + izoh «Ula» — bitta videoga ulayman (Ula shorts / Ula youtube)`);
   }
   if (text.startsWith('/tahlil')) return analysis(env, chat);
   if (text.startsWith('/bugun')) return kunlik(env, chat);
@@ -742,6 +824,11 @@ async function onMessage(env, msg) {
   }
   if (text.startsWith('/referens')) return say(env, chat, 'Havolani ham yozing: /referens https://youtu.be/…');
   if (text.startsWith('/sozlama') || /^\/?tomy\b/i.test(text)) return sozlama(env, chat);
+  if (text.startsWith('/mavzular')) return mavzular(env, chat);
+  {
+    const q = text.match(/^\s*(?:\/qosh|mavzu\s+qo.?sh|mavzular\s+qo.?sh|add\s+topics?)\s*:?\s*([\s\S]*)$/i);
+    if (q) return mavQosh(env, chat, q[1]);
+  }
   if (/^\/aitrend/.test(text)) return trend(env, chat, /spanish|es\b|ispan/i.test(text) ? AI_TREND.spanish : AI_TREND.usa);
   if (text.startsWith('/trend')) return trend(env, chat, text.replace(/^\/trend\S*/, ''));
   if (text.startsWith('/yangi')) return newVideo(env, chat, { mavzu: text.replace('/yangi', '').trim() || 'kanal mavzusida qiziqarli fakt', format: 'shorts', til: 'uz' });
@@ -852,6 +939,7 @@ async function onCallback(env, cb) {
   await TG(env, 'answerCallbackQuery', { callback_query_id: cb.id });
   if (k === 's') return sozBos(env, cb, name, fmt); // sozlama tugmalari (xabar qoladi, yangilanadi)
   if (k === 'j') return jadvalBos(env, cb, cb.data.split(':').slice(1)); // kunlik jadval
+  if (k === 'm') return mavBos(env, cb, cb.data.split(':')[1], cb.data.split(':')[2]); // mavzular: ⬆️ / 🗑
   if (k === 'n') return newVideo(env, chat, { mavzu: cb.data.slice(2), format: 'shorts', til: 'uz' }); // trend g'oyasi (tugmalar qoladi)
   if (k === 'v') {
     // izohli video uchun tanlov (videoSora)
