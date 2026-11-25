@@ -7,11 +7,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { geminiOmniVideo } from './gemini-omni.mjs';
+import { veoVideo } from './veo-video.mjs';
 
 const [, , file, aspect = '16:9', maxArg = '10'] = process.argv;
 const KEY = process.env.FAL_KEY;
 const RUNWAY_KEY = process.env.RUNWAY_KEY;
-const GEMINI_KEY = process.env.GEMINI_API_KEY; // Google: Gemini Omni Flash (video + ovoz), "model": "google/gemini-omni-1.2-flash"
+const GEMINI_KEY = process.env.GEMINI_API_KEY; // Google: Gemini Omni Flash (video + ovoz), "model": "google/gemini-omni-1.2-flash"; Veo 3.1: "google/veo-3.1-lite" (arzon), "google/veo-3.1-fast"
 const MAX = Number(maxArg) || 10;
 
 // Standart modellar (narxi fal.ai sahifasida): matndan video va rasmdan video
@@ -77,6 +78,10 @@ async function generateGoogle(scene) {
     fs.mkdirSync(path.join('public', 'gemini'), { recursive: true });
     fs.writeFileSync(path.join('public', rel), Buffer.from(await r.arrayBuffer()));
     scene.image = rel;
+  }
+  if (model.startsWith('veo')) {
+    // Veo 3.1 Lite / Fast / Standard (Gemini API) — 4/6/8 s klip
+    return veoVideo({ key: GEMINI_KEY, model, prompt: scene.prompt, image: scene.image, aspect, resolution: scene.resolution || '720p', duration: scene.duration });
   }
   const buf = await geminiOmniVideo({
     key: GEMINI_KEY, model, prompt: scene.prompt, image: scene.image, aspect,
