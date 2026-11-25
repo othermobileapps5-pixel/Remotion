@@ -90,9 +90,12 @@ def bot_orqali(soz):
     if not kalit:
         raise RuntimeError("RASM_KALIT yo'q")
     url = os.environ.get("BOT_URL", "https://faro-kanal-bot.othermobileapps5.workers.dev").rstrip("/") + "/pixabay"
-    req = urllib.request.Request(url, data=json.dumps({"q": soz}).encode(), headers={"Content-Type": "application/json", "X-Rasm-Kalit": kalit})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.loads(r.read())
+    req = urllib.request.Request(url, data=json.dumps({"q": soz}).encode(), headers={"Content-Type": "application/json", "X-Rasm-Kalit": kalit, "User-Agent": "remotion-musiqa/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"bot {e.code}: {e.read()[:200]!r}")
 
 
 def main():
