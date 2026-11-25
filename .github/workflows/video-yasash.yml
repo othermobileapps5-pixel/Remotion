@@ -217,16 +217,20 @@ jobs:
           # Maxsus animatsiya: ssenariyda "komponent" bo'lsa, o'sha kompozitsiya (format o'zida belgilangan)
           COMP=$(node -e "console.log(require('./videos/$VIDEO.json').komponent || '')")
           if [ -n "$COMP" ]; then
-            npx remotion render src/index.ts "$COMP" "out/$VIDEO.mp4" --props="videos/$VIDEO.json" --crf=23
+            npx remotion render src/index.ts "$COMP" "out/$VIDEO.mp4" --props="videos/$VIDEO.json"
             ls -lh out; exit 0
           fi
           if [ "$FORMAT" = youtube ] || [ "$FORMAT" = ikkalasi ]; then
-            npx remotion render src/index.ts YouTube "out/$VIDEO-youtube.mp4" --props="videos/$VIDEO.json" --crf=23
+            npx remotion render src/index.ts YouTube "out/$VIDEO-youtube.mp4" --props="videos/$VIDEO.json"
           fi
           if [ "$FORMAT" = shorts ] || [ "$FORMAT" = ikkalasi ]; then
-            npx remotion render src/index.ts Shorts "out/$VIDEO-shorts.mp4" --props="videos/$VIDEO.json" --crf=23
+            npx remotion render src/index.ts Shorts "out/$VIDEO-shorts.mp4" --props="videos/$VIDEO.json"
           fi
           ls -lh out
+
+      # Hajm: 5–8 daqiqalik video ham 85 MB dan oshmasin (YouTube baribir qayta siqadi)
+      - name: Siqish (≤ 85 MB)
+        run: bash scripts/siqish.sh out/*.mp4 && ls -lh out
 
       # YouTube muqovasi: 2 dizayn (scripts/muqova.mjs). Rasm bir marta yasalib repoda qoladi — qayta pul sarflanmaydi.
       - name: Muqova (thumbnail)
