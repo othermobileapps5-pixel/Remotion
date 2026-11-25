@@ -3,7 +3,7 @@
   "til": "en",
   "transition": 0.5,
   "music": "audio/giza/music.mp3",
-  "musicVolume": 0.35,
+  "musicVolume": 0.22,
   "scenes": [
     {
       "type": "video",
