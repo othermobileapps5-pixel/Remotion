@@ -1,0 +1,48 @@
+# Rasm — tekin FLUX (bot orqali) yoki Gemini bilan rasm chizish, qo'lda. Natija «kadrlar» branch'ida rasm/<sana>/.
+name: Rasm
+
+on:
+  workflow_dispatch:
+    inputs:
+      promptlar:
+        description: "Rasm tavsiflari (inglizcha), | bilan ajrating"
+        required: true
+      google_ai:
+        description: "Gemini chizsin (pullik). O'chiq — tekin FLUX"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  rasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Chizish
+        env:
+          PROMPTLAR: ${{ github.event.inputs.promptlar }}
+          GOOGLE_AI: ${{ github.event.inputs.google_ai == 'true' && '1' || '0' }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          export RASM_KALIT=$(node -e 'console.log(require("crypto").createHash("sha256").update("rasm:"+process.env.TELEGRAM_BOT_TOKEN).digest("hex"))')
+          # sahna-rasm.mjs'ni qayta ishlatamiz: vaqtinchalik ssenariy
+          node -e '
+            const p = process.env.PROMPTLAR.split("|").map(s => s.trim()).filter(Boolean);
+            require("fs").writeFileSync("videos/rasm-tmp.json", JSON.stringify({ title: "rasm", scenes: p.map(r => ({ type: "text", text: "", duration: 3, rasm: r })) }));
+          '
+          node scripts/sahna-rasm.mjs videos/rasm-tmp.json youtube 2>&1 | tee log.txt
+          grep -h "Sahna rasmlari" log.txt >> "$GITHUB_STEP_SUMMARY" || true
+      - name: «kadrlar» branch'iga
+        run: |
+          D="rasm/$(date -u +%Y%m%d-%H%M%S)"
+          mkdir -p /tmp/k && cp public/rasm/rasm-tmp/*.jpg /tmp/k/
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin +refs/heads/kadrlar:refs/remotes/origin/kadrlar && git checkout -q -B kadrlar origin/kadrlar || git checkout -q --orphan kadrlar
+          mkdir -p "$D" && cp /tmp/k/*.jpg "$D/"
+          git add "$D" && git commit -qm "Rasm: $D" && git push -q origin kadrlar
+          echo "Rasmlar: https://github.com/${{ github.repository }}/tree/kadrlar/$D" >> "$GITHUB_STEP_SUMMARY"
