@@ -1,0 +1,18 @@
+name: Export → Drive
+# export/ papkasiga qo'yilgan tayyor videoni Drive «Export» papkasiga yuklaydi.
+on:
+  push:
+    branches: [claude/giza]
+    paths: ['export/**']
+jobs:
+  e:
+    runs-on: ubuntu-latest
+    env:
+      GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+      GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+      GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: for f in export/*.mp4; do node scripts/drive.mjs upload "$f" | tee -a "$GITHUB_STEP_SUMMARY"; done
