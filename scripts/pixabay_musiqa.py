@@ -36,7 +36,7 @@ def yangi_sessiya():
 ochuvchi = yangi_sessiya()
 
 
-def ol(url, sarlavhalar, urinish=8):
+def ol(url, sarlavhalar, urinish=3):
     """Pixabay bot himoyasi 403 ni vaqti-vaqti bilan beradi: kutib, yangi sessiya bilan qayta urinamiz (~3 daqiqagacha)."""
     global ochuvchi
     for i in range(urinish):
@@ -84,10 +84,25 @@ def qidir(soz):
     return treklar
 
 
+def bot_orqali(soz):
+    """Zaxira: qidiruvni bot (Cloudflare Worker) qiladi — GitHub serverini Pixabay to'sganda."""
+    kalit = os.environ.get("RASM_KALIT")
+    if not kalit:
+        raise RuntimeError("RASM_KALIT yo'q")
+    url = os.environ.get("BOT_URL", "https://faro-kanal-bot.othermobileapps5.workers.dev").rstrip("/") + "/pixabay"
+    req = urllib.request.Request(url, data=json.dumps({"q": soz}).encode(), headers={"Content-Type": "application/json", "X-Rasm-Kalit": kalit})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.loads(r.read())
+
+
 def main():
     soz, soni, min_s, papka = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
     os.makedirs(papka, exist_ok=True)
-    treklar = qidir(soz)
+    try:
+        treklar = qidir(soz)
+    except Exception as e:
+        print(f"To'g'ridan-to'g'ri bo'lmadi ({e}) — bot orqali qidiraman", file=sys.stderr)
+        treklar = bot_orqali(soz)
     print(f"Topildi: {len(treklar)}", file=sys.stderr)
     mos = [t for t in treklar if not t["soniya"] or t["soniya"] >= min_s]
     mos.sort(key=lambda t: t["yuklashlar"], reverse=True)

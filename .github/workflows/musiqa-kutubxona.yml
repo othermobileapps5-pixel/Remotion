@@ -56,6 +56,7 @@ jobs:
       - name: Faylni olish
         env:
           TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           FID: ${{ github.event.inputs.tg_fayl }}
           DRIVE: ${{ github.event.inputs.drive }}
           QIDIRUV: ${{ github.event.inputs.qidiruv }}
@@ -67,6 +68,7 @@ jobs:
           GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
         run: |
           mkdir -p /tmp/m
+          export RASM_KALIT=$(node -e 'console.log(require("crypto").createHash("sha256").update("rasm:"+process.env.TELEGRAM_BOT_TOKEN).digest("hex"))')
           if [ "$TOPLAM" = true ]; then
             # mavzular: tarix/Sharq, hujjatli, texnika, sport, sirli, sokin, quvnoq, yo'l, urush, ilm-fan...
             echo '[]' > /tmp/m/natija.json; XATO=0

@@ -188,6 +188,28 @@ async function saveScript(env, name, data) {
   if (r.status === 401) throw new Error("GitHub tokeni eskirgan yoki xato (401). Yangi BOT_GITHUB_TOKEN qo'ying.");
   if (!r.ok) throw new Error(`GitHub ${r.status}: ${(await r.text()).slice(0, 200)}`);
 }
+async function pixabayQidir(q) {
+  const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+  const slug = encodeURIComponent(q.trim().toLowerCase().replace(/\s+/g, '-')).replace(/%2D/g, '-');
+  const url = `https://pixabay.com/music/search/${slug}/`;
+  const r = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'text/html,application/xhtml+xml,*/*;q=0.8', 'Accept-Language': 'en-US,en;q=0.9' } });
+  if (!r.ok) throw new Error(`pixabay ${r.status}`);
+  const html = await r.text();
+  const cookie = (r.headers.getSetCookie ? r.headers.getSetCookie() : [r.headers.get('set-cookie') || '']).map((c) => c.split(';')[0]).filter(Boolean).join('; ');
+  const m = /window\.__BOOTSTRAP_URL__\s*=\s*["']([^"']+)["']/.exec(html);
+  if (m && m[1]) {
+    const j = await fetch('https://pixabay.com' + m[1], { headers: { 'User-Agent': UA, Accept: 'application/json, text/plain, */*', Referer: url, Cookie: cookie } });
+    if (j.ok) {
+      const d = await j.json();
+      return (d.page?.results || []).filter((it) => it.sources?.src).map((it) => ({
+        nom: it.name || 'trek', url: it.sources.src, soniya: Number(it.duration || 0), muallif: it.user?.username || '',
+        yuklashlar: Number(it.downloadCount || 0), id: it.id, sahifa: it.href ? 'https://pixabay.com' + it.href : url,
+        teglar: String(it.tags || '').split(',').map((t) => t.trim()).filter(Boolean),
+      }));
+    }
+  }
+  return [...new Set(html.match(/https?:\/\/cdn\.pixabay\.com\/audio\/[^\s"'<>]+\.mp3/g) || [])].map((u, i) => ({ nom: u.split('/').pop(), url: u, soniya: 0, muallif: '', yuklashlar: 0, id: i, sahifa: url, teglar: [] }));
+}
 async function muqovaRasm(env, name, s) {
   if (!env.AI) return;
   const prompt = `${s.muqova.rasm_prompt || s.youtube?.nom || s.title}. YouTube thumbnail background, one bold central subject, cinematic dramatic lighting, high contrast, vivid saturated colors, ultra detailed, absolutely no text, no letters, no logos, no brand names, no trademarks.`;
@@ -891,6 +913,16 @@ export default {
         const r = await env.AI.run('@cf/black-forest-labs/flux-1-schnell', { prompt: String(prompt || '').slice(0, 2000), steps: Math.min(8, Number(steps) || 4) });
         if (!r?.image) return new Response('rasm yo\'q', { status: 502 });
         return new Response(Uint8Array.from(atob(r.image), (c) => c.charCodeAt(0)), { headers: { 'Content-Type': 'image/jpeg' } });
+      } catch (e) {
+        return new Response(String(e.message || e).slice(0, 300), { status: 502 });
+      }
+    }
+    // Pixabay musiqa qidiruvi (GitHub serverlari 403 olganda zaxira): POST /pixabay {q} → [{nom,url,soniya,...}]
+    if (req.method === 'POST' && new URL(req.url).pathname === '/pixabay') {
+      if (!env.RASM_KALIT || req.headers.get('X-Rasm-Kalit') !== env.RASM_KALIT) return new Response('no', { status: 403 });
+      const { q } = await req.json();
+      try {
+        return Response.json(await pixabayQidir(String(q || '')));
       } catch (e) {
         return new Response(String(e.message || e).slice(0, 300), { status: 502 });
       }
