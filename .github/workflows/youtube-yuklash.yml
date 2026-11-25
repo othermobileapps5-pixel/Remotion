@@ -11,6 +11,10 @@ on:
         description: "Natija yuboriladigan Telegram chat (bot to'ldiradi)"
         required: false
         default: ""
+      holat:
+        description: "public / unlisted / private"
+        required: false
+        default: "public"
       muqova:
         description: "Muqova varianti (1 yoki 2; bo'sh — YouTube o'zi tanlaydi)"
         required: false
@@ -46,6 +50,7 @@ jobs:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_PRIVACY: ${{ github.event.inputs.holat || 'public' }}
         run: |
           ID=$(node scripts/youtube.mjs "videos/$VIDEO.json" "$(ls out/*.mp4 | head -1)" "$(ls out/*-muqova-*.jpg 2>/dev/null | head -1)" 2> err.txt) || { cat err.txt; exit 1; }
           cat err.txt
