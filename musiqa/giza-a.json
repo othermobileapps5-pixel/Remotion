@@ -1,1 +1,7 @@
-{ "musiqa": { "model": "lyria-3.5", "prompt": "Cinematic ancient Egypt documentary underscore, about 3 minutes, instrumental with a wordless ethereal female vocal lament (no lyrics, only 'aah' vocalise) in the Middle Eastern Hijaz scale, solo duduk, oud, soft frame drum, warm low strings and desert wind. Slow tempo around 70 bpm, mysterious and majestic, gentle intro, calm enough to sit under a narrator. No words, no modern drums, no electronic sounds." } }
+{
+  "musiqa": {
+    "model": "lyria-3.5",
+    "prompt": "Cinematic ancient Egypt documentary underscore, about 3 minutes, instrumental with a wordless ethereal female vocal lament (no lyrics, only 'aah' vocalise) in the Middle Eastern Hijaz scale, solo duduk, oud, soft frame drum, warm low strings and desert wind. Slow tempo around 70 bpm, mysterious and majestic, gentle intro, calm enough to sit under a narrator. No words, no modern drums, no electronic sounds.",
+    "fayl": "musiqa/giza-a.mp3"
+  }
+}
