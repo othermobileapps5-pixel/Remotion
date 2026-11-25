@@ -229,7 +229,7 @@ jobs:
           ls -lh out
 
       # Hajm: 5–8 daqiqalik video ham 85 MB dan oshmasin (YouTube baribir qayta siqadi)
-      - name: Siqish (≤ 85 MB)
+      - name: Siqish (≤ 85–90 MB)
         run: bash scripts/siqish.sh out/*.mp4 && ls -lh out
 
       # YouTube muqovasi: 2 dizayn (scripts/muqova.mjs). Rasm bir marta yasalib repoda qoladi — qayta pul sarflanmaydi.
