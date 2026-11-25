@@ -27,15 +27,7 @@ jobs:
           mkdir -p public/giza
           find tmp/x -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | sort | while read f; do cp "$f" "public/giza/$(basename "$f")"; done
           ls -la public/giza
-          python3 -c "
-          from PIL import Image,ImageDraw;import glob,os
-          fs=sorted(glob.glob('public/giza/*'));W=480;cols=4
-          ims=[Image.open(f).convert('RGB') for f in fs]
-          th=[im.resize((W,int(W*im.height/im.width))) for im in ims];H=max([t.height for t in th]+[1])+40
-          S=Image.new('RGB',(W*cols,H*((len(th)+cols-1)//cols or 1)),'black');d=ImageDraw.Draw(S)
-          for i,(t,f,im) in enumerate(zip(th,fs,ims)):
-            x,y=(i%cols)*W,(i//cols)*H;S.paste(t,(x,y+40));d.text((x+8,y+8),f'{os.path.basename(f)}  {im.width}x{im.height}',fill='white')
-          S.save('giza-zip-varaq.jpg',quality=85)"
+          pip install -q pillow && python3 giza/varaq.py
           gh release upload kadrlar giza-zip-varaq.jpg --clobber
       - name: Commit
         run: |
