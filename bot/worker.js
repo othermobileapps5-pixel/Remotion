@@ -155,10 +155,12 @@ Qoidalar:
 - Har sahnada "ovoz" — o'qiladigan gap (sahna matnidan uzunroq bo'lishi mumkin, 1-2 gap). "text" — ekrandagi qisqa matn (5-9 so'z, \\n bilan 2 qator).
 - duration: ovoz uzunligiga mos (o'zbekcha ~2.3 so'z/soniya) + 0.8.
 - HAR sahnada (birinchi va oxirgisi ham) "rasm": INGLIZCHA rasm tavsifi (15-30 so'z): aniq obraz, joy, yorug'lik, kadr (close-up / wide shot); sahna mazmuniga mos, haqiqiy odamlar, brendlar va logolar bo'lmasin, rasmda yozuv bo'lmasin.
+- "musiqa_qidiruv": fon musiqasi uchun 2-4 INGLIZCHA so'z — mavzu va kayfiyatga mos janr/cholg'u (Misr → "egypt ambient duduk", texnika → "tech corporate upbeat", qo'rqinchli → "dark suspense cinematic", yuk mashinasi → "country road guitar"); qo'shiq nomi yoki san'atkor emas.
 - "rasmUslub": butun video uchun bitta INGLIZCHA uslub (masalan "cinematic photorealistic, warm film grain" yoki "dramatic digital painting, dark teal and orange") — rasmlar bir-biriga mos chiqadi.
 FAQAT JSON qaytar:
 {"title": "...", "theme": {"bg": "#0b1020", "accent": "#ffcc33", "text": "#ffffff"},
  "rasmUslub": "...",
+ "musiqa_qidiruv": "...",
  "scenes": [{"type": "title", "text": "...", "subtitle": "...", "duration": 4, "ovoz": "..."}, {"type": "text", "text": "...", "duration": 5, "ovoz": "...", "rasm": "..."}],
  "youtube": {"nom": "YouTube sarlavha (60 belgigacha)", "tavsif": "2-4 qator tavsif", "teglar": ["...", "..."]},
  "muqova": {"matn": "2-4 SO'Z", "urgu": "SO'Z", "belgi": "", "rasm_prompt": "..."}}
