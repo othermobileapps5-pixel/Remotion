@@ -217,14 +217,14 @@ jobs:
           # Maxsus animatsiya: ssenariyda "komponent" bo'lsa, o'sha kompozitsiya (format o'zida belgilangan)
           COMP=$(node -e "console.log(require('./videos/$VIDEO.json').komponent || '')")
           if [ -n "$COMP" ]; then
-            npx remotion render src/index.ts "$COMP" "out/$VIDEO.mp4" --props="videos/$VIDEO.json"
+            npx remotion render src/index.ts "$COMP" "out/$VIDEO.mp4" --props="videos/$VIDEO.json" --crf=23
             ls -lh out; exit 0
           fi
           if [ "$FORMAT" = youtube ] || [ "$FORMAT" = ikkalasi ]; then
-            npx remotion render src/index.ts YouTube "out/$VIDEO-youtube.mp4" --props="videos/$VIDEO.json"
+            npx remotion render src/index.ts YouTube "out/$VIDEO-youtube.mp4" --props="videos/$VIDEO.json" --crf=23
           fi
           if [ "$FORMAT" = shorts ] || [ "$FORMAT" = ikkalasi ]; then
-            npx remotion render src/index.ts Shorts "out/$VIDEO-shorts.mp4" --props="videos/$VIDEO.json"
+            npx remotion render src/index.ts Shorts "out/$VIDEO-shorts.mp4" --props="videos/$VIDEO.json" --crf=23
           fi
           ls -lh out
 
