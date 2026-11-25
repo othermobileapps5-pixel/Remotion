@@ -16,7 +16,8 @@
       "ovoz": "Forty-five centuries ago, on a plateau beside the Nile, Egyptians raised the greatest stone monument on Earth.",
       "ovozchi": "kokoro:am_michael",
       "ovozFayl": "ovoz/giza-1.wav",
-      "ovozKalit": "91da97ee1e"
+      "ovozKalit": "91da97ee1e",
+      "src": "fal/giza-1.mp4"
     },
     {
       "type": "image",
@@ -59,7 +60,8 @@
       "ovoz": "Blocks weighing over two tonnes were dragged on wooden sledges by teams pulling in rhythm.",
       "ovozchi": "kokoro:am_michael",
       "ovozFayl": "ovoz/giza-5.wav",
-      "ovozKalit": "ab082c2bf1"
+      "ovozKalit": "ab082c2bf1",
+      "src": "fal/giza-5.mp4"
     },
     {
       "type": "video",
@@ -72,7 +74,8 @@
       "ovoz": "Over roughly twenty years, an estimated 2.3 million blocks rose, course by course, into a mountain of stone.",
       "ovozchi": "kokoro:am_michael",
       "ovozFayl": "ovoz/giza-6.wav",
-      "ovozKalit": "febb08a44c"
+      "ovozKalit": "febb08a44c",
+      "src": "fal/giza-6.mp4"
     },
     {
       "type": "image",
@@ -116,7 +119,7 @@
     },
     {
       "type": "video",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/871d51b8-955e-405d-a224-fa0c16ffe0bc/0d61bfd4-21d8-4c6c-b536-f1be95ef781d/Cinematic_documentary_still__ancient_Egypt_Old_Kingdom__a_wo.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2Q0NGJjNjdiMmQwZWVlNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTgwMDY3OX0.kK8gyZ_1uTuP7A-AR7Ud5y3q4FvqdRa4V2Ht_VIV4GU",
+      "image": "gemini/img-1795641360633-dw40j.png",
       "prompt": "Parallel tracking shot alongside the cargo boat, sail filled with wind, crew working the ropes, water flowing past. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
@@ -125,7 +128,8 @@
       "ovoz": "In 2013, the oldest known papyri were found: the logbook of Merer, whose crew shipped limestone by boat.",
       "ovozchi": "kokoro:am_michael",
       "ovozFayl": "ovoz/giza-11.wav",
-      "ovozKalit": "7c4677eee5"
+      "ovozKalit": "7c4677eee5",
+      "src": "fal/giza-11.mp4"
     },
     {
       "type": "image",
@@ -139,7 +143,7 @@
     },
     {
       "type": "video",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/e8b50d73-3879-4b3a-b37f-1ffac6712800/7216866f-603c-43ed-aa29-8be0aa5c4844/Cinematic_documentary_still__a_narrow_ascending_stone_passag.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODM2MTU1ZDJmNjgxYmM5ZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc4MTQ1OH0.j5FH80KKHaKSkClzsIipMNRv8yDmn2pCngwhKTiwZmA",
+      "image": "gemini/img-1795641404509-rlk9h.png",
       "prompt": "Slow forward glide up the narrow stone passage, torchlight flickering on the walls, dust particles floating. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
@@ -148,7 +152,8 @@
       "ovoz": "Inside, narrow passages climb through the stone toward the heart of the pyramid.",
       "ovozchi": "kokoro:am_michael",
       "ovozFayl": "ovoz/giza-13.wav",
-      "ovozKalit": "e676159464"
+      "ovozKalit": "e676159464",
+      "src": "fal/giza-13.mp4"
     },
     {
       "type": "image",
@@ -312,7 +317,7 @@
     },
     {
       "type": "video",
-      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/fbb3f8f9-d826-4fde-8ae1-b0921cf3e252/8f4352b4-267a-4915-ba7d-e3d9bd440575/Cinematic_documentary_aerial_still__high_aerial_perspective_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjQyMGVlMzAwMWMyYzdhYSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc3OTUwNH0.ftrajKj-YrExub6BGznfRGJ13db6jSvay_NwTiDJW_8",
+      "image": "gemini/img-1795641407525-cab14.png",
       "prompt": "Slow high aerial pull-back over the pyramid complex in the last golden light, gentle drift, fading toward dusk. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
       "model": "google/gemini-omni-1.2-flash",
       "resolution": "720p",
@@ -321,7 +326,8 @@
       "ovoz": "Through time, their work endures. This was the Great Pyramid of Giza.",
       "ovozchi": "kokoro:am_michael",
       "ovozFayl": "ovoz/giza-30.wav",
-      "ovozKalit": "93e9410330"
+      "ovozKalit": "93e9410330",
+      "src": "fal/giza-30.mp4"
     }
   ]
 }
