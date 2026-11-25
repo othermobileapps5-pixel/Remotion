@@ -1,0 +1,107 @@
+{
+  "title": "Uncovering Hidden Gems in GTA 6",
+  "theme": {
+    "bg": "#0b1020",
+    "accent": "#ffcc33",
+    "text": "#ffffff"
+  },
+  "rasmUslub": "cinematic photorealistic, warm film grain",
+  "scenes": [
+    {
+      "type": "title",
+      "text": "GTA 6 Secrets",
+      "subtitle": "Explore the Unknown",
+      "duration": 6,
+      "ovoz": "Welcome to the world of Grand Theft Auto 6, where secrets await around every corner.",
+      "rasm": "A wide shot of the GTA 6 cityscape at dusk, with a hint of mystery in the air."
+    },
+    {
+      "type": "text",
+      "text": "Hidden Locations",
+      "duration": 6,
+      "ovoz": "From hidden alleys to secret rooftops, we'll take you on a journey to discover the most elusive spots in the game.",
+      "rasm": "A close-up of a character navigating through a narrow alleyway, with a map in hand."
+    },
+    {
+      "type": "text",
+      "text": "Easter Eggs",
+      "duration": 6,
+      "ovoz": "We'll also explore the Easter eggs and references that Rockstar Games has cleverly hidden throughout the game.",
+      "rasm": "A wide shot of a character standing in front of a mural, with a puzzled expression."
+    },
+    {
+      "type": "text",
+      "text": "Glitches and Exploits",
+      "duration": 6,
+      "ovoz": "And for the more adventurous players, we'll dive into the world of glitches and exploits that can give you an edge in the game.",
+      "rasm": "A close-up of a character using a glitch to access a restricted area."
+    },
+    {
+      "type": "text",
+      "text": "Community Secrets",
+      "duration": 6,
+      "ovoz": "We'll also share some secrets and tips from the GTA 6 community, so you can stay ahead of the game.",
+      "rasm": "A wide shot of a group of players gathered around a computer, discussing strategies."
+    },
+    {
+      "type": "text",
+      "text": "The Hunt Begins",
+      "duration": 6,
+      "ovoz": "So, are you ready to start your journey and uncover the secrets of GTA 6?",
+      "rasm": "A close-up of a character looking at a map, with a determined expression."
+    },
+    {
+      "type": "text",
+      "text": "Let's Explore",
+      "duration": 6,
+      "ovoz": "Join us as we explore the world of GTA 6 and discover its hidden gems.",
+      "rasm": "A wide shot of the GTA 6 cityscape at night, with a sense of adventure in the air."
+    },
+    {
+      "type": "text",
+      "text": "Stay Tuned",
+      "duration": 6,
+      "ovoz": "Stay tuned for more GTA 6 content, and don't forget to like and subscribe for more gaming videos.",
+      "rasm": "A close-up of a character giving a thumbs up, with a friendly smile."
+    },
+    {
+      "type": "text",
+      "text": "Thanks for Watching",
+      "duration": 6,
+      "ovoz": "Thanks for watching, and we'll catch you in the next video!",
+      "rasm": "A wide shot of the GTA 6 cityscape at sunset, with a sense of closure."
+    },
+    {
+      "type": "title",
+      "text": "Subscribe Now",
+      "subtitle": "Join the Community",
+      "duration": 8,
+      "ovoz": "Don't forget to subscribe to our channel for more gaming content, and hit the notification bell to stay up-to-date.",
+      "rasm": "A close-up of a character clicking the subscribe button, with a satisfied expression."
+    }
+  ],
+  "youtube": {
+    "nom": "GTA 6 Secrets and Hidden Locations",
+    "tavsif": "Explore the unknown in GTA 6 with our guide to hidden locations, Easter eggs, and glitches.",
+    "teglar": [
+      "GTA 6",
+      "Grand Theft Auto 6",
+      "Gaming",
+      "Secrets",
+      "Hidden Locations"
+    ]
+  },
+  "muqova": {
+    "matn": "GTA 6 SECRETS",
+    "urgu": "SECRETS",
+    "belgi": "",
+    "rasm_prompt": "A close-up of a character looking at a map, with a determined expression and a cityscape in the background."
+  },
+  "ovozchi": "kokoro:am_michael",
+  "ovozUslubi": "natural, confident and energetic male narrator speaking English at a brisk pace",
+  "bot": {
+    "format": "youtube",
+    "mavzu": "GTA 6 o'yinidagi sirli joylar",
+    "til": "en"
+  }
+}
