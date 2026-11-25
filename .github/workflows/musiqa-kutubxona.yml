@@ -5,6 +5,10 @@ name: Musiqa kutubxona
 on:
   workflow_dispatch:
     inputs:
+      toplam:
+        description: "Kutubxonani to'ldirish: turli kayfiyatlar bo'yicha har biridan 2 ta trek (bor bo'lsa o'tkazib yuboradi)"
+        type: boolean
+        default: false
       qidiruv:
         description: "Pixabay'da qidirish (inglizcha, masalan: arabic female vocal duduk) — topilganlarni yuklaydi"
         default: ""
@@ -43,6 +47,7 @@ concurrency:
 jobs:
   qosh:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -54,6 +59,7 @@ jobs:
           FID: ${{ github.event.inputs.tg_fayl }}
           DRIVE: ${{ github.event.inputs.drive }}
           QIDIRUV: ${{ github.event.inputs.qidiruv }}
+          TOPLAM: ${{ github.event.inputs.toplam }}
           SONI: ${{ github.event.inputs.soni }}
           MIN: ${{ github.event.inputs.min_soniya }}
           GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
@@ -61,7 +67,36 @@ jobs:
           GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
         run: |
           mkdir -p /tmp/m
-          if [ -n "$QIDIRUV" ]; then
+          if [ "$TOPLAM" = true ]; then
+            # mavzular: tarix/Sharq, hujjatli, texnika, sport, sirli, sokin, quvnoq, yo'l, urush, ilm-fan...
+            echo '[]' > /tmp/m/natija.json; XATO=0
+            while IFS= read -r Q; do
+              [ -z "$Q" ] && continue
+              [ "$XATO" -ge 3 ] && { echo "Pixabay ketma-ket 3 marta to'sdi — to'xtadim (keyinroq qayta ishga tushiring)"; break; }
+              grep -qi "\"$Q\"" public/musiqa/kutubxona.json 2>/dev/null && { echo "bor: $Q"; continue; }
+              rm -rf /tmp/q && python3 -I scripts/pixabay_musiqa.py "$Q" 2 90 /tmp/q || { echo "! $Q"; XATO=$((XATO+1)); continue; }
+              XATO=0
+              node -e 'const fs=require("fs");const a=JSON.parse(fs.readFileSync("/tmp/m/natija.json"));const b=JSON.parse(fs.readFileSync("/tmp/q/natija.json"));for(const t of b){const f="/tmp/m/"+require("path").basename(t.fayl);fs.copyFileSync(t.fayl,f);a.push({...t,fayl:f,teglar:[process.argv[1],...(t.teglar||[])]})}fs.writeFileSync("/tmp/m/natija.json",JSON.stringify(a))' "$Q"
+            done <<'Q'
+          arabic female vocal
+          egypt ambient
+          duduk
+          persian santur
+          silk road
+          epic cinematic
+          documentary background
+          dark suspense
+          mystery ambient
+          tech corporate
+          inspiring piano
+          upbeat happy
+          country road guitar
+          war drums
+          space ambient
+          sad emotional
+          Q
+            [ "$(node -e 'console.log(JSON.parse(require("fs").readFileSync("/tmp/m/natija.json")).length)')" -gt 0 ] || { echo "::error::Pixabay hech narsa bermadi (403) — keyinroq qayta ishga tushiring"; exit 1; }
+          elif [ -n "$QIDIRUV" ]; then
             python3 -I scripts/pixabay_musiqa.py "$QIDIRUV" "$SONI" "$MIN" /tmp/m
           elif [ -n "$FID" ]; then
             P=$(curl -s "https://api.telegram.org/bot$TG/getFile?file_id=$FID" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);if(!j.ok){console.error(s);process.exit(1)}console.log(j.result.file_path)})')
