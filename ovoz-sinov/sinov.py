@@ -1,5 +1,5 @@
 # OmniVoice (k2-fsa) sinovi: CPU'da matn -> ovoz. Natija ovoz-sinov/out/*.wav
-import json, os, time, torch, soundfile as sf
+import json, os, time, torch, numpy as np, soundfile as sf
 from omnivoice.models.omnivoice import OmniVoice
 
 os.makedirs('ovoz-sinov/out', exist_ok=True)
@@ -11,7 +11,8 @@ for it in json.load(open('ovoz-sinov/matn.json')):
     t = time.time()
     try:
         wav = model.generate(text=it['matn'], language=it['til'], instruct=it.get('instruct'))[0]
-        wav = wav.squeeze().float().cpu().numpy()
+        wav = wav.detach().float().cpu().numpy() if torch.is_tensor(wav) else np.asarray(wav, dtype=np.float32)
+        wav = wav.squeeze()
         sf.write(f"ovoz-sinov/out/{it['nom']}.wav", wav, sr)
         print(f"✓ {it['nom']}: {len(wav)/sr:.1f} s ovoz, {time.time()-t:.0f} s ketdi", flush=True)
     except Exception as e:
