@@ -623,8 +623,17 @@ async function onMessage(env, msg) {
   const chat = msg.chat.id;
   TG(env, 'sendChatAction', { chat_id: chat, action: 'typing' }).catch(() => {});
   let text = msg.text || msg.caption || '';
-  if (msg.voice || msg.audio) {
-    text = (await voiceToText(env, (msg.voice || msg.audio).file_id)).trim();
+  // Musiqa fayli (Pixabay, YouTube Audio Library...) → kutubxonaga: «Musiqa kutubxona» workflow'i
+  const audio = msg.audio || (msg.document && /^audio\//.test(msg.document.mime_type || '') ? msg.document : null);
+  if (audio && !/^\s*(ovoz|buyruq)\b/i.test(text)) {
+    if ((audio.file_size || 0) > 20e6) return say(env, chat, "⚠️ Fayl 20 MB dan katta — Telegram bot uni ololmaydi. Drive'ning Reference papkasiga qo'ying va «Musiqa kutubxona» workflow'ida <code>drive</code> ga nomini yozing.");
+    const nom = audio.title || audio.file_name || '';
+    const teglar = text.replace(/^\s*musiqa\s*:?\s*/i, '');
+    await dispatchMain(env, 'musiqa-kutubxona.yml', { tg_fayl: audio.file_id, nom: String(nom).slice(0, 80), teglar: teglar.slice(0, 200), manba: /youtube/i.test(text) ? 'youtube' : 'pixabay', telegram: String(chat) });
+    return say(env, chat, `🎵 Musiqani kutubxonaga qo'shyapman${nom ? ': <b>' + esc(nom) + '</b>' : ''}… (~1 daqiqa)`);
+  }
+  if (msg.voice) {
+    text = (await voiceToText(env, msg.voice.file_id)).trim();
     const zaxira = text.startsWith('⚠️(zaxira) ');
     text = text.replace('⚠️(zaxira) ', '');
     await say(env, chat, `🎙 <i>${esc(text)}</i>` + (zaxira ? "\n<i>(Gemini band edi — zaxira model eshitdi, xato bo'lsa matn bilan yozing)</i>" : ''));

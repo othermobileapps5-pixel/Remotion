@@ -1,0 +1,89 @@
+# Musiqa kutubxonasi: egasi yuborgan tekin trek (Pixabay, YouTube Audio Library) → public/musiqa/kutubxona/.
+# Bot audio faylni olib shu workflow'ni ishga tushiradi (tg_fayl); qo'lda — Drive'dagi fayl nomi (drive).
+name: Musiqa kutubxona
+
+on:
+  workflow_dispatch:
+    inputs:
+      tg_fayl:
+        description: "Telegram file_id (bot to'ldiradi)"
+        default: ""
+      drive:
+        description: "Yoki Drive'dagi fayl nomi (Claude papkasi, masalan Reference'dagi duduk.mp3)"
+        default: ""
+      nom:
+        description: "Trek nomi"
+        default: ""
+      teglar:
+        description: "Teglar, vergul bilan (misr, duduk, sirli, ayol vokali...)"
+        default: ""
+      manba:
+        description: "Manba (pixabay, youtube, boshqa)"
+        default: pixabay
+      telegram:
+        description: "Javob yuboriladigan Telegram chat"
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: musiqa-kutubxona
+  cancel-in-progress: false
+
+jobs:
+  qosh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+      - name: Faylni olish
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          FID: ${{ github.event.inputs.tg_fayl }}
+          DRIVE: ${{ github.event.inputs.drive }}
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        run: |
+          mkdir -p /tmp/m
+          if [ -n "$FID" ]; then
+            P=$(curl -s "https://api.telegram.org/bot$TG/getFile?file_id=$FID" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);if(!j.ok){console.error(s);process.exit(1)}console.log(j.result.file_path)})')
+            EXT="${P##*.}"; curl -s -o "/tmp/m/kirish.$EXT" "https://api.telegram.org/file/bot$TG/$P"
+          elif [ -n "$DRIVE" ]; then
+            node scripts/drive.mjs get "$DRIVE" "/tmp/m/$DRIVE"
+          else
+            echo "::error::tg_fayl yoki drive kerak"; exit 1
+          fi
+          ls -lh /tmp/m
+      - name: Kutubxonaga qo'shish
+        id: q
+        env:
+          NOM: ${{ github.event.inputs.nom }}
+          TEGLAR: ${{ github.event.inputs.teglar }}
+          MANBA: ${{ github.event.inputs.manba }}
+          DRIVE: ${{ github.event.inputs.drive }}
+        run: |
+          F=$(ls /tmp/m/* | head -1)
+          [ -n "$NOM" ] || NOM="${DRIVE:-}"
+          Y=$(node scripts/kutubxona.mjs qosh "$F" "$NOM" "$TEGLAR" "$MANBA")
+          echo "$Y"
+          echo "yozuv=$Y" >> "$GITHUB_OUTPUT"
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/musiqa && git commit -qm "Musiqa kutubxonasi: $(echo "$Y" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).fayl))')"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 3; done
+      - name: Telegram
+        if: always() && github.event.inputs.telegram != ''
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT: ${{ github.event.inputs.telegram }}
+          Y: ${{ steps.q.outputs.yozuv }}
+        run: |
+          if [ -n "$Y" ]; then
+            T=$(echo "$Y" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const y=JSON.parse(s);console.log(`🎵 Kutubxonaga qo'\''shildi: ${y.nom}\n⏱ ${Math.floor(y.soniya/60)}:${String(y.soniya%60).padStart(2,"0")} · 🏷 ${y.teglar.join(", ")}\n📁 ${y.fayl}`)})')
+          else
+            T="⚠️ Musiqani kutubxonaga qo'shib bo'lmadi: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          curl -s --data-urlencode "chat_id=$CHAT" --data-urlencode "text=$T" "https://api.telegram.org/bot$TG/sendMessage" >/dev/null
