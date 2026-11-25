@@ -1,0 +1,282 @@
+{
+  "title": "The Great Pyramid of Giza — THROUGH TIME",
+  "til": "en",
+  "transition": 0.5,
+  "music": "audio/giza/music.mp3",
+  "musicVolume": 0.35,
+  "scenes": [
+    {
+      "type": "video",
+      "image": "giza/a_cinematic_highly_detailed_scene_of_ancient_egyp.png",
+      "prompt": "Slow forward drone glide toward the pyramids at dawn, desert mist drifting, sun rising, tiny figures walking on the path. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "Forty-five centuries ago, on a plateau beside the Nile, Egyptians raised the greatest stone monument on Earth.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "giza/a_detailed_cinematic_scene_of_the_nile_river_in_an.png",
+      "prompt": "Gentle tracking shot following the wooden boat downstream, sail moving in the breeze, soft ripples on the water, palms swaying. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "Everything began with the river. The Nile fed the people, and it would carry the stone.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "giza/a_detailed_cinematic_scene_of_an_ancient_egyptian.png",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "Around 2560 BC, in Egypt's Fourth Dynasty, King Khufu ordered a tomb unlike any before it. A whole kingdom was organized to build it.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "giza/a_realistic_cinematic_historical_scene_of_an_anci.png",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "Most of the stone was cut right here at Giza. Workers split limestone from the bedrock with copper chisels, wooden wedges and stone hammers.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "giza/a_realistic_cinematic_historical_scene_of_ancient.png",
+      "prompt": "Slow lateral pan following the workers pulling ropes in unison, the sledge with the limestone block sliding forward, dust rising. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "Blocks weighing over two tonnes were dragged on wooden sledges by teams pulling in rhythm.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "giza/a_wide_cinematic_scene_of_an_ancient_egyptian_pyra.png",
+      "prompt": "Slow aerial push toward the rising pyramid, work crews moving on the ramps, blocks being hauled, dust drifting. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "Over roughly twenty years, an estimated 2.3 million blocks rose, course by course, into a mountain of stone.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "giza/a_detailed_cinematic_historical_scene_close_up_fo.png",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "The outer face was cased in fine white limestone from Tura, across the river, dressed so smoothly that the pyramid would shine in the sun.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "giza/a_cinematic_photorealistic_scene_of_ancient_egypt.png",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "Before any stone was laid, surveyors marked out the base. Its sides face north, south, east and west to within a fraction of a degree.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "giza/a_vivid_cinematic_ancient_egyptian_workers_settl.png",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "So who built it? Not slaves, as the old legend claims. Archaeologists found the builders' town just south of the plateau, with homes and workshops.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/bb000675-e151-47b4-a955-57772245635d/99cec1b8-6b65-404e-a3bb-17f8aea58e7f/Cinematic_documentary_still__ancient_Egypt_Old_Kingdom__Egyp.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDM0NjllNGU3Mzg1NWNjZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc5ODIyMn0.L3N-yY2IQz89N2McFNNjLsFkA0m-35JuBsBcOr8DCr0",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "The workers ate bread, drank beer, and even received meat. Their tombs, built near the pyramids, show they were honored for their labor.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/871d51b8-955e-405d-a224-fa0c16ffe0bc/0d61bfd4-21d8-4c6c-b536-f1be95ef781d/Cinematic_documentary_still__ancient_Egypt_Old_Kingdom__a_wo.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2Q0NGJjNjdiMmQwZWVlNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTgwMDY3OX0.kK8gyZ_1uTuP7A-AR7Ud5y3q4FvqdRa4V2Ht_VIV4GU",
+      "prompt": "Parallel tracking shot alongside the cargo boat, sail filled with wind, crew working the ropes, water flowing past. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "In 2013, the oldest known papyri were found: the logbook of Merer, whose crew shipped limestone by boat.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/4ffff599-f643-4d6f-b070-0e125217982f/30e3d7dd-569f-4753-9db4-a71418fc37d1/Cinematic_documentary_historical_reconstruction__ancient_Egy.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzk1OTU3ZjE5MjY0NDUyZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc0MzcyOX0.v1QSiTFmy579fYjhROu9qldstL1krm9ubkcGzGyM5Ko",
+      "prompt": "Slow push-in on the hauling team dragging the block up the ramp, a man pouring water before the sledge, dust in the air. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "How the blocks were raised is still debated. Straight, zigzag and spiral ramps are all possibilities.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/e8b50d73-3879-4b3a-b37f-1ffac6712800/7216866f-603c-43ed-aa29-8be0aa5c4844/Cinematic_documentary_still__a_narrow_ascending_stone_passag.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODM2MTU1ZDJmNjgxYmM5ZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc4MTQ1OH0.j5FH80KKHaKSkClzsIipMNRv8yDmn2pCngwhKTiwZmA",
+      "prompt": "Slow forward glide up the narrow stone passage, torchlight flickering on the walls, dust particles floating. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "Inside, narrow passages climb through the stone toward the heart of the pyramid.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/7a0412ec-c46e-4369-b5db-5980dd3cfa35/505a8413-6463-4af6-a57b-05db14787caa/Cinematic_documentary_still__the_King_s_Chamber_inside_the_G.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDY4YjgzY2Q2NjBjMjA0NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc4MTA2OX0.2QMq92XVj3bTa9c6H7UeWt6WP0qDCyTUNCxqktvSXL8",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "The King's Chamber is lined with red granite brought some eight hundred kilometres from Aswan. It holds only an empty, lidless sarcophagus.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/e69a5e8c-e321-4aa9-aa78-88c0f6ccc273/08487c07-f2a3-41f4-8e88-1aff2242ef48/Cinematic_documentary_close_up_still__tightly_fitted_granite.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2Q5NWQxYTg1YTMyNGIwMyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc5NTExMn0.TxVwYJQAXKcxgP8zN4y-IfTPBW4qWr2GI_c5KxNGNJc",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "The base is almost perfectly level, and many joints remain remarkably tight, achieved with copper tools, cords and careful measurement.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/4d79ec1f-3d70-4e4b-8e86-09df44d92518/836b0711-fe23-4fb7-b3bf-75a295c720fa/Cinematic_documentary_historical_reconstruction__the_newly_f.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTFjODg5MzU2MWRkNTBmNyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc1MzM5N30.lFEDK1qWgH2_2kWUWbFAWOtFNwFL5pK2q_1E096kfug",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "When finished, the pyramid stood about 146 metres tall. For about 3,800 years, it was the tallest structure built by human hands.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/854019f5-6915-4cd3-b848-6bea28c362c2/948b7336-94ef-48c2-a5b8-96acf33e0328/Cinematic_documentary_still__the_Great_Sphinx_of_Giza_rests_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2I0MTg5ODgyNzlkOWM0ZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc2OTk5Mn0._B37XsmjO5JSxlaBzNuP8nk0WLpJ65awvGdUdsTGGlE",
+      "prompt": "Slow lateral dolly past the Sphinx, fine sand blowing across the plateau, shadows shifting slightly. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "Nearby, the Great Sphinx, carved from the bedrock, is usually attributed to Khufu's son, Khafre.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/92cd41ee-79c2-42c7-88d0-bb7fdb97f747/b15d2049-0461-4e12-803f-f013edacb2e1/Cinematic_documentary_historical_reconstruction__ancient_Egy.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiY2I4MzUwNDYzYmY2MWY2NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc2MzAxNH0.e96glq4jVk7IAwjHKEY1trzQwAbhwtNR3y6i-9Eu0yA",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "The pyramid was the center of a royal cult. Priests brought offerings to its temples long after the king was laid to rest.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/5e3b94f5-f1d7-4642-8a07-1bb6992b00ec/54a23326-bedb-4161-b378-cd3e2138ac87/Cinematic_documentary_historical_reconstruction__ancient_Egy.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNmQyMjM0NGNkNTcwZGZjNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc5MzM1Nn0.v8jwiRnjFODy2OEruJp4L8dcdia1Gl588ZeONBIVgFk",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "Every stone, every loaf and every worker was counted. Scribes kept the records that made a project of this scale possible.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/ea1d7abe-1787-4fe6-acd6-cac121ba1915/80cc0eca-6867-4b5c-8cee-af66a21e1eb5/Cinematic_documentary_historical_reconstruction__ancient_Egy.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2I2OTk1YmYyMjNkZGE3ZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTgwMjU1OX0.bY1ZiHm08AhWA4qNJMwqjbLn61jz4TFotX7pO5YJh-A",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "Around them, craftsmen, carpenters and potters supplied tools and goods. The pyramid was as much an economy as it was a monument.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/07f9b5ab-e708-4eb9-ac88-8b1694fcb3bd/89409540-8104-44bc-b365-9793b26b5859/Cinematic_documentary_historical_reconstruction__ancient_Egy.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOGE5OTI5OWY3OGNlNDhhZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc0Nzg3MX0.VPw1QJGV2pxlNYJij8WV-sKx3dNUNGH_CP5InE6i4ak",
+      "prompt": "Slow telephoto push-in, heat shimmer rippling over the plateau, lines of workers and sledges moving toward the pyramid. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "At its peak, perhaps twenty thousand people worked here, many of them in rotating crews.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/cdc6b7d4-3bc7-4f68-bc04-920f5b795249/ef655b1c-5587-4084-8053-4a692f984031/Cinematic_documentary_historical_reconstruction__ancient_Egy.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZGQxMGJlZmZlYTE3YjQ4ZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc5MzQwN30.kSka0K1ROms-MmiMCFJxku8tWAX99paW-Lf1w5eTjKA",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "The finished complex included temples, a long causeway, smaller pyramids for queens, and tombs for officials, all laid out around the king.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/3da6cfba-ee0b-4a53-882c-1c146df1bf08/1aec6431-2dad-4509-95b5-1e3bd669387a/Cinematic_documentary_historical_reconstruction__a_later_era.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOGYzNzgyZTI0YWYzMmFhMyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTczMzQ3NH0.xNo-9vJj5jnV8Mzner9ArWA2iDPlKqWZYV7yl8lB0nU",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "Centuries later, travelers came to marvel. Over time the white casing was stripped away and reused, leaving the stepped core we see today.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/662e4bdb-bc80-45c3-b036-1419332be354/b90941db-9987-45c2-b192-195315990920/Cinematic_documentary_still__present_day__two_archaeologists.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTNjZWFhODJmZmY5YzExNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc1NDM3MH0.w6PG78ZjIvbg9qEpFsSmjLwrkVbsTj74PBRKepRYACw",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "Today, archaeologists still study Giza, measuring every course and testing old ideas against new evidence.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/c1b454c6-e960-466e-83e5-6c0b2e74422f/f343879d-10fd-4ffb-b78e-a42323de9414/Cinematic_documentary_still__present_day__close_view_of_a_re.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOGY2Y2Q3YTZiNDc0ZmVlMyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc3MjU4Mn0.nNwJfa5WpFjaqyUHfDmuV-SqowxWsJipscpngS9Oct8",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "In 2017, scans revealed a large hidden void above the Grand Gallery. What it was for remains unknown.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/1fb3516a-7421-40dc-895a-427fddaa7a2e/f94de082-1a63-477a-b182-b187d265c4aa/Cinematic_documentary_still__low_angle_view_up_the_stepped_s.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMWFhN2I4ZjEwZWE0OTkyMCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTczMDY3M30.6dAQH4qBXg9haRCiQQ9ZJ6o-EVv-Tu5QtStlm4WbAYY",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "Many answers are now clear. Others, like the exact method of construction, are still open questions.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/57af37ce-a937-4c17-8c0b-749366422a9e/ae5daae7-53a7-4709-80d9-f5ce0c349b14/Cinematic_documentary_still__sunset_over_the_Giza_plateau__t.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZTViZjcwYzQzZTNmZTUxMyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc4OTUwOH0.K0ofv15UWvDqNJ2D57dapRUesDn3iCmnR6BdV3pkPkY",
+      "prompt": "Slow arc around the pyramids at sunset, long shadows creeping across the sand, warm light fading gently. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "The pharaohs are gone, but their monument still catches the evening sun.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/12291dbf-324f-4fd5-a983-9513673a7d22/b1c6e537-3ab7-43f2-bd18-90b435848058/Cinematic_documentary_still__the_Giza_pyramids_stand_beneath.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDIzZTRjN2MzMGRlZGEwYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc5MDg0NH0.Ntw7pPBRMAutSuercbALZzCef8SS3TKcBT8W4cJXKH8",
+      "duration": 11,
+      "zoom": "out",
+      "ovoz": "Under the same stars the builders saw, the Great Pyramid remains the last standing wonder of the ancient world.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "image",
+      "src": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/f387742f-2d2d-4492-85cd-7ddfcbbf609c/821ea96e-b6a5-4cc8-b9bc-938aea7ef098/Cinematic_documentary_still__a_wide_quiet_view_of_the_Giza_p.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjFlNzBkYTU1OTBiZmI4YiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc1OTE0MX0.vu5FSVADhkSkxw_RslfvtJ0sHkmGfZgkbOYS9Ga5CH8",
+      "duration": 11,
+      "zoom": "in",
+      "ovoz": "It was built not by mystery, but by people: planners, quarrymen, sailors, bakers and scribes, working together.",
+      "ovozchi": "kokoro:am_michael"
+    },
+    {
+      "type": "video",
+      "image": "https://dnznrvs05pmza.cloudfront.net/gemini/gemini-nano-banana-2.1/images/fbb3f8f9-d826-4fde-8ae1-b0921cf3e252/8f4352b4-267a-4915-ba7d-e3d9bd440575/Cinematic_documentary_aerial_still__high_aerial_perspective_.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjQyMGVlMzAwMWMyYzdhYSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTc3OTUwNH0.ftrajKj-YrExub6BGznfRGJ13db6jSvay_NwTiDJW_8",
+      "prompt": "Slow high aerial pull-back over the pyramid complex in the last golden light, gentle drift, fading toward dusk. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, people and buildings keep their shape, no text, no added objects.",
+      "model": "google/veo-3.1-lite",
+      "resolution": "720p",
+      "duration": 8,
+      "muted": true,
+      "ovoz": "Through time, their work endures. This was the Great Pyramid of Giza.",
+      "ovozchi": "kokoro:am_michael"
+    }
+  ]
+}
