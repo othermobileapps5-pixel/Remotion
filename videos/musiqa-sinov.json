@@ -1,9 +1,0 @@
-{
-  "title": "How Truck Drivers Stay Awake",
-  "musiqa_qidiruv": "country road guitar",
-  "theme": { "bg": "#101418", "accent": "#ffb000", "text": "#ffffff" },
-  "scenes": [
-    { "type": "title", "text": "Musiqa sinov", "duration": 4 },
-    { "type": "text", "text": "Mavzuga qarab musiqa", "duration": 4 }
-  ]
-}
