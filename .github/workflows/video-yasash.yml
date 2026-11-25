@@ -214,7 +214,10 @@ jobs:
       # Fon musiqasi mavzuga qarab: kutubxonadan, mosi bo'lmasa Pixabay'dan (tekin). Lyria ("musiqa") yoki "music" bo'lsa — tegmaydi.
       - name: Musiqa tanlash (mavzuga qarab)
         continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
+          export RASM_KALIT=$(node -e 'console.log(require("crypto").createHash("sha256").update("rasm:"+process.env.TELEGRAM_BOT_TOKEN).digest("hex"))')
           node scripts/musiqa-tanla.mjs "videos/$VIDEO.json" 2>&1 | tee musiqa.log
           grep -h "✓ Musiqa\|Musiqasiz" musiqa.log >> "$GITHUB_STEP_SUMMARY" || true
           if [ -n "$(git status --porcelain public/musiqa "videos/$VIDEO.json")" ]; then
