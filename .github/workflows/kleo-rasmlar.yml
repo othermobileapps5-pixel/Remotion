@@ -25,7 +25,11 @@ jobs:
           mkdir -p public/kleopatra
           pip install -q pillow
           while read s u; do
-            c=$(curl -sL --retry 3 -A "Mozilla/5.0" -o "/tmp/$s.png" -w "%{http_code}" "$u"); echo "$s $c"; [ "$c" = 200 ] || { echo "XATO $s"; continue; }
+            [ -f "public/kleopatra/$s.jpg" ] && continue
+            for i in 1 2 3 4 5 6; do
+              c=$(curl -sL -A "Mozilla/5.0" -o "/tmp/$s.png" -w "%{http_code}" "$u"); [ "$c" = 200 ] && break; sleep $((i*5))
+            done
+            echo "$s $c"; [ "$c" = 200 ] || { echo "XATO $s"; continue; }
             python3 -c "import sys;from PIL import Image;Image.open(sys.argv[1]).convert('RGB').save(sys.argv[2],quality=92)" "/tmp/$s.png" "public/kleopatra/$s.jpg"
           done < kleopatra/urls.txt
           ls public/kleopatra | wc -l
