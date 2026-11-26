@@ -29,5 +29,5 @@ jobs:
           ffprobe -v error -show_entries format=duration -of csv=p=0 public/audio/kleopatra/music.mp3
       - run: |
           git config user.name github-actions; git config user.email github-actions@users.noreply.github.com
-          git add public/musiqa public/audio/kleopatra && git commit -qm "Lyria: kleopatra musiqa" && git pull -q --rebase origin claude/giza && git push -q origin HEAD:claude/giza
+          git add -A public/musiqa public/audio/kleopatra musiqa && git commit -qm "Lyria: kleopatra musiqa" && git pull -q --rebase --autostash origin claude/giza && git push -q origin HEAD:claude/giza
       - run: gh workflow run video-yasash.yml --ref claude/giza -f video=kleopatra -f format=youtube -f ai_kliplar=true -f max_klip=5
