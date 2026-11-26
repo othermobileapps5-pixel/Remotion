@@ -1,0 +1,209 @@
+{
+  "title": "The Lion Gate of Babylon",
+  "theme": {
+    "bg": "#0a1324",
+    "accent": "#f3b333",
+    "text": "#f8f9fa"
+  },
+  "rasmUslub": "cinematic photorealistic historical epic, dramatic atmospheric lighting, authentic ancient Mesopotamian archaeology, rich ultramarine blue and gold tones, 8k resolution film still",
+  "musiqa_qidiruv": "ancient mesopotamia cinematic duduk brass",
+  "scenes": [
+    {
+      "type": "title",
+      "text": "Babylon's Impossible Wonder\nThe Cobalt Portal",
+      "subtitle": "The Gateway of Gods",
+      "duration": 7.5,
+      "ovoz": "Imagine marching through towering gates of blazing ultramarine glaze, surrounded by rows of roaring golden beasts under the burning Mesopotamian sun.",
+      "rasm": "A massive ancient city gate made of brilliant cobalt blue glazed bricks, flanked by towering bastions under a dramatic golden desert sunset, wide angle cinematic establishing shot."
+    },
+    {
+      "type": "text",
+      "text": "A City of Wonders\nThe Heart of Mesopotamia",
+      "duration": 7.2,
+      "ovoz": "Over twenty-five hundred years ago, Babylon stood as the undisputed jewel of the ancient world, straddling the fertile banks of the Euphrates River.",
+      "rasm": "Sprawling aerial view of ancient Babylon with the Euphrates river winding through clay-brick palaces, ziggurats, and lush palm groves in morning haze."
+    },
+    {
+      "type": "text",
+      "text": "The Architect King\nNebuchadnezzar II",
+      "duration": 7.4,
+      "ovoz": "Its most ambitious builder, King Nebuchadnezzar the Second, vowed to rebuild the imperial capital with unprecedented architectural magnificence.",
+      "rasm": "A regal Babylonian monarch in embroidered crimson and gold royal robes, standing on a palace balcony looking over monumental constructions."
+    },
+    {
+      "type": "text",
+      "text": "The Goddess of War\nConsecrated in Fire",
+      "duration": 7,
+      "ovoz": "At the northern threshold, he commissioned a monument dedicated to Ishtar, the fearsome Babylonian goddess of love and battlefield slaughter.",
+      "rasm": "Intricate ancient relief carving of a winged Mesopotamian warrior goddess adorned with stellar diadems, dramatic chiaroscuro oil lamp lighting."
+    },
+    {
+      "type": "text",
+      "text": "The Glazed Wonder\nLapis-Colored Bricks",
+      "duration": 7.6,
+      "ovoz": "Instead of dull mud brick, the entire facade was clad in shimmering lapis-colored ceramic tiles, engineered using complex glazing alchemy.",
+      "rasm": "Macro extreme close up of luminous cobalt blue glazed terracotta bricks showing cracked glass texture and radiant golden sheen."
+    },
+    {
+      "type": "text",
+      "text": "Procession of Lions\nThe Symbols of Ishtar",
+      "duration": 7.5,
+      "ovoz": "Flanking the monumental approach were over one hundred sculpted lions, crafted in raised relief with bared fangs and fierce muscular detail.",
+      "rasm": "Row of sculpted ceramic lions in raised golden-yellow relief walking majestically across a vivid deep blue tile wall, eye-level cinematic shot."
+    },
+    {
+      "type": "text",
+      "text": "Dragons of Marduk\nThe Composite Mušḫuššu",
+      "duration": 7.6,
+      "ovoz": "Alternating with the lions stood the Mušḫuššu, a sacred dragon combining a serpent's neck, a lion's forelegs, and talon-tipped hind legs.",
+      "rasm": "Detailed side profile of a horned Mesopotamian mythological dragon with scaled neck and eagle talons on glazed cobalt bricks."
+    },
+    {
+      "type": "text",
+      "text": "The Sacred Bulls\nHonor to Adad",
+      "duration": 7.2,
+      "ovoz": "Young wild bulls, or aurochs, accompanied the dragons, honoring Adad, the deity responsible for vital rainstorms and thunder.",
+      "rasm": "Bas-relief of a powerful horned white and yellow aurochs bull striding proudly against deep navy blue glazed tiles, low angle shot."
+    },
+    {
+      "type": "text",
+      "text": "The Processional Way\nPath of the Gods",
+      "duration": 7.5,
+      "ovoz": "A wide paved roadway nearly half a mile long led straight into the gate, lined on both sides by impenetrable fortress walls.",
+      "rasm": "Long straight ancient avenue paved with massive limestone and breccia slabs, flanked by high decorated blue parapet walls stretching into the horizon."
+    },
+    {
+      "type": "text",
+      "text": "The Royal Inscription\nEtched in Cuneiform",
+      "duration": 7.4,
+      "ovoz": "On the gate, the king stamped his declaration in cuneiform: 'I placed wild bulls and ferocious dragons in the gateways, so mankind may look on them in wonder.'",
+      "rasm": "Ancient clay wall carved with sharp Akkadian cuneiform inscriptions, lit by flickering warm torchlight revealing crisp wedge-shaped characters."
+    },
+    {
+      "type": "text",
+      "text": "New Year Festival\nThe Sacred Akitu",
+      "duration": 7.5,
+      "ovoz": "Every spring equinox, during the twelve-day Akitu festival, golden statues of Babylon's gods were paraded through this majestic corridor.",
+      "rasm": "A solemn procession of Babylonian priests in white pleated linen carrying gilded cult statues on ornate litters through high blue gates."
+    },
+    {
+      "type": "text",
+      "text": "A Psychological Shield\nTerror and Awe",
+      "duration": 7.6,
+      "ovoz": "Visiting ambassadors and conquered monarchs were intentionally routed here, overwhelmed by sensory brilliance before ever reaching the throne room.",
+      "rasm": "Foreign dignitaries in classical bronze-age garments looking up in absolute astonishment at the monumental towering gateway."
+    },
+    {
+      "type": "text",
+      "text": "The Massive Cedar Gates\nBound in Bronze",
+      "duration": 7.3,
+      "ovoz": "The gate doors themselves were crafted from giant imported cedar trunks of Lebanon, sheathed in heavy beaten bronze and copper sheets.",
+      "rasm": "Gigantic dark wooden fortress doors reinforced with ornate verdigris bronze bands and heavy iron studs, closed shut with monumental bolts."
+    },
+    {
+      "type": "text",
+      "text": "The Secret Substructure\nBuried Layers of Glory",
+      "duration": 7.7,
+      "ovoz": "Archaeology revealed that Nebuchadnezzar actually rebuilt the gate three distinct times, raising the roadbed and burying older reliefs underneath.",
+      "rasm": "Archaeological trench section showing multiple foundation strata of ancient baked bricks buried beneath desert dust and ruins."
+    },
+    {
+      "type": "text",
+      "text": "The Fall of Babylon\nThe Persian Conquest",
+      "duration": 7.4,
+      "ovoz": "In five thirty-nine BC, Cyrus the Great conquered Babylon without a struggle, walking his victorious army through these very blue portals.",
+      "rasm": "Ancient Persian cavalry with decorated spears and flowing cloaks riding peacefully into the blue gateway at dusk."
+    },
+    {
+      "type": "text",
+      "text": "Alexander the Great\nThe Fatal Capital",
+      "duration": 7.6,
+      "ovoz": "Centuries later, Alexander the Great chose Babylon as the headquarters of his vast empire, gazing upon these identical beasts before his death.",
+      "rasm": "Hellenistic general in crested iron helmet and royal purple cloak standing thoughtfully beside a weathered Mesopotamian lion relief."
+    },
+    {
+      "type": "text",
+      "text": "Lost Beneath the Sands\nCenturies of Oblivion",
+      "duration": 7.2,
+      "ovoz": "As trade routes shifted, Babylon decayed into ghost mounds, burying the shattered glazed bricks under centuries of silt and sand.",
+      "rasm": "Bleak Mesopotamian desert landscape with crumbling earthen mounds and half-buried blue ceramic fragments partially covered by drifting sands."
+    },
+    {
+      "type": "text",
+      "text": "The Re-Discovery\nRobert Koldewey's Trench",
+      "duration": 7.8,
+      "ovoz": "In eighteen ninety-nine, German archaeologist Robert Koldewey arrived, uncovering millions of scattered glazed fragments that stunned the world.",
+      "rasm": "Late nineteenth-century archaeological excavation with wooden scaffolding, wheelbarrows, and workers carefully uncovering bright blue pottery shards."
+    },
+    {
+      "type": "text",
+      "text": "The Colossal Puzzle\nReconstructed in Berlin",
+      "duration": 7.5,
+      "ovoz": "Shipped to Berlin across years of meticulous packing, conservators spent over two decades reassembling hundreds of thousands of broken tiles.",
+      "rasm": "Museum conservator workshop in the early twentieth century, hands carefully fitting jigsaw puzzle pieces of ancient blue and yellow glazed bricks."
+    },
+    {
+      "type": "text",
+      "text": "The Gate Today\nPergamon Museum",
+      "duration": 7.3,
+      "ovoz": "Today, the smaller frontal portal stands resurrected inside Berlin's Pergamon Museum, still radiating its mesmerizing deep blue hue.",
+      "rasm": "The towering reconstructed Ishtar Gate illuminated under soft modern museum skylights, visitors gazing up in reverence."
+    },
+    {
+      "type": "text",
+      "text": "The Real Monster\nA Double Gateway",
+      "duration": 7.8,
+      "ovoz": "Remarkably, what stands in Berlin was only the outer gate; the larger inner gate was far too enormous to ever fit inside any modern gallery.",
+      "rasm": "Architectural cross-section diagram rendering showing a smaller front gate dwarfed by a massive forty-foot-tall twin fortress gate behind it."
+    },
+    {
+      "type": "text",
+      "text": "Original Wonders\nHerodotus's Testimony",
+      "duration": 7.4,
+      "ovoz": "Ancient lists even ranked the Ishtar Gate and Babylon's walls among the Wonders of the World before being replaced by the Lighthouse of Alexandria.",
+      "rasm": "Vintage parchment manuscript displaying classical Greek architectural sketches of great ancient wonders against a candlelit desk."
+    },
+    {
+      "type": "text",
+      "text": "Eternal Cobalt\nThe King's Wish Fulfilled",
+      "duration": 7.5,
+      "ovoz": "Nebuchadnezzar's wish came true: twenty-six centuries later, humanity still looks upon his shimmering cobalt beasts in speechless awe.",
+      "rasm": "Dramatic cinematic silhouette of a lone golden lion against glowing sapphire blue bricks, shimmering with timeless mythic majesty."
+    },
+    {
+      "type": "text",
+      "text": "Explore Ancient History\nSubscribe for More",
+      "duration": 7.1,
+      "ovoz": "Which ancient monument should we explore next? Share your thoughts below, subscribe, and journey with us back through lost civilizations.",
+      "rasm": "An ancient leather-bound chronicle map unrolling on a wooden explorer table surrounded by antique brass compasses and oil lamps."
+    }
+  ],
+  "youtube": {
+    "nom": "The Lion Gate of Babylon: The Glazed Blue Wonder",
+    "tavsif": "Step into ancient Babylon and discover the Ishtar Gate—a breathtaking monument of cobalt-blue glazed tiles, fierce lions, and mythical dragons commissioned by King Nebuchadnezzar II.\n\nFrom the sacred Akitu procession to Robert Koldewey's daring excavation and its resurrection in Berlin, explore the true history behind one of humanity's greatest architectural wonders.\n\nSubscribe for more deep dives into ancient civilizations and archaeological mysteries!",
+    "teglar": [
+      "Ishtar Gate",
+      "Babylon",
+      "Nebuchadnezzar",
+      "Ancient Mesopotamia",
+      "Pergamon Museum",
+      "Processional Way",
+      "Ancient History Documentary",
+      "Seven Wonders",
+      "Archaeology"
+    ]
+  },
+  "muqova": {
+    "matn": "BABYLON'S BLUE WONDER",
+    "urgu": "BABYLON'S",
+    "belgi": "604 BC",
+    "rasm_prompt": "A gigantic ancient cobalt blue glazed brick gate glowing in twilight with a golden relief lion roaring fiercely, cinematic atmospheric mist, wide dramatic lighting."
+  },
+  "ovozchi": "kokoro:am_michael",
+  "ovozUslubi": "natural, confident and energetic male narrator speaking English at a brisk pace",
+  "bot": {
+    "format": "youtube",
+    "mavzu": "The Lion Gate of Babylon — blue-glazed lions and dragons watch a king march through the most beautiful gate ever built\nHistorical documentary story: real facts; if something is a legend say \"legend says\" / \"according to Herodotus\". Open with the most cinematic scene (hook), then tell the events in order, end with a surprising fact.",
+    "til": "en"
+  }
+}
