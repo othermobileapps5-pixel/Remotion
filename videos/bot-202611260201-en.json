@@ -9,221 +9,268 @@
   "musiqa_qidiruv": "ancient mesopotamia cinematic duduk brass",
   "scenes": [
     {
-      "type": "title",
-      "text": "Babylon's Impossible Wonder\nThe Cobalt Portal",
-      "subtitle": "The Gateway of Gods",
+      "type": "image",
       "duration": 11.5,
       "ovoz": "Imagine marching through towering gates of blazing ultramarine glaze, surrounded by rows of roaring golden beasts under the burning Mesopotamian sun.",
       "rasm": "A massive ancient city gate made of brilliant cobalt blue glazed bricks, flanked by towering bastions under a dramatic golden desert sunset, wide angle cinematic establishing shot.",
       "ovozFayl": "ovoz/bot-202611260201-en-1.wav",
-      "ovozKalit": "68dcb083ba"
+      "ovozKalit": "68dcb083ba",
+      "src": "rasm/bot-202611260201-en/1.jpg",
+      "zoom": "in",
+      "matn": "Babylon's Impossible Wonder\nThe Cobalt Portal"
     },
     {
-      "type": "text",
-      "text": "A City of Wonders\nThe Heart of Mesopotamia",
+      "type": "image",
       "duration": 10.8,
       "ovoz": "Over twenty-five hundred years ago, Babylon stood as the undisputed jewel of the ancient world, straddling the fertile banks of the Euphrates River.",
       "rasm": "Sprawling aerial view of ancient Babylon with the Euphrates river winding through clay-brick palaces, ziggurats, and lush palm groves in morning haze.",
       "ovozFayl": "ovoz/bot-202611260201-en-2.wav",
-      "ovozKalit": "8671e95972"
+      "ovozKalit": "8671e95972",
+      "src": "rasm/bot-202611260201-en/2.jpg",
+      "zoom": "out",
+      "matn": "A City of Wonders\nThe Heart of Mesopotamia"
     },
     {
-      "type": "text",
-      "text": "The Architect King\nNebuchadnezzar II",
+      "type": "image",
       "duration": 11.3,
       "ovoz": "Its most ambitious builder, King Nebuchadnezzar the Second, vowed to rebuild the imperial capital with unprecedented architectural magnificence.",
       "rasm": "A regal Babylonian monarch in embroidered crimson and gold royal robes, standing on a palace balcony looking over monumental constructions.",
       "ovozFayl": "ovoz/bot-202611260201-en-3.wav",
-      "ovozKalit": "db1a257d3e"
+      "ovozKalit": "db1a257d3e",
+      "src": "rasm/bot-202611260201-en/3.jpg",
+      "zoom": "in",
+      "matn": "The Architect King\nNebuchadnezzar II"
     },
     {
-      "type": "text",
-      "text": "The Goddess of War\nConsecrated in Fire",
+      "type": "image",
       "duration": 10.7,
       "ovoz": "At the northern threshold, he commissioned a monument dedicated to Ishtar, the fearsome Babylonian goddess of love and battlefield slaughter.",
       "rasm": "Intricate ancient relief carving of a winged Mesopotamian warrior goddess adorned with stellar diadems, dramatic chiaroscuro oil lamp lighting.",
       "ovozFayl": "ovoz/bot-202611260201-en-4.wav",
-      "ovozKalit": "a70c561429"
+      "ovozKalit": "a70c561429",
+      "src": "rasm/bot-202611260201-en/4.jpg",
+      "zoom": "out",
+      "matn": "The Goddess of War\nConsecrated in Fire"
     },
     {
-      "type": "text",
-      "text": "The Glazed Wonder\nLapis-Colored Bricks",
+      "type": "image",
       "duration": 11.3,
       "ovoz": "Instead of dull mud brick, the entire facade was clad in shimmering lapis-colored ceramic tiles, engineered using complex glazing alchemy.",
       "rasm": "Macro extreme close up of luminous cobalt blue glazed terracotta bricks showing cracked glass texture and radiant golden sheen.",
       "ovozFayl": "ovoz/bot-202611260201-en-5.wav",
-      "ovozKalit": "b5a7723c86"
+      "ovozKalit": "b5a7723c86",
+      "src": "rasm/bot-202611260201-en/5.jpg",
+      "zoom": "in",
+      "matn": "The Glazed Wonder\nLapis-Colored Bricks"
     },
     {
-      "type": "text",
-      "text": "Procession of Lions\nThe Symbols of Ishtar",
+      "type": "image",
       "duration": 10.7,
       "ovoz": "Flanking the monumental approach were over one hundred sculpted lions, crafted in raised relief with bared fangs and fierce muscular detail.",
       "rasm": "Row of sculpted ceramic lions in raised golden-yellow relief walking majestically across a vivid deep blue tile wall, eye-level cinematic shot.",
       "ovozFayl": "ovoz/bot-202611260201-en-6.wav",
-      "ovozKalit": "0407baa3b4"
+      "ovozKalit": "0407baa3b4",
+      "src": "rasm/bot-202611260201-en/6.jpg",
+      "zoom": "out",
+      "matn": "Procession of Lions\nThe Symbols of Ishtar"
     },
     {
-      "type": "text",
-      "text": "Dragons of Marduk\nThe Composite Mušḫuššu",
+      "type": "image",
       "duration": 14,
       "ovoz": "Alternating with the lions stood the Mušḫuššu, a sacred dragon combining a serpent's neck, a lion's forelegs, and talon-tipped hind legs.",
       "rasm": "Detailed side profile of a horned Mesopotamian mythological dragon with scaled neck and eagle talons on glazed cobalt bricks.",
       "ovozFayl": "ovoz/bot-202611260201-en-7.wav",
-      "ovozKalit": "6defff765e"
+      "ovozKalit": "6defff765e",
+      "src": "rasm/bot-202611260201-en/7.jpg",
+      "zoom": "in",
+      "matn": "Dragons of Marduk\nThe Composite Mušḫuššu"
     },
     {
-      "type": "text",
-      "text": "The Sacred Bulls\nHonor to Adad",
+      "type": "image",
       "duration": 10.5,
       "ovoz": "Young wild bulls, or aurochs, accompanied the dragons, honoring Adad, the deity responsible for vital rainstorms and thunder.",
       "rasm": "Bas-relief of a powerful horned white and yellow aurochs bull striding proudly against deep navy blue glazed tiles, low angle shot.",
       "ovozFayl": "ovoz/bot-202611260201-en-8.wav",
-      "ovozKalit": "b9fadbf390"
+      "ovozKalit": "b9fadbf390",
+      "src": "rasm/bot-202611260201-en/8.jpg",
+      "zoom": "out",
+      "matn": "The Sacred Bulls\nHonor to Adad"
     },
     {
-      "type": "text",
-      "text": "The Processional Way\nPath of the Gods",
+      "type": "image",
       "duration": 9.8,
       "ovoz": "A wide paved roadway nearly half a mile long led straight into the gate, lined on both sides by impenetrable fortress walls.",
       "rasm": "Long straight ancient avenue paved with massive limestone and breccia slabs, flanked by high decorated blue parapet walls stretching into the horizon.",
       "ovozFayl": "ovoz/bot-202611260201-en-9.wav",
-      "ovozKalit": "c3f6f0d250"
+      "ovozKalit": "c3f6f0d250",
+      "src": "rasm/bot-202611260201-en/9.jpg",
+      "zoom": "in",
+      "matn": "The Processional Way\nPath of the Gods"
     },
     {
-      "type": "text",
-      "text": "The Royal Inscription\nEtched in Cuneiform",
+      "type": "image",
       "duration": 11.9,
       "ovoz": "On the gate, the king stamped his declaration in cuneiform: 'I placed wild bulls and ferocious dragons in the gateways, so mankind may look on them in wonder.'",
       "rasm": "Ancient clay wall carved with sharp Akkadian cuneiform inscriptions, lit by flickering warm torchlight revealing crisp wedge-shaped characters.",
       "ovozFayl": "ovoz/bot-202611260201-en-10.wav",
-      "ovozKalit": "54d4b76617"
+      "ovozKalit": "54d4b76617",
+      "src": "rasm/bot-202611260201-en/10.jpg",
+      "zoom": "out",
+      "matn": "The Royal Inscription\nEtched in Cuneiform"
     },
     {
-      "type": "text",
-      "text": "New Year Festival\nThe Sacred Akitu",
+      "type": "image",
       "duration": 10.8,
       "ovoz": "Every spring equinox, during the twelve-day Akitu festival, golden statues of Babylon's gods were paraded through this majestic corridor.",
       "rasm": "A solemn procession of Babylonian priests in white pleated linen carrying gilded cult statues on ornate litters through high blue gates.",
       "ovozFayl": "ovoz/bot-202611260201-en-11.wav",
-      "ovozKalit": "6b4d5352a9"
+      "ovozKalit": "6b4d5352a9",
+      "src": "rasm/bot-202611260201-en/11.jpg",
+      "zoom": "in",
+      "matn": "New Year Festival\nThe Sacred Akitu"
     },
     {
-      "type": "text",
-      "text": "A Psychological Shield\nTerror and Awe",
+      "type": "image",
       "duration": 10.7,
       "ovoz": "Visiting ambassadors and conquered monarchs were intentionally routed here, overwhelmed by sensory brilliance before ever reaching the throne room.",
       "rasm": "Foreign dignitaries in classical bronze-age garments looking up in absolute astonishment at the monumental towering gateway.",
       "ovozFayl": "ovoz/bot-202611260201-en-12.wav",
-      "ovozKalit": "874a7eb70f"
+      "ovozKalit": "874a7eb70f",
+      "src": "rasm/bot-202611260201-en/12.jpg",
+      "zoom": "out",
+      "matn": "A Psychological Shield\nTerror and Awe"
     },
     {
-      "type": "text",
-      "text": "The Massive Cedar Gates\nBound in Bronze",
+      "type": "image",
       "duration": 10.1,
       "ovoz": "The gate doors themselves were crafted from giant imported cedar trunks of Lebanon, sheathed in heavy beaten bronze and copper sheets.",
       "rasm": "Gigantic dark wooden fortress doors reinforced with ornate verdigris bronze bands and heavy iron studs, closed shut with monumental bolts.",
       "ovozFayl": "ovoz/bot-202611260201-en-13.wav",
-      "ovozKalit": "fd1cb8463c"
+      "ovozKalit": "fd1cb8463c",
+      "src": "rasm/bot-202611260201-en/13.jpg",
+      "zoom": "in",
+      "matn": "The Massive Cedar Gates\nBound in Bronze"
     },
     {
-      "type": "text",
-      "text": "The Secret Substructure\nBuried Layers of Glory",
+      "type": "image",
       "duration": 11.1,
       "ovoz": "Archaeology revealed that Nebuchadnezzar actually rebuilt the gate three distinct times, raising the roadbed and burying older reliefs underneath.",
       "rasm": "Archaeological trench section showing multiple foundation strata of ancient baked bricks buried beneath desert dust and ruins.",
       "ovozFayl": "ovoz/bot-202611260201-en-14.wav",
-      "ovozKalit": "b8a4c3a635"
+      "ovozKalit": "b8a4c3a635",
+      "src": "rasm/bot-202611260201-en/14.jpg",
+      "zoom": "out",
+      "matn": "The Secret Substructure\nBuried Layers of Glory"
     },
     {
-      "type": "text",
-      "text": "The Fall of Babylon\nThe Persian Conquest",
+      "type": "image",
       "duration": 10.7,
       "ovoz": "In five thirty-nine BC, Cyrus the Great conquered Babylon without a struggle, walking his victorious army through these very blue portals.",
       "rasm": "Ancient Persian cavalry with decorated spears and flowing cloaks riding peacefully into the blue gateway at dusk.",
       "ovozFayl": "ovoz/bot-202611260201-en-15.wav",
-      "ovozKalit": "e314d9b5d3"
+      "ovozKalit": "e314d9b5d3",
+      "src": "rasm/bot-202611260201-en/15.jpg",
+      "zoom": "in",
+      "matn": "The Fall of Babylon\nThe Persian Conquest"
     },
     {
-      "type": "text",
-      "text": "Alexander the Great\nThe Fatal Capital",
+      "type": "image",
       "duration": 11.3,
       "ovoz": "Centuries later, Alexander the Great chose Babylon as the headquarters of his vast empire, gazing upon these identical beasts before his death.",
       "rasm": "Hellenistic general in crested iron helmet and royal purple cloak standing thoughtfully beside a weathered Mesopotamian lion relief.",
       "ovozFayl": "ovoz/bot-202611260201-en-16.wav",
-      "ovozKalit": "16f3a7cb92"
+      "ovozKalit": "16f3a7cb92",
+      "src": "rasm/bot-202611260201-en/16.jpg",
+      "zoom": "out",
+      "matn": "Alexander the Great\nThe Fatal Capital"
     },
     {
-      "type": "text",
-      "text": "Lost Beneath the Sands\nCenturies of Oblivion",
+      "type": "image",
       "duration": 9.9,
       "ovoz": "As trade routes shifted, Babylon decayed into ghost mounds, burying the shattered glazed bricks under centuries of silt and sand.",
       "rasm": "Bleak Mesopotamian desert landscape with crumbling earthen mounds and half-buried blue ceramic fragments partially covered by drifting sands.",
       "ovozFayl": "ovoz/bot-202611260201-en-17.wav",
-      "ovozKalit": "b6bf3e9b5c"
+      "ovozKalit": "b6bf3e9b5c",
+      "src": "rasm/bot-202611260201-en/17.jpg",
+      "zoom": "in",
+      "matn": "Lost Beneath the Sands\nCenturies of Oblivion"
     },
     {
-      "type": "text",
-      "text": "The Re-Discovery\nRobert Koldewey's Trench",
+      "type": "image",
       "duration": 10.8,
       "ovoz": "In eighteen ninety-nine, German archaeologist Robert Koldewey arrived, uncovering millions of scattered glazed fragments that stunned the world.",
       "rasm": "Late nineteenth-century archaeological excavation with wooden scaffolding, wheelbarrows, and workers carefully uncovering bright blue pottery shards.",
       "ovozFayl": "ovoz/bot-202611260201-en-18.wav",
-      "ovozKalit": "b10b319980"
+      "ovozKalit": "b10b319980",
+      "src": "rasm/bot-202611260201-en/18.jpg",
+      "zoom": "out",
+      "matn": "The Re-Discovery\nRobert Koldewey's Trench"
     },
     {
-      "type": "text",
-      "text": "The Colossal Puzzle\nReconstructed in Berlin",
+      "type": "image",
       "duration": 10.5,
       "ovoz": "Shipped to Berlin across years of meticulous packing, conservators spent over two decades reassembling hundreds of thousands of broken tiles.",
       "rasm": "Museum conservator workshop in the early twentieth century, hands carefully fitting jigsaw puzzle pieces of ancient blue and yellow glazed bricks.",
       "ovozFayl": "ovoz/bot-202611260201-en-19.wav",
-      "ovozKalit": "47c60d4fc5"
+      "ovozKalit": "47c60d4fc5",
+      "src": "rasm/bot-202611260201-en/19.jpg",
+      "zoom": "in",
+      "matn": "The Colossal Puzzle\nReconstructed in Berlin"
     },
     {
-      "type": "text",
-      "text": "The Gate Today\nPergamon Museum",
+      "type": "image",
       "duration": 10.7,
       "ovoz": "Today, the smaller frontal portal stands resurrected inside Berlin's Pergamon Museum, still radiating its mesmerizing deep blue hue.",
       "rasm": "The towering reconstructed Ishtar Gate illuminated under soft modern museum skylights, visitors gazing up in reverence.",
       "ovozFayl": "ovoz/bot-202611260201-en-20.wav",
-      "ovozKalit": "c880ff059a"
+      "ovozKalit": "c880ff059a",
+      "src": "rasm/bot-202611260201-en/20.jpg",
+      "zoom": "out",
+      "matn": "The Gate Today\nPergamon Museum"
     },
     {
-      "type": "text",
-      "text": "The Real Monster\nA Double Gateway",
+      "type": "image",
       "duration": 11.1,
       "ovoz": "Remarkably, what stands in Berlin was only the outer gate; the larger inner gate was far too enormous to ever fit inside any modern gallery.",
       "rasm": "Architectural cross-section diagram rendering showing a smaller front gate dwarfed by a massive forty-foot-tall twin fortress gate behind it.",
       "ovozFayl": "ovoz/bot-202611260201-en-21.wav",
-      "ovozKalit": "b1f2be3142"
+      "ovozKalit": "b1f2be3142",
+      "src": "rasm/bot-202611260201-en/21.jpg",
+      "zoom": "in",
+      "matn": "The Real Monster\nA Double Gateway"
     },
     {
-      "type": "text",
-      "text": "Original Wonders\nHerodotus's Testimony",
+      "type": "image",
       "duration": 11,
       "ovoz": "Ancient lists even ranked the Ishtar Gate and Babylon's walls among the Wonders of the World before being replaced by the Lighthouse of Alexandria.",
       "rasm": "Vintage parchment manuscript displaying classical Greek architectural sketches of great ancient wonders against a candlelit desk.",
       "ovozFayl": "ovoz/bot-202611260201-en-22.wav",
-      "ovozKalit": "da978e2ded"
+      "ovozKalit": "da978e2ded",
+      "src": "rasm/bot-202611260201-en/22.jpg",
+      "zoom": "out",
+      "matn": "Original Wonders\nHerodotus's Testimony"
     },
     {
-      "type": "text",
-      "text": "Eternal Cobalt\nThe King's Wish Fulfilled",
+      "type": "image",
       "duration": 10.1,
       "ovoz": "Nebuchadnezzar's wish came true: twenty-six centuries later, humanity still looks upon his shimmering cobalt beasts in speechless awe.",
       "rasm": "Dramatic cinematic silhouette of a lone golden lion against glowing sapphire blue bricks, shimmering with timeless mythic majesty.",
       "ovozFayl": "ovoz/bot-202611260201-en-23.wav",
-      "ovozKalit": "3a8e49bf3b"
+      "ovozKalit": "3a8e49bf3b",
+      "src": "rasm/bot-202611260201-en/23.jpg",
+      "zoom": "in",
+      "matn": "Eternal Cobalt\nThe King's Wish Fulfilled"
     },
     {
-      "type": "text",
-      "text": "Explore Ancient History\nSubscribe for More",
+      "type": "image",
       "duration": 9.6,
       "ovoz": "Which ancient monument should we explore next? Share your thoughts below, subscribe, and journey with us back through lost civilizations.",
       "rasm": "An ancient leather-bound chronicle map unrolling on a wooden explorer table surrounded by antique brass compasses and oil lamps.",
       "ovozFayl": "ovoz/bot-202611260201-en-24.wav",
-      "ovozKalit": "f0e1f184de"
+      "ovozKalit": "f0e1f184de",
+      "src": "rasm/bot-202611260201-en/24.jpg",
+      "zoom": "out",
+      "matn": "Explore Ancient History\nSubscribe for More"
     }
   ],
   "youtube": {
