@@ -23,9 +23,10 @@ jobs:
       - name: Yuklab olish
         run: |
           mkdir -p public/kleopatra
+          pip install -q pillow
           while read s u; do
             curl -sfL --retry 3 -o "/tmp/$s.png" "$u"
-            ffmpeg -loglevel error -y -i "/tmp/$s.png" -q:v 2 "public/kleopatra/$s.jpg"
+            python3 -c "import sys;from PIL import Image;Image.open(sys.argv[1]).convert('RGB').save(sys.argv[2],quality=92)" "/tmp/$s.png" "public/kleopatra/$s.jpg"
           done < kleopatra/urls.txt
           ls public/kleopatra | wc -l
           cd public && zip -qr ../kleopatra-rasmlar.zip kleopatra && cd .. && ls -la kleopatra-rasmlar.zip
