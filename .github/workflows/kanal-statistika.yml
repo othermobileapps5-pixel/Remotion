@@ -1,0 +1,18 @@
+name: Kanal statistikasi
+# Aron agenti chaqiradi: THROUGH TIME kanali va oxirgi 25 video statistikasi (faqat o'qish). Natija — log va Summary.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    env:
+      YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+      YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+      YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/kanal-statistika.mjs | tee stat.json && { echo '```json'; cat stat.json; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
