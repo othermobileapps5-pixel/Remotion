@@ -1,0 +1,41 @@
+name: Kleopatra rasmlar → fayl
+# kleopatra/urls.txt dagi Runway rasmlarini yuklab, public/kleopatra/ ga yozadi,
+# bitta ZIP qilib Drive «CLOUDE M / Assets» ga va «kleopatra» relizga qo'yadi.
+on:
+  push:
+    branches: [claude/giza]
+    paths: ['kleopatra/urls.txt']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    env:
+      GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+      GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+      GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Yuklab olish
+        run: |
+          mkdir -p public/kleopatra
+          while read s u; do
+            curl -sfL --retry 3 -o "/tmp/$s.png" "$u"
+            ffmpeg -loglevel error -y -i "/tmp/$s.png" -q:v 2 "public/kleopatra/$s.jpg"
+          done < kleopatra/urls.txt
+          ls public/kleopatra | wc -l
+          cd public && zip -qr ../kleopatra-rasmlar.zip kleopatra && cd .. && ls -la kleopatra-rasmlar.zip
+      - name: Drive Assets
+        run: node scripts/drive.mjs upload kleopatra-rasmlar.zip 1m03KOLR5bG2LOHxgCq3MquqdB90YEzk4 | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Reliz
+        run: |
+          gh release view kleopatra >/dev/null 2>&1 || gh release create kleopatra -t "Kleopatra rasmlar" -n "36 sahna rasmi"
+          gh release upload kleopatra kleopatra-rasmlar.zip --clobber
+      - name: Branch'ga yozish
+        run: |
+          git config user.name "github-actions" && git config user.email "actions@github.com"
+          git add public/kleopatra && git commit -m "Kleopatra: 36 rasm [skip ci]" && git pull --rebase origin claude/giza && git push origin HEAD:claude/giza
