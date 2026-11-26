@@ -1,0 +1,19 @@
+name: Lyria sinov (ovoz)
+on:
+  push:
+    branches: [claude/giza]
+    paths: ['musiqa/sinov-*.json']
+permissions:
+  contents: write
+jobs:
+  l:
+    runs-on: ubuntu-latest
+    env: { GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: for f in musiqa/sinov-*.json; do [ -f "public/${f%.json}.mp3" ] || node scripts/musiqa.mjs "$f"; done
+      - run: |
+          git config user.name github-actions; git config user.email github-actions@users.noreply.github.com
+          git add -A public/musiqa musiqa && git commit -qm "Lyria: ovoz sinovi" && git pull -q --rebase --autostash origin claude/giza && git push -q origin HEAD:claude/giza

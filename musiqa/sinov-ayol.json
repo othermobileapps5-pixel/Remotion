@@ -1,0 +1,7 @@
+{
+  "musiqa": {
+    "model": "lyria-3.5",
+    "prompt": "About 1 minute, a cappella-led ancient Egyptian temple lament: one solo female voice singing a slow wordless melody (only open vowels 'aah', 'ooh', no lyrics, no words), in the style of a temple chantress of Amun, with long held notes, gentle ornamented melisma in a Hijaz-like mode, echoing in a vast stone hall. Very soft accompaniment: a bronze sistrum shimmering occasionally, a quiet arched harp, low drone. Sacred, mournful, timeless, documentary atmosphere. No modern instruments, no drums kit, no electronic sounds, no English or Arabic words.",
+    "fayl": "musiqa/sinov-ayol.mp3"
+  }
+}

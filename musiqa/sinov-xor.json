@@ -1,0 +1,7 @@
+{
+  "musiqa": {
+    "model": "lyria-3.5",
+    "prompt": "About 1 minute, ancient temple choir of women: a small ensemble of female voices singing in unison and simple drones, wordless (only 'aah' and 'ooh', no lyrics, no words), slow and solemn like a procession in an ancient Egyptian or Hellenistic Alexandrian temple. Accompanied by arched harp, lyre, bronze sistrum, soft frame drum heartbeat and a low reed pipe drone, large stone hall reverb. Majestic, sacred, historical documentary mood, building gently then fading. No modern instruments, no electronic sounds, no words in any language.",
+    "fayl": "musiqa/sinov-xor.mp3"
+  }
+}
