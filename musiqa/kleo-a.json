@@ -1,0 +1,7 @@
+{
+  "musiqa": {
+    "model": "lyria-3.5",
+    "prompt": "Cinematic ancient Egypt documentary underscore, about 3 minutes, instrumental. Elegant and mysterious royal palace mood: harp, oud, soft ney flute, warm low strings, gentle frame drum, light wordless female vocalise (only 'aah', no lyrics) in a Middle Eastern Hijaz scale. Slow tempo around 68 bpm, calm and intimate, soft intro, quiet enough to sit under a narrator. No words, no modern drums, no electronic sounds.",
+    "fayl": "musiqa/kleo-a.mp3"
+  }
+}

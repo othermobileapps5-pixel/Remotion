@@ -1,0 +1,33 @@
+name: Kleopatra musiqa → video
+# Lyria bilan 2 qism musiqa (≈$0.16), 6 daqiqaga ulab, keyin «Video yasash» ni ishga tushiradi.
+on:
+  push:
+    branches: [claude/giza]
+    paths: ['musiqa/kleo-*.json']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+jobs:
+  m:
+    runs-on: ubuntu-latest
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null
+      - run: for f in musiqa/kleo-a.json musiqa/kleo-b.json; do [ -f "public/${f%.json}.mp3" ] || node scripts/musiqa.mjs "$f"; done
+      - name: Ulash (6 daqiqa)
+        run: |
+          mkdir -p public/audio/kleopatra
+          ffmpeg -loglevel error -y -i public/musiqa/kleo-a.mp3 -i public/musiqa/kleo-b.mp3 \
+            -filter_complex "[0][1]acrossfade=d=5,aloop=loop=1:size=2e9,atrim=0:360,afade=t=out:st=352:d=8,loudnorm=I=-16" \
+            -b:a 192k public/audio/kleopatra/music.mp3
+          ffprobe -v error -show_entries format=duration -of csv=p=0 public/audio/kleopatra/music.mp3
+      - run: |
+          git config user.name github-actions; git config user.email github-actions@users.noreply.github.com
+          git add public/musiqa public/audio/kleopatra && git commit -qm "Lyria: kleopatra musiqa" && git pull -q --rebase origin claude/giza && git push -q origin HEAD:claude/giza
+      - run: gh workflow run video-yasash.yml --ref claude/giza -f video=kleopatra -f format=youtube -f ai_kliplar=true -f max_klip=5

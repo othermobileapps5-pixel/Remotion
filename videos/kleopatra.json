@@ -1,0 +1,327 @@
+{
+ "title": "Cleopatra's Milk Bath — THROUGH TIME",
+ "til": "en",
+ "transition": 0.5,
+ "music": "audio/kleopatra/music.mp3",
+ "musicVolume": 0.2,
+ "youtube": {
+  "nom": "Did Cleopatra Really Bathe in Milk? | THROUGH TIME",
+  "tavsif": "Milk, honey and the queen of Egypt: one of history's most famous beauty legends. But no ancient writer says Cleopatra bathed in milk. Where did the story come from, and what do the sources really tell us about Cleopatra VII?\n\nIn this episode: Ptolemaic Alexandria, Pliny and Poppaea's donkey-milk baths, Galen and the lost book of Cosmetics attributed to Cleopatra, Plutarch on her voice and wit, and how legend grew around her.\n\nScenes of ancient life are AI-generated historical reconstructions, not real footage. Legends are marked as legends.\n\nMusic: original score.\n\n#Cleopatra #AncientEgypt #History #Documentary #ThroughTime",
+  "teglar": [
+   "cleopatra",
+   "cleopatra milk bath",
+   "ancient egypt",
+   "ptolemaic egypt",
+   "alexandria",
+   "cleopatra beauty",
+   "history documentary",
+   "egypt documentary",
+   "through time"
+  ]
+ },
+ "scenes": [
+  {
+   "type": "video",
+   "image": "kleopatra/S001.jpg",
+   "prompt": "Slow gentle push-in through the royal bathing chamber, attendants quietly pouring from jars, soft steam rising, warm light flickering on stone. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, faces and objects keep their shape, no text, no added objects, no nudity.",
+   "model": "google/gemini-omni-1.2-flash",
+   "resolution": "720p",
+   "duration": 8,
+   "muted": true,
+   "ovoz": "Milk, honey, and a queen of Egypt. It is one of history's most famous beauty legends.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "video",
+   "image": "kleopatra/S002.jpg",
+   "prompt": "Slow aerial glide over the ancient harbour at dawn, ships gently rocking, sea haze drifting, the lighthouse glowing in the distance. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, faces and objects keep their shape, no text, no added objects, no nudity.",
+   "model": "google/gemini-omni-1.2-flash",
+   "resolution": "720p",
+   "duration": 8,
+   "muted": true,
+   "ovoz": "Alexandria, the first century BC. The richest city of the Mediterranean, and the capital of Cleopatra the Seventh.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S003.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "Cleopatra ruled for over twenty years, from a palace beside the harbour, surrounded by scholars, diplomats and servants.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S004.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Behind the politics was a private world: linen, mirrors, oils, and the slow daily rituals of royal care.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S005.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "The legend says that every day, jars of fresh milk were carried into the queen's bathing room.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S006.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Some versions add honey. In Egypt, honey was precious, and doctors used it in remedies for wounds and skin.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S007.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "Bathing itself was ordinary in Egypt. Clean water, washing and fine linen were signs of order and of status.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "video",
+   "image": "kleopatra/S008.jpg",
+   "prompt": "Milk pours slowly into the clear bathwater, soft white swirls spreading, honey drips in, gentle ripples, slight steady push-in. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, faces and objects keep their shape, no text, no added objects, no nudity.",
+   "model": "google/gemini-omni-1.2-flash",
+   "resolution": "720p",
+   "duration": 8,
+   "muted": true,
+   "ovoz": "In the story, milk and honey are poured into warm water, turning the bath pale and fragrant.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S009.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "And then the queen arrives. This is how the legend imagines it, a scene repeated in films for a century.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S010.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Gold and lapis are set aside. Royal jewellery was heavy, valuable, and handled only by trusted hands.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S011.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "Attendants test the water. In a palace, even comfort was the work of many careful people.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S012.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "The queen steps into the bath. But here we must ask a simple question. How do we know any of this?",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S013.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "The honest answer is surprising. No ancient writer describes Cleopatra bathing in milk.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S014.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "The famous milk bath belongs to another woman. The Roman writer Pliny says Poppaea, the wife of Nero, bathed in donkey's milk.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S015.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "Pliny claims she kept hundreds of female donkeys just for her baths, centuries after Cleopatra's death.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "video",
+   "image": "kleopatra/S016.jpg",
+   "prompt": "Golden honey drips slowly from the wooden dipper into the clay bowl, glistening in warm light, very slow subtle camera drift. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, faces and objects keep their shape, no text, no added objects, no nudity.",
+   "model": "google/gemini-omni-1.2-flash",
+   "resolution": "720p",
+   "duration": 8,
+   "muted": true,
+   "ovoz": "Over time, the stories blended. The richest queen of Egypt seemed like the perfect owner of the legend.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S017.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "Why milk? It is soft, rich and rare in large amounts. Bathing in food was the ultimate display of wealth.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S018.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "What we do know is that Egyptians loved cosmetics: kohl for the eyes, scented oils, combs and bronze mirrors.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S019.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "And Cleopatra was linked to beauty in ancient medicine. The physician Galen quotes recipes from a book called Cosmetics, attributed to her.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S020.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Most of those recipes were about hair, against hair loss and for thicker hair, not about bathing in milk.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S021.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "The book itself is lost. Only fragments survive, and even its author is uncertain.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S022.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Ancient writers remembered something else about her. Plutarch says her beauty alone was not astonishing.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S023.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "What captivated people was her voice, her wit, and her conversation. She spoke many languages.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S024.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Her real power came from her mind, and from a palace staff that kept a vast household running.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S025.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "Palace life was politics. Every audience, gift and appearance was a message to Rome and to Egypt.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S026.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Most of what we read about Cleopatra was written by Romans, her enemies, long after she died.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S027.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "Later storytellers turned her into a symbol of luxury and seduction. Each age added its own details.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S028.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "So historians separate three things: what the sources say, what is possible, and what is pure legend.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S029.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "The real Cleopatra was a ruler, a strategist, and the last active pharaoh of Egypt.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S030.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "The milk bath may never have happened. But it tells us how people have imagined her for two thousand years.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S031.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "In 30 BC, after her defeat by Rome, Cleopatra died, and Egypt became a Roman province.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S032.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Yet her image never faded. Beauty and power became the two words always attached to her name.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S033.jpg",
+   "duration": 10,
+   "zoom": "in",
+   "ovoz": "Today, museums hold real objects from her world: jars, mirrors and linen. Silent, but genuine.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S034.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Between the evidence and the imagination lies the story we keep telling.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "video",
+   "image": "kleopatra/S035.jpg",
+   "prompt": "The queen stands still at the balcony as evening lights of the city flicker, her linen gently moving in the breeze, slow push-in. Smooth stabilized cinematic documentary camera, realistic physics, no morphing, faces and objects keep their shape, no text, no added objects, no nudity.",
+   "model": "google/gemini-omni-1.2-flash",
+   "resolution": "720p",
+   "duration": 8,
+   "muted": true,
+   "ovoz": "Cleopatra did not need a legend to be remarkable. History gave her more than enough.",
+   "ovozchi": "kokoro:am_michael"
+  },
+  {
+   "type": "image",
+   "src": "kleopatra/S036.jpg",
+   "duration": 10,
+   "zoom": "out",
+   "ovoz": "Milk, honey and a queen. Sometimes the legend is famous, but the truth is even more interesting.",
+   "ovozchi": "kokoro:am_michael"
+  }
+ ]
+}
