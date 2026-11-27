@@ -1,0 +1,11 @@
+kalitlar: 1
+tayyor: trip
+tayyor: rent
+tayyor: sale
+tayyor: job
+tayyor: mech
+tayyor: other
+tayyor: all
+tayyor: food
+tayyor: law
+xato: 0
