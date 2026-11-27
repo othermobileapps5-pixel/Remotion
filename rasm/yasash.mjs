@@ -7,19 +7,22 @@ const LOG = [];
 const log = (...a) => { console.log(...a); LOG.push(a.join(' ')); };
 log('kalitlar:', KEYS.length);
 let xato = 0;
+process.on('exit', () => fs.writeFileSync('rasm/out/log.txt', LOG.join('\n').replace(/AIza[\w-]+/g, '***')));
+process.on('uncaughtException', (e) => { log('XATO', e.stack); process.exit(1); });
 for (const [nom, tavsif] of Object.entries(rasmlar)) {
   if (fs.existsSync(`rasm/out/${nom}.png`)) { log('bor:', nom); continue; }
   let ok = false;
   for (const key of KEYS) {
     for (let urinish = 0; urinish < 3 && !ok; urinish++) {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
+      let r;
+      try { r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
         body: JSON.stringify({
           contents: [{ parts: [{ text: `${tavsif}. ${uslub}.` }] }],
           generationConfig: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: '5:4' } },
         }),
-      });
+      }); } catch (e) { log(nom, 'fetch xato', e.message); await new Promise((s) => setTimeout(s, 5000)); continue; }
       const j = await r.json().catch(() => ({}));
       const part = j?.candidates?.[0]?.content?.parts?.find((p) => p.inlineData);
       if (part) {
