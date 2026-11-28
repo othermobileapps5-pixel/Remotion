@@ -1,4 +1,6 @@
 kalitlar: 1
-tayyor: driver
-tayyor: dispatch
+tayyor: s_car
+tayyor: s_electronics
+tayyor: s_clothes
+tayyor: s_misc
 xato: 0
