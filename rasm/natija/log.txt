@@ -1,6 +1,3 @@
 kalitlar: 1
-tayyor: s_car
-tayyor: s_electronics
-tayyor: s_clothes
-tayyor: s_misc
-xato: 0
+trip_taxi 402 {"error":{"code":402,"message":"Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemin
+xato: 1
